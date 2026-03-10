@@ -14,6 +14,7 @@ import {
   uploadFile,
 } from "@/hooks/useSupabaseData";
 import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Check, XCircle } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 
 type Tab = "episodes" | "art-pieces" | "calendar" | "votes" | "submissions" | "subscribers";
 
