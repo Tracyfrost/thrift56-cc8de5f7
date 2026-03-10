@@ -68,8 +68,8 @@ const CommunitySubmissions = () => {
                     className="w-full rounded-md border border-input bg-background px-3 py-3 text-sm font-body resize-none"
                   />
                 </div>
-                <Button type="submit" variant="rust" className="w-full h-12 text-base" disabled={submitFind.isPending || uploading}>
-                  {uploading ? "Uploading..." : submitFind.isPending ? "Submitting..." : "Submit Your Find"}
+                <Button type="submit" variant="rust" className="w-full h-12 text-base" disabled={submitFind.isPending}>
+                  {submitFind.isPending ? "Submitting..." : "Submit Your Find"}
                 </Button>
               </form>
             )}
