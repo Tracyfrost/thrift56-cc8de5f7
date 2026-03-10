@@ -83,6 +83,9 @@
   .text-rust {
     color: hsl(var(--rust));
   }
+  .bg-rust {
+    background-color: hsl(var(--rust));
+  }
   .bg-bone {
     background-color: hsl(var(--bone));
   }
@@ -94,5 +97,19 @@
   }
   .border-rust {
     border-color: hsl(var(--rust));
+  }
+
+  /* Scrollbar hide utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Section divider */
+  .section-divider {
+    @apply border-t border-border;
   }
 }

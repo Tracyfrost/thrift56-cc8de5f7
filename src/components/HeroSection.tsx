@@ -1,47 +1,50 @@
 import { Play } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-tracie.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center texture-paper overflow-hidden">
-      {/* Background image with overlay */}
+    <section className="relative min-h-[92vh] flex items-center texture-paper overflow-hidden">
       <div className="absolute inset-0">
         <img
           src={heroImage}
           alt="Tracie in her art studio"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/98 via-background/85 to-background/30 md:from-background/95 md:via-background/75 md:to-transparent" />
       </div>
 
-      <div className="container relative z-10 py-20">
+      <div className="container relative z-10 py-16 md:py-24">
         <div className="max-w-2xl">
-          <p className="font-distressed text-rust text-lg mb-4 tracking-wider">
+          <p className="font-distressed text-rust text-base md:text-lg mb-5 tracking-[0.25em]">
             THRIFT 56
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold leading-[0.9] mb-6">
+          <h1 className="text-[3.2rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-heading font-bold leading-[0.88] mb-7 tracking-tight">
             Found.<br />
             Transformed.<br />
             Released.
           </h1>
-          <p className="font-body text-lg md:text-xl text-muted-foreground max-w-lg mb-10 leading-relaxed">
-            Tracie hunts thrift stores for forgotten objects, turns them into art, and shares the full transformation on video.
+          <p className="font-body text-base md:text-lg text-muted-foreground max-w-md mb-12 leading-relaxed">
+            Forgotten thrift store objects become one‑of‑a‑kind art — every transformation filmed, every piece released to the community.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="hero" size="lg" className="gap-3 px-8 py-6">
-              <Play size={18} />
-              Watch Latest Episode
-            </Button>
-            <Button variant="hero-outline" size="lg" className="px-8 py-6">
-              Join the Drop List
-            </Button>
+            <Link to="/episodes">
+              <Button variant="hero" size="lg" className="gap-3 px-10 py-7 text-base">
+                <Play size={18} />
+                Watch Latest Episode
+              </Button>
+            </Link>
+            <a href="#email-capture">
+              <Button variant="hero-outline" size="lg" className="px-10 py-7 text-base">
+                Join the Drop List
+              </Button>
+            </a>
           </div>
         </div>
       </div>
 
-      {/* Bottom distressed edge */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 };
