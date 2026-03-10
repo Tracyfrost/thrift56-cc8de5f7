@@ -13,6 +13,8 @@ import SocialSection from "@/components/SocialSection";
 import FinalCtaSection from "@/components/FinalCtaSection";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import DiscoverHunt from "@/components/DiscoverHunt";
+import YouDecide from "@/components/YouDecide";
 
 const Index = () => {
   return (
@@ -30,6 +32,8 @@ const Index = () => {
       <TransformationShowcase />
       <HowItWorksSection />
       <ShortFormSection />
+      <DiscoverHunt />
+      <YouDecide />
       <EmailCaptureSection />
       <SocialSection />
       <FinalCtaSection />

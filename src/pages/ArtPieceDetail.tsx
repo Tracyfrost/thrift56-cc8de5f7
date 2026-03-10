@@ -6,6 +6,7 @@ import EntryForm from "@/components/EntryForm";
 import DropCountdown from "@/components/DropCountdown";
 import ArtPieceCard from "@/components/ArtPieceCard";
 import { getArtPieceBySlug, artPieces, statusConfig } from "@/data/artPieces";
+import ShareButtons from "@/components/ShareButtons";
 import { ArrowLeft } from "lucide-react";
 
 const ArtPieceDetail = () => {
@@ -160,6 +161,11 @@ const ArtPieceDetail = () => {
             </div>
           </section>
         )}
+
+        {/* Share */}
+        <section className="mb-16 max-w-md mx-auto">
+          <ShareButtons title={piece.title} />
+        </section>
 
         {/* Related drops */}
         {related.length > 0 && (

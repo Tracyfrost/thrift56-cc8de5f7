@@ -10,7 +10,9 @@ import Livestream from "./pages/Livestream.tsx";
 import ArtDrops from "./pages/ArtDrops.tsx";
 import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
 import AdminDrops from "./pages/AdminDrops.tsx";
+import Community from "./pages/Community.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import ReturnVisitBanner from "./components/ReturnVisitBanner.tsx";
 
 const queryClient = new QueryClient();
 
@@ -28,9 +30,11 @@ const App = () => (
           <Route path="/drops" element={<ArtDrops />} />
           <Route path="/drops/:slug" element={<ArtPieceDetail />} />
           <Route path="/admin/drops" element={<AdminDrops />} />
+          <Route path="/community" element={<Community />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ReturnVisitBanner />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

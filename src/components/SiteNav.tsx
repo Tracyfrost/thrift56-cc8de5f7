@@ -6,6 +6,7 @@ const navLinks = [
   { to: "/", label: "Home" },
   { to: "/episodes", label: "Episodes" },
   { to: "/drops", label: "Art Drops" },
+  { to: "/community", label: "Community" },
   { to: "/livestream", label: "Livestream" },
 ];
 
