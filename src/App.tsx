@@ -33,6 +33,8 @@ const App = () => (
           <Route path="/drops/:slug" element={<ArtPieceDetail />} />
           <Route path="/admin/drops" element={<AdminDrops />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
