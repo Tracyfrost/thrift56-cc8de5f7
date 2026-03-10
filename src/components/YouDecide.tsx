@@ -1,0 +1,70 @@
+import { useState } from "react";
+import { voteItems, type VoteItem } from "@/data/communityData";
+
+const YouDecide = () => {
+  const [items, setItems] = useState<VoteItem[]>(voteItems);
+  const [votedFor, setVotedFor] = useState<string | null>(null);
+
+  const totalVotes = items.reduce((sum, i) => sum + i.votes, 0);
+
+  const handleVote = (id: string) => {
+    if (votedFor) return;
+    setVotedFor(id);
+    setItems(items.map((i) => (i.id === id ? { ...i, votes: i.votes + 1 } : i)));
+  };
+
+  return (
+    <section className="py-16 md:py-20 texture-paper">
+      <div className="container">
+        <div className="text-center mb-10">
+          <p className="font-distressed text-rust text-sm tracking-widest mb-2">YOU DECIDE</p>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-3">What Gets Transformed Next?</h2>
+          <p className="text-muted-foreground font-body max-w-lg mx-auto">
+            Cast your vote. The item with the most votes becomes the next transformation episode.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          {items.map((item) => {
+            const pct = totalVotes > 0 ? Math.round((item.votes / (totalVotes + (votedFor ? 1 : 0))) * 100) : 25;
+            const isSelected = votedFor === item.id;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleVote(item.id)}
+                disabled={!!votedFor}
+                className={`text-left border rounded-sm bg-card overflow-hidden transition-all ${
+                  isSelected ? "border-rust ring-2 ring-rust/30" : "border-border hover:border-rust/50"
+                } ${votedFor && !isSelected ? "opacity-60" : ""}`}
+              >
+                <div className="aspect-square overflow-hidden">
+                  <img src={item.image} alt={item.caption} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <div className="p-3">
+                  <p className="font-heading text-sm font-bold leading-tight mb-2">{item.caption}</p>
+                  {votedFor ? (
+                    <div>
+                      <div className="h-2 bg-muted rounded-full overflow-hidden mb-1">
+                        <div className="h-full bg-rust rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+                      </div>
+                      <p className="text-[10px] font-heading uppercase tracking-wider text-muted-foreground">
+                        {pct}% · {item.votes} votes
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-[10px] font-heading uppercase tracking-widest text-rust">
+                      Tap to Vote
+                    </p>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default YouDecide;
