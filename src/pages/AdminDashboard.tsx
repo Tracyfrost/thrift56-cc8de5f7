@@ -445,17 +445,27 @@ function CalendarTab() {
   const upsert = useUpsertCalendarEvent();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing({ title: "", event_type: "episode", scheduled_at: "", description: "", linked_episode_id: null, linked_art_piece_id: null, is_published: false });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    await upsert.mutateAsync({ ...editing, scheduled_at: new Date(editing.scheduled_at).toISOString() } as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      await upsert.mutateAsync({ ...editing, scheduled_at: new Date(editing.scheduled_at).toISOString() } as any);
+      toast.success("Calendar event saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save calendar event.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   const typeColors: Record<string, string> = {
