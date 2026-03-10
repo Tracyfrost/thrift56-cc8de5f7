@@ -292,17 +292,27 @@ function VotesTab() {
   const remove = useDeleteVote();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing({ item_name: "", image_url: "", votes: 0, is_active: true });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    await upsert.mutateAsync(editing as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      await upsert.mutateAsync(editing as any);
+      toast.success("Vote item saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save vote item.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   return (
