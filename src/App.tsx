@@ -39,6 +39,7 @@ const App = () => (
             <Route path="/community" element={<Community />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/setup" element={<AdminSetup />} />
             <Route path="/admin/drops" element={<ProtectedRoute><AdminDrops /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
