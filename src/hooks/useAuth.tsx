@@ -27,12 +27,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const checkAdmin = async (userId: string) => {
-    const { data } = await supabase
-      .from("user_roles")
+    // Use rpc or raw fetch to avoid type issues with user_roles not in generated types
+    const { data, error } = await supabase
+      .from("user_roles" as any)
       .select("role")
       .eq("user_id", userId)
       .eq("role", "admin")
       .maybeSingle();
+    if (error) return false;
     return !!data;
   };
 
