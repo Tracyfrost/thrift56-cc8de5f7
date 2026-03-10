@@ -7,6 +7,9 @@ import Index from "./pages/Index.tsx";
 import Episodes from "./pages/Episodes.tsx";
 import EpisodeDetail from "./pages/EpisodeDetail.tsx";
 import Livestream from "./pages/Livestream.tsx";
+import ArtDrops from "./pages/ArtDrops.tsx";
+import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
+import AdminDrops from "./pages/AdminDrops.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -22,6 +25,9 @@ const App = () => (
           <Route path="/episodes" element={<Episodes />} />
           <Route path="/episodes/:slug" element={<EpisodeDetail />} />
           <Route path="/livestream" element={<Livestream />} />
+          <Route path="/drops" element={<ArtDrops />} />
+          <Route path="/drops/:slug" element={<ArtPieceDetail />} />
+          <Route path="/admin/drops" element={<AdminDrops />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
