@@ -14,6 +14,7 @@ import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
 import AdminDrops from "./pages/AdminDrops.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
+import AdminSetup from "./pages/AdminSetup.tsx";
 import SearchPage from "./pages/SearchPage.tsx";
 import Community from "./pages/Community.tsx";
 import NotFound from "./pages/NotFound.tsx";
