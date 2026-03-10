@@ -7,6 +7,9 @@ import Index from "./pages/Index.tsx";
 import Episodes from "./pages/Episodes.tsx";
 import EpisodeDetail from "./pages/EpisodeDetail.tsx";
 import Livestream from "./pages/Livestream.tsx";
+import ArtDrops from "./pages/ArtDrops.tsx";
+import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
+import AdminDrops from "./pages/AdminDrops.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
