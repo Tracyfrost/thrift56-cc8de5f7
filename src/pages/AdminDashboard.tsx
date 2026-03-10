@@ -321,7 +321,7 @@ function CalendarTab() {
 
   const save = async () => {
     if (!editing) return;
-    await upsert.mutateAsync({ ...editing, scheduled_at: new Date(editing.scheduled_at).toISOString() });
+    await upsert.mutateAsync({ ...editing, title: editing.title, event_type: editing.event_type, scheduled_at: new Date(editing.scheduled_at).toISOString() } as any);
     setEditing(null);
     setIsNew(false);
   };
