@@ -32,6 +32,8 @@ const Index = () => {
       <TransformationShowcase />
       <HowItWorksSection />
       <ShortFormSection />
+      <DiscoverHunt />
+      <YouDecide />
       <EmailCaptureSection />
       <SocialSection />
       <FinalCtaSection />

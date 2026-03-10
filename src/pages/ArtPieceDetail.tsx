@@ -162,6 +162,11 @@ const ArtPieceDetail = () => {
           </section>
         )}
 
+        {/* Share */}
+        <section className="mb-16 max-w-md mx-auto">
+          <ShareButtons title={piece.title} />
+        </section>
+
         {/* Related drops */}
         {related.length > 0 && (
           <section className="mb-16">
