@@ -178,19 +178,29 @@ function ArtPiecesTab() {
   const remove = useDeleteArtPiece();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing({ title: "", slug: "", description: "", status: "available", before_image_url: "", after_image_url: "", price: null, episode_id: null, materials: [], is_featured: false });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
-    const materials = typeof editing.materials === "string" ? editing.materials.split(",").map((s: string) => s.trim()).filter(Boolean) : editing.materials;
-    await upsert.mutateAsync({ ...editing, slug, materials } as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
+      const materials = typeof editing.materials === "string" ? editing.materials.split(",").map((s: string) => s.trim()).filter(Boolean) : editing.materials;
+      await upsert.mutateAsync({ ...editing, slug, materials } as any);
+      toast.success("Art piece saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save art piece.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   const statusBadge: Record<string, string> = {
