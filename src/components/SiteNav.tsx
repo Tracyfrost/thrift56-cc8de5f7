@@ -34,6 +34,9 @@ const SiteNav = () => {
               {link.label}
             </Link>
           ))}
+          <Link to="/search" className="text-muted-foreground hover:text-rust transition-colors" aria-label="Search">
+            <Search size={18} />
+          </Link>
           <a
             href="https://www.youtube.com/@thrift56"
             target="_blank"
