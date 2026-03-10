@@ -509,9 +509,10 @@ function CalendarTab() {
             </FieldLabel>
             <div className="md:col-span-2"><FieldLabel label="Description"><textarea value={editing.description || ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={2} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none" /></FieldLabel></div>
           </div>
+          {error && <p className="text-destructive text-sm mt-3 font-body">{error}</p>}
           <div className="flex gap-3 mt-4">
             <Button variant="rust" onClick={save} disabled={upsert.isPending}>{upsert.isPending ? "Saving..." : "Save"}</Button>
-            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); setError(null); }}>Cancel</Button>
           </div>
         </div>
       )}
