@@ -303,7 +303,7 @@ function VotesTab() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <FieldLabel label="Item Name"><Input value={editing.item_name} onChange={(e) => setEditing({ ...editing, item_name: e.target.value })} /></FieldLabel>
-            <FieldLabel label="Image URL"><Input value={editing.image_url} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} /></FieldLabel>
+            <ImageUpload bucket="art-images" currentUrl={editing.image_url} onUploaded={(url) => setEditing({ ...editing, image_url: url })} label="Item Image" hint="Upload vote item image" />
             <FieldLabel label="Current Votes"><Input type="number" value={editing.votes} onChange={(e) => setEditing({ ...editing, votes: Number(e.target.value) })} /></FieldLabel>
             <div className="flex items-center gap-2">
               <input type="checkbox" checked={editing.is_active} onChange={(e) => setEditing({ ...editing, is_active: e.target.checked })} id="vote-active" />
