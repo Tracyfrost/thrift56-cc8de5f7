@@ -75,17 +75,28 @@ function EpisodesTab() {
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   const startNew = () => {
-    setEditing({ title: "", slug: "", youtube_id: "", description: "", category: "transformation", episode_number: null, thrift_store_location: "", purchase_price: "", before_image_url: "", after_image_url: "", thumbnail_url: "", is_featured: false });
+    setEditing({ title: "", slug: "", youtube_id: "", description: "", category: "transformation", episode_number: null, thrift_store_location: "", purchase_price: "", thumbnail_url: "", is_featured: false });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
-    await upsert.mutateAsync({ ...editing, slug, published_at: editing.published_at || new Date().toISOString() } as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
+      await upsert.mutateAsync({ ...editing, slug, published_at: editing.published_at || new Date().toISOString() } as any);
+      toast.success("Episode saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save episode.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   return (
