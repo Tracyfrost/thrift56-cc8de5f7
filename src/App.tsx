@@ -25,6 +25,9 @@ const App = () => (
           <Route path="/episodes" element={<Episodes />} />
           <Route path="/episodes/:slug" element={<EpisodeDetail />} />
           <Route path="/livestream" element={<Livestream />} />
+          <Route path="/drops" element={<ArtDrops />} />
+          <Route path="/drops/:slug" element={<ArtPieceDetail />} />
+          <Route path="/admin/drops" element={<AdminDrops />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
