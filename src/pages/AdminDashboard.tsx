@@ -16,10 +16,13 @@ import {
 } from "@/hooks/useSupabaseData";
 import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Check, XCircle } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload";
+import { useAuth } from "@/hooks/useAuth";
+import { LogOut } from "lucide-react";
 
 type Tab = "episodes" | "art-pieces" | "calendar" | "votes" | "submissions" | "subscribers";
 
 const AdminDashboard = () => {
+  const { signOut, user } = useAuth();
   const [tab, setTab] = useState<Tab>("episodes");
 
   const tabs: { key: Tab; label: string; icon: any }[] = [
