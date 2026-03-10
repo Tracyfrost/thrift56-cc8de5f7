@@ -51,11 +51,13 @@ const CommunitySubmissions = () => {
                   <label className="font-heading text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1.5 block">Where Did You Find It?</label>
                   <Input placeholder="Goodwill — Austin, TX" value={location} onChange={(e) => setLocation(e.target.value)} className="font-body h-12 bg-background" required />
                 </div>
-                <div>
-                  <label className="font-heading text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1.5 block">Photo of the Item</label>
-                  <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="font-body h-12 bg-background" />
-                  <p className="text-[10px] text-muted-foreground mt-1 font-body">Upload a photo of the thrift find you spotted.</p>
-                </div>
+                <ImageUpload
+                  bucket="submissions"
+                  currentUrl={imageUrl || null}
+                  onUploaded={setImageUrl}
+                  label="Photo of the Item"
+                  hint="Upload a photo of the thrift find you spotted."
+                />
                 <div>
                   <label className="font-heading text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1.5 block">Notes (Optional)</label>
                   <textarea
