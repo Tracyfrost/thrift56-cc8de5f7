@@ -1,18 +1,31 @@
 import { useState } from "react";
-import { thriftFinds, type ThriftFind } from "@/data/communityData";
+import { useThriftFinds, useVoteThriftFind } from "@/hooks/useSupabaseData";
+import { thriftFinds as mockFinds } from "@/data/communityData";
 
 const DiscoverHunt = () => {
-  const [finds, setFinds] = useState<ThriftFind[]>(thriftFinds);
+  const { data: dbFinds } = useThriftFinds();
+  const voteMutation = useVoteThriftFind();
   const [voted, setVoted] = useState<Record<string, string>>({});
+
+  // Use DB data if available, otherwise fall back to mock
+  const finds = dbFinds && dbFinds.length > 0 ? dbFinds : mockFinds.map((f) => ({
+    id: f.id,
+    image_url: f.image,
+    caption: f.caption,
+    price: f.price,
+    location: f.location,
+    votes_transform: f.votesTransform,
+    votes_leave: f.votesLeave,
+    is_active: true,
+    created_at: "",
+  }));
 
   const vote = (id: string, choice: "transform" | "leave") => {
     if (voted[id]) return;
     setVoted({ ...voted, [id]: choice });
-    setFinds(finds.map((f) =>
-      f.id === id
-        ? { ...f, votesTransform: f.votesTransform + (choice === "transform" ? 1 : 0), votesLeave: f.votesLeave + (choice === "leave" ? 1 : 0) }
-        : f
-    ));
+    if (dbFinds && dbFinds.length > 0) {
+      voteMutation.mutate({ id, choice });
+    }
   };
 
   return (
@@ -28,14 +41,14 @@ const DiscoverHunt = () => {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
           {finds.map((find) => {
-            const total = find.votesTransform + find.votesLeave;
-            const pct = total > 0 ? Math.round((find.votesTransform / total) * 100) : 50;
+            const total = (find.votes_transform || 0) + (find.votes_leave || 0);
+            const pct = total > 0 ? Math.round(((find.votes_transform || 0) / total) * 100) : 50;
             const hasVoted = !!voted[find.id];
 
             return (
               <div key={find.id} className="border border-border rounded-sm bg-card overflow-hidden">
                 <div className="aspect-square overflow-hidden">
-                  <img src={find.image} alt={find.caption} className="w-full h-full object-cover" loading="lazy" />
+                  <img src={find.image_url} alt={find.caption} className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div className="p-3">
                   <p className="font-heading text-sm font-bold leading-tight mb-1">{find.caption}</p>
@@ -48,7 +61,7 @@ const DiscoverHunt = () => {
                         <div className="h-full bg-rust rounded-full transition-all" style={{ width: `${pct}%` }} />
                       </div>
                       <p className="text-[10px] font-heading uppercase tracking-wider text-muted-foreground">
-                        {pct}% say transform · {total} votes
+                        {pct}% say transform · {total + 1} votes
                       </p>
                     </div>
                   ) : (
