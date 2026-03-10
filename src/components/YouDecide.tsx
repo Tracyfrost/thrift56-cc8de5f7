@@ -17,19 +17,21 @@ const YouDecide = () => {
   };
 
   return (
-    <section className="py-16 md:py-20 texture-paper">
+    <section className="py-20 md:py-28 texture-paper">
       <div className="container">
-        <div className="text-center mb-10">
-          <p className="font-distressed text-rust text-sm tracking-widest mb-2">YOU DECIDE</p>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-3">What Gets Transformed Next?</h2>
-          <p className="text-muted-foreground font-body max-w-lg mx-auto">
-            Cast your vote. The item with the most votes becomes the next transformation episode.
+        <div className="text-center mb-12">
+          <p className="font-distressed text-rust text-sm tracking-[0.3em] mb-3">YOU DECIDE</p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">What Gets Transformed Next?</h2>
+          <p className="text-muted-foreground font-body max-w-md mx-auto">
+            Cast your vote. The winning item becomes the next transformation episode.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto">
           {items.map((item) => {
-            const pct = totalVotes > 0 ? Math.round((item.votes / (totalVotes + (votedFor ? 1 : 0))) * 100) : 25;
+            const adjustedTotal = totalVotes + (votedFor ? 1 : 0);
+            const adjustedVotes = item.votes + (votedFor === item.id ? 1 : 0);
+            const pct = adjustedTotal > 0 ? Math.round((adjustedVotes / adjustedTotal) * 100) : 25;
             const isSelected = votedFor === item.id;
 
             return (
@@ -37,28 +39,30 @@ const YouDecide = () => {
                 key={item.id}
                 onClick={() => handleVote(item.id, item.votes)}
                 disabled={!!votedFor}
-                className={`text-left border rounded-sm bg-card overflow-hidden transition-all ${
-                  isSelected ? "border-rust ring-2 ring-rust/30" : "border-border hover:border-rust/50"
-                } ${votedFor && !isSelected ? "opacity-60" : ""}`}
+                className={`text-left border-2 rounded-sm bg-card overflow-hidden transition-all duration-300 ${
+                  isSelected ? "border-rust shadow-lg scale-[1.02]" : "border-border hover:border-rust/40 hover:shadow-md"
+                } ${votedFor && !isSelected ? "opacity-50" : ""}`}
               >
                 {item.image_url && (
                   <div className="aspect-square overflow-hidden">
                     <img src={item.image_url} alt={item.item_name} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 )}
-                <div className="p-3">
-                  <p className="font-heading text-sm font-bold leading-tight mb-2">{item.item_name}</p>
+                <div className="p-4">
+                  <p className="font-heading text-sm font-bold leading-tight mb-3">{item.item_name}</p>
                   {votedFor ? (
                     <div>
-                      <div className="h-2 bg-muted rounded-full overflow-hidden mb-1">
-                        <div className="h-full bg-rust rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+                      <div className="h-2.5 bg-muted rounded-full overflow-hidden mb-2">
+                        <div className="h-full bg-rust rounded-full transition-all duration-700 ease-out" style={{ width: `${pct}%` }} />
                       </div>
                       <p className="text-[10px] font-heading uppercase tracking-wider text-muted-foreground">
-                        {pct}% · {item.votes + (isSelected ? 1 : 0)} votes
+                        {pct}% · {adjustedVotes} votes
                       </p>
                     </div>
                   ) : (
-                    <p className="text-[10px] font-heading uppercase tracking-widest text-rust">Tap to Vote</p>
+                    <p className="text-xs font-heading uppercase tracking-[0.2em] text-rust font-semibold">
+                      ↑ Vote
+                    </p>
                   )}
                 </div>
               </button>

@@ -3,11 +3,10 @@ import { useState } from "react";
 import { Menu, X, Search } from "lucide-react";
 
 const navLinks = [
-  { to: "/", label: "Home" },
   { to: "/episodes", label: "Episodes" },
   { to: "/drops", label: "Art Drops" },
+  { to: "/livestream", label: "Live" },
   { to: "/community", label: "Community" },
-  { to: "/livestream", label: "Livestream" },
 ];
 
 const SiteNav = () => {
@@ -16,32 +15,32 @@ const SiteNav = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="container flex items-center justify-between h-14">
-        <Link to="/" className="font-heading text-xl uppercase tracking-[0.2em] font-bold">
+      <div className="container flex items-center justify-between h-16">
+        <Link to="/" className="font-heading text-xl uppercase tracking-[0.25em] font-bold hover:text-rust transition-colors">
           Thrift 56
         </Link>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-7">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
-              className={`font-heading text-sm uppercase tracking-wider transition-colors hover:text-rust ${
-                location.pathname === link.to ? "text-rust" : "text-foreground"
+              className={`font-heading text-xs uppercase tracking-[0.2em] transition-colors hover:text-rust ${
+                location.pathname === link.to || location.pathname.startsWith(link.to + "/") ? "text-rust" : "text-foreground"
               }`}
             >
               {link.label}
             </Link>
           ))}
           <Link to="/search" className="text-muted-foreground hover:text-rust transition-colors" aria-label="Search">
-            <Search size={18} />
+            <Search size={17} />
           </Link>
           <a
             href="https://www.youtube.com/@thrift56"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-heading text-sm uppercase tracking-wider bg-primary text-primary-foreground px-4 py-1.5 rounded-sm hover:bg-primary/85 transition-colors"
+            className="font-heading text-xs uppercase tracking-[0.15em] bg-rust text-primary-foreground px-5 py-2 rounded-sm hover:bg-rust/85 transition-colors"
           >
             Subscribe
           </a>
@@ -55,27 +54,30 @@ const SiteNav = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-border bg-background pb-4">
+        <div className="md:hidden border-t border-border bg-background pb-5">
           {navLinks.map((link) => (
             <Link
               key={link.to}
               to={link.to}
               onClick={() => setOpen(false)}
-              className={`block px-6 py-3 font-heading text-sm uppercase tracking-wider ${
-                location.pathname === link.to ? "text-rust" : "text-foreground"
+              className={`block px-6 py-3.5 font-heading text-sm uppercase tracking-[0.15em] border-b border-border/50 ${
+                location.pathname === link.to ? "text-rust bg-card" : "text-foreground"
               }`}
             >
               {link.label}
             </Link>
           ))}
-          <div className="px-6 pt-2">
+          <Link to="/search" onClick={() => setOpen(false)} className="block px-6 py-3.5 font-heading text-sm uppercase tracking-[0.15em] border-b border-border/50 text-foreground">
+            Search
+          </Link>
+          <div className="px-6 pt-4">
             <a
               href="https://www.youtube.com/@thrift56"
               target="_blank"
               rel="noopener noreferrer"
-              className="block text-center font-heading text-sm uppercase tracking-wider bg-primary text-primary-foreground px-4 py-2 rounded-sm"
+              className="block text-center font-heading text-sm uppercase tracking-[0.15em] bg-rust text-primary-foreground px-4 py-3 rounded-sm"
             >
-              Subscribe
+              Subscribe on YouTube
             </a>
           </div>
         </div>
