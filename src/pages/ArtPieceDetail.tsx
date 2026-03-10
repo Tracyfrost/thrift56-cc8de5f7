@@ -6,6 +6,7 @@ import EntryForm from "@/components/EntryForm";
 import DropCountdown from "@/components/DropCountdown";
 import ArtPieceCard from "@/components/ArtPieceCard";
 import { getArtPieceBySlug, artPieces, statusConfig } from "@/data/artPieces";
+import ShareButtons from "@/components/ShareButtons";
 import { ArrowLeft } from "lucide-react";
 
 const ArtPieceDetail = () => {
