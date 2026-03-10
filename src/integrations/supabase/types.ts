@@ -323,6 +323,60 @@ export type Database = {
           },
         ]
       }
+      submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          image_url: string | null
+          is_approved: boolean
+          location: string
+          name: string
+          notes: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean
+          location: string
+          name: string
+          notes?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean
+          location?: string
+          name?: string
+          notes?: string | null
+        }
+        Relationships: []
+      }
+      subscribers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       thrift_finds: {
         Row: {
           caption: string
@@ -356,6 +410,33 @@ export type Database = {
           price?: string | null
           votes_leave?: number | null
           votes_transform?: number | null
+        }
+        Relationships: []
+      }
+      votes: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean
+          item_name: string
+          votes: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean
+          item_name: string
+          votes?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          item_name?: string
+          votes?: number
         }
         Relationships: []
       }
