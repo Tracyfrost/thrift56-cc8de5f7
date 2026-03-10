@@ -76,7 +76,7 @@ function EpisodesTab() {
   const save = async () => {
     if (!editing) return;
     const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
-    await upsert.mutateAsync({ ...editing, slug, published_at: editing.published_at || new Date().toISOString() });
+    await upsert.mutateAsync({ ...editing, title: editing.title, slug, published_at: editing.published_at || new Date().toISOString() } as any);
     setEditing(null);
     setIsNew(false);
   };
