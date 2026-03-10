@@ -113,10 +113,9 @@ function EpisodesTab() {
             </FieldLabel>
             <FieldLabel label="YouTube ID"><Input value={editing.youtube_id || ""} onChange={(e) => setEditing({ ...editing, youtube_id: e.target.value })} /></FieldLabel>
             <FieldLabel label="Episode #"><Input type="number" value={editing.episode_number || ""} onChange={(e) => setEditing({ ...editing, episode_number: e.target.value ? Number(e.target.value) : null })} /></FieldLabel>
-            <FieldLabel label="Thumbnail Upload"><Input type="file" accept="image/*" onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)} /></FieldLabel>
-            <FieldLabel label="Thumbnail URL (or upload above)"><Input value={editing.thumbnail_url || ""} onChange={(e) => setEditing({ ...editing, thumbnail_url: e.target.value })} /></FieldLabel>
-            <FieldLabel label="Before Image URL"><Input value={editing.before_image_url || ""} onChange={(e) => setEditing({ ...editing, before_image_url: e.target.value })} /></FieldLabel>
-            <FieldLabel label="After Image URL"><Input value={editing.after_image_url || ""} onChange={(e) => setEditing({ ...editing, after_image_url: e.target.value })} /></FieldLabel>
+            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.thumbnail_url} onUploaded={(url) => setEditing({ ...editing, thumbnail_url: url })} label="Thumbnail" hint="Upload episode thumbnail image" />
+            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.before_image_url} onUploaded={(url) => setEditing({ ...editing, before_image_url: url })} label="Before Image" hint="Before transformation photo" />
+            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.after_image_url} onUploaded={(url) => setEditing({ ...editing, after_image_url: url })} label="After Image" hint="After transformation photo" />
             <div className="md:col-span-2">
               <FieldLabel label="Description">
                 <textarea value={editing.description || ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={3} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none" />
