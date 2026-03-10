@@ -2,6 +2,7 @@ import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-tracie.jpg";
+import logo from "@/assets/thrift56-logo-clean.png";
 
 const HeroSection = () => {
   return (
@@ -17,9 +18,11 @@ const HeroSection = () => {
 
       <div className="container relative z-10 py-16 md:py-24">
         <div className="max-w-2xl">
-          <p className="font-distressed text-rust text-base md:text-lg mb-5 tracking-[0.25em]">
-            THRIFT 56
-          </p>
+          <img
+            src={logo}
+            alt="Thrift 56"
+            className="h-16 md:h-20 w-auto mb-6"
+          />
           <h1 className="text-[3.2rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-heading font-bold leading-[0.88] mb-7 tracking-tight">
             Found.<br />
             Transformed.<br />

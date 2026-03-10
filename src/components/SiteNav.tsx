@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X, Search } from "lucide-react";
+import logo from "@/assets/thrift56-logo-clean.png";
 
 const navLinks = [
   { to: "/episodes", label: "Episodes" },
@@ -16,8 +17,8 @@ const SiteNav = () => {
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="font-heading text-xl uppercase tracking-[0.25em] font-bold hover:text-rust transition-colors">
-          Thrift 56
+        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <img src={logo} alt="Thrift 56" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop */}

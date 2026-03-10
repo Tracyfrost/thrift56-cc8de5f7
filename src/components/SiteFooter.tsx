@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "@/assets/thrift56-logo-clean.png";
 
 const SiteFooter = () => {
   return (
@@ -6,7 +7,9 @@ const SiteFooter = () => {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           <div>
-            <p className="font-heading text-xl uppercase tracking-[0.25em] text-primary-foreground mb-3">Thrift 56</p>
+            <Link to="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
+              <img src={logo} alt="Thrift 56" className="h-14 w-auto brightness-[1.8] contrast-[0.85]" />
+            </Link>
             <p className="text-sm text-primary-foreground/50 font-body leading-relaxed">
               Found objects, transformed art.<br />Every piece tells a story.
             </p>

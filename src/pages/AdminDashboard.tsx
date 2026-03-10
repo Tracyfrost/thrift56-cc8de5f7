@@ -18,6 +18,7 @@ import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Ch
 import ImageUpload from "@/components/ImageUpload";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut } from "lucide-react";
+import adminLogo from "@/assets/thrift56-logo-clean.png";
 
 type Tab = "episodes" | "art-pieces" | "calendar" | "votes" | "submissions" | "subscribers";
 
@@ -39,10 +40,13 @@ const AdminDashboard = () => {
       <SiteNav />
       <div className="container py-8">
         <div className="mb-6 flex items-start justify-between">
-          <div>
-            <p className="font-distressed text-rust text-sm tracking-widest mb-1">CREATOR DASHBOARD</p>
-            <h1 className="text-3xl md:text-4xl font-heading font-bold">Media Operating System</h1>
-            {user && <p className="text-xs text-muted-foreground mt-1">{user.email}</p>}
+          <div className="flex items-center gap-4">
+            <img src={adminLogo} alt="Thrift 56" className="h-12 w-auto" />
+            <div>
+              <p className="font-distressed text-rust text-sm tracking-widest mb-1">CREATOR DASHBOARD</p>
+              <h1 className="text-3xl md:text-4xl font-heading font-bold">Media Operating System</h1>
+              {user && <p className="text-xs text-muted-foreground mt-1">{user.email}</p>}
+            </div>
           </div>
           <Button variant="outline" size="sm" onClick={() => signOut()} className="gap-2">
             <LogOut size={14} /> Sign Out
