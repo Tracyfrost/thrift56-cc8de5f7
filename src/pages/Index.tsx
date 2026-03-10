@@ -1,23 +1,35 @@
 import HeroSection from "@/components/HeroSection";
 import ConceptStrip from "@/components/ConceptStrip";
+import BingeWatchStrip from "@/components/BingeWatchStrip";
 import BeforeAfterSection from "@/components/BeforeAfterSection";
 import LatestEpisodeSection from "@/components/LatestEpisodeSection";
+import SubscribePrompt from "@/components/SubscribePrompt";
 import FeaturedDropSection from "@/components/FeaturedDropSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
+import ShortFormSection from "@/components/ShortFormSection";
+import TransformationShowcase from "@/components/TransformationShowcase";
 import EmailCaptureSection from "@/components/EmailCaptureSection";
 import SocialSection from "@/components/SocialSection";
 import FinalCtaSection from "@/components/FinalCtaSection";
+import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <SiteNav />
       <HeroSection />
       <ConceptStrip />
-      <BeforeAfterSection />
       <LatestEpisodeSection />
+      <BingeWatchStrip />
+      <BeforeAfterSection />
+      <div className="container py-8">
+        <SubscribePrompt />
+      </div>
       <FeaturedDropSection />
+      <TransformationShowcase />
       <HowItWorksSection />
+      <ShortFormSection />
       <EmailCaptureSection />
       <SocialSection />
       <FinalCtaSection />
