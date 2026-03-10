@@ -253,9 +253,10 @@ function ArtPiecesTab() {
               <label htmlFor="ap-featured" className="font-heading text-xs uppercase tracking-widest text-muted-foreground">Featured Piece</label>
             </div>
           </div>
+          {error && <p className="text-destructive text-sm mt-3 font-body">{error}</p>}
           <div className="flex gap-3 mt-4">
             <Button variant="rust" onClick={save} disabled={upsert.isPending}>{upsert.isPending ? "Saving..." : "Save"}</Button>
-            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); setError(null); }}>Cancel</Button>
           </div>
         </div>
       )}
