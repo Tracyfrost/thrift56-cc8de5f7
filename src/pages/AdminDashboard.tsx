@@ -73,27 +73,18 @@ function EpisodesTab() {
   const remove = useDeleteEpisode();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   const startNew = () => {
     setEditing({ title: "", slug: "", youtube_id: "", description: "", category: "transformation", episode_number: null, thrift_store_location: "", purchase_price: "", before_image_url: "", after_image_url: "", thumbnail_url: "", is_featured: false });
     setIsNew(true);
-    setThumbnailFile(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    let thumbnail_url = editing.thumbnail_url;
-    if (thumbnailFile) {
-      try {
-        thumbnail_url = await uploadFile("episode-thumbnails", `${Date.now()}-${thumbnailFile.name}`, thumbnailFile);
-      } catch { /* keep existing */ }
-    }
     const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
-    await upsert.mutateAsync({ ...editing, slug, thumbnail_url, published_at: editing.published_at || new Date().toISOString() } as any);
+    await upsert.mutateAsync({ ...editing, slug, published_at: editing.published_at || new Date().toISOString() } as any);
     setEditing(null);
     setIsNew(false);
-    setThumbnailFile(null);
   };
 
   return (
