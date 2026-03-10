@@ -30,9 +30,11 @@ const App = () => (
           <Route path="/drops" element={<ArtDrops />} />
           <Route path="/drops/:slug" element={<ArtPieceDetail />} />
           <Route path="/admin/drops" element={<AdminDrops />} />
+          <Route path="/community" element={<Community />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ReturnVisitBanner />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
