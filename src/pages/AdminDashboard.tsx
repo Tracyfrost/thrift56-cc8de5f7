@@ -14,6 +14,7 @@ import {
   uploadFile,
 } from "@/hooks/useSupabaseData";
 import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Check, XCircle } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload";
 
 type Tab = "episodes" | "art-pieces" | "calendar" | "votes" | "submissions" | "subscribers";
 
@@ -72,27 +73,18 @@ function EpisodesTab() {
   const remove = useDeleteEpisode();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   const startNew = () => {
     setEditing({ title: "", slug: "", youtube_id: "", description: "", category: "transformation", episode_number: null, thrift_store_location: "", purchase_price: "", before_image_url: "", after_image_url: "", thumbnail_url: "", is_featured: false });
     setIsNew(true);
-    setThumbnailFile(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    let thumbnail_url = editing.thumbnail_url;
-    if (thumbnailFile) {
-      try {
-        thumbnail_url = await uploadFile("episode-thumbnails", `${Date.now()}-${thumbnailFile.name}`, thumbnailFile);
-      } catch { /* keep existing */ }
-    }
     const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
-    await upsert.mutateAsync({ ...editing, slug, thumbnail_url, published_at: editing.published_at || new Date().toISOString() } as any);
+    await upsert.mutateAsync({ ...editing, slug, published_at: editing.published_at || new Date().toISOString() } as any);
     setEditing(null);
     setIsNew(false);
-    setThumbnailFile(null);
   };
 
   return (
@@ -121,10 +113,9 @@ function EpisodesTab() {
             </FieldLabel>
             <FieldLabel label="YouTube ID"><Input value={editing.youtube_id || ""} onChange={(e) => setEditing({ ...editing, youtube_id: e.target.value })} /></FieldLabel>
             <FieldLabel label="Episode #"><Input type="number" value={editing.episode_number || ""} onChange={(e) => setEditing({ ...editing, episode_number: e.target.value ? Number(e.target.value) : null })} /></FieldLabel>
-            <FieldLabel label="Thumbnail Upload"><Input type="file" accept="image/*" onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)} /></FieldLabel>
-            <FieldLabel label="Thumbnail URL (or upload above)"><Input value={editing.thumbnail_url || ""} onChange={(e) => setEditing({ ...editing, thumbnail_url: e.target.value })} /></FieldLabel>
-            <FieldLabel label="Before Image URL"><Input value={editing.before_image_url || ""} onChange={(e) => setEditing({ ...editing, before_image_url: e.target.value })} /></FieldLabel>
-            <FieldLabel label="After Image URL"><Input value={editing.after_image_url || ""} onChange={(e) => setEditing({ ...editing, after_image_url: e.target.value })} /></FieldLabel>
+            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.thumbnail_url} onUploaded={(url) => setEditing({ ...editing, thumbnail_url: url })} label="Thumbnail" hint="Upload episode thumbnail image" />
+            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.before_image_url} onUploaded={(url) => setEditing({ ...editing, before_image_url: url })} label="Before Image" hint="Before transformation photo" />
+            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.after_image_url} onUploaded={(url) => setEditing({ ...editing, after_image_url: url })} label="After Image" hint="After transformation photo" />
             <div className="md:col-span-2">
               <FieldLabel label="Description">
                 <textarea value={editing.description || ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={3} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none" />
@@ -235,8 +226,8 @@ function ArtPiecesTab() {
                 {episodes?.map((ep) => <option key={ep.id} value={ep.id}>{ep.title}</option>)}
               </select>
             </FieldLabel>
-            <FieldLabel label="Before Image URL"><Input value={editing.before_image_url || ""} onChange={(e) => setEditing({ ...editing, before_image_url: e.target.value })} /></FieldLabel>
-            <FieldLabel label="After Image URL"><Input value={editing.after_image_url || ""} onChange={(e) => setEditing({ ...editing, after_image_url: e.target.value })} /></FieldLabel>
+            <ImageUpload bucket="art-images" currentUrl={editing.before_image_url} onUploaded={(url) => setEditing({ ...editing, before_image_url: url })} label="Before Image" hint="Upload before transformation photo" />
+            <ImageUpload bucket="art-images" currentUrl={editing.after_image_url} onUploaded={(url) => setEditing({ ...editing, after_image_url: url })} label="After Image" hint="Upload after transformation photo" />
             <FieldLabel label="Drop Date"><Input type="datetime-local" value={editing.drop_date?.slice(0, 16) || ""} onChange={(e) => setEditing({ ...editing, drop_date: e.target.value ? new Date(e.target.value).toISOString() : null })} /></FieldLabel>
             <FieldLabel label="End Date (Raffle/Giveaway)"><Input type="datetime-local" value={editing.giveaway_end_date?.slice(0, 16) || ""} onChange={(e) => setEditing({ ...editing, giveaway_end_date: e.target.value ? new Date(e.target.value).toISOString() : null })} /></FieldLabel>
             <div className="md:col-span-2"><FieldLabel label="Description"><textarea value={editing.description || ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={3} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none" /></FieldLabel></div>
@@ -312,7 +303,7 @@ function VotesTab() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <FieldLabel label="Item Name"><Input value={editing.item_name} onChange={(e) => setEditing({ ...editing, item_name: e.target.value })} /></FieldLabel>
-            <FieldLabel label="Image URL"><Input value={editing.image_url} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} /></FieldLabel>
+            <ImageUpload bucket="art-images" currentUrl={editing.image_url} onUploaded={(url) => setEditing({ ...editing, image_url: url })} label="Item Image" hint="Upload vote item image" />
             <FieldLabel label="Current Votes"><Input type="number" value={editing.votes} onChange={(e) => setEditing({ ...editing, votes: Number(e.target.value) })} /></FieldLabel>
             <div className="flex items-center gap-2">
               <input type="checkbox" checked={editing.is_active} onChange={(e) => setEditing({ ...editing, is_active: e.target.checked })} id="vote-active" />

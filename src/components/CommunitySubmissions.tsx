@@ -1,30 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useApprovedSubmissions, useSubmitFind, uploadFile } from "@/hooks/useSupabaseData";
+import { useApprovedSubmissions, useSubmitFind } from "@/hooks/useSupabaseData";
+import ImageUpload from "@/components/ImageUpload";
 
 const CommunitySubmissions = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
   const submitFind = useSubmitFind();
   const { data: approved } = useApprovedSubmissions();
-  const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUploading(true);
-    let image_url: string | undefined;
-    if (imageFile) {
-      try {
-        const path = `${Date.now()}-${imageFile.name}`;
-        image_url = await uploadFile("submissions", path, imageFile);
-      } catch { /* Continue without image */ }
-    }
-    submitFind.mutate({ name, email, location, notes: notes || null, image_url });
-    setUploading(false);
+    submitFind.mutate({ name, email, location, notes: notes || null, image_url: imageUrl || undefined });
   };
 
   return (
@@ -60,11 +51,13 @@ const CommunitySubmissions = () => {
                   <label className="font-heading text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1.5 block">Where Did You Find It?</label>
                   <Input placeholder="Goodwill — Austin, TX" value={location} onChange={(e) => setLocation(e.target.value)} className="font-body h-12 bg-background" required />
                 </div>
-                <div>
-                  <label className="font-heading text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1.5 block">Photo of the Item</label>
-                  <Input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="font-body h-12 bg-background" />
-                  <p className="text-[10px] text-muted-foreground mt-1 font-body">Upload a photo of the thrift find you spotted.</p>
-                </div>
+                <ImageUpload
+                  bucket="submissions"
+                  currentUrl={imageUrl || null}
+                  onUploaded={setImageUrl}
+                  label="Photo of the Item"
+                  hint="Upload a photo of the thrift find you spotted."
+                />
                 <div>
                   <label className="font-heading text-xs uppercase tracking-[0.2em] text-muted-foreground mb-1.5 block">Notes (Optional)</label>
                   <textarea
@@ -75,8 +68,8 @@ const CommunitySubmissions = () => {
                     className="w-full rounded-md border border-input bg-background px-3 py-3 text-sm font-body resize-none"
                   />
                 </div>
-                <Button type="submit" variant="rust" className="w-full h-12 text-base" disabled={submitFind.isPending || uploading}>
-                  {uploading ? "Uploading..." : submitFind.isPending ? "Submitting..." : "Submit Your Find"}
+                <Button type="submit" variant="rust" className="w-full h-12 text-base" disabled={submitFind.isPending}>
+                  {submitFind.isPending ? "Submitting..." : "Submit Your Find"}
                 </Button>
               </form>
             )}
