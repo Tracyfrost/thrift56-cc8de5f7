@@ -191,7 +191,7 @@ function ArtPiecesTab() {
     if (!editing) return;
     const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
     const materials = typeof editing.materials === "string" ? editing.materials.split(",").map((s: string) => s.trim()).filter(Boolean) : editing.materials;
-    await upsert.mutateAsync({ ...editing, slug, materials });
+    await upsert.mutateAsync({ ...editing, title: editing.title, slug, materials } as any);
     setEditing(null);
     setIsNew(false);
   };
