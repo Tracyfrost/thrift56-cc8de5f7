@@ -10,12 +10,14 @@ type ShortClip = Database["public"]["Tables"]["short_clips"]["Row"];
 type ContentCalendar = Database["public"]["Tables"]["content_calendar"]["Row"];
 type ContentCalendarInsert = Database["public"]["Tables"]["content_calendar"]["Insert"];
 type DropEntry = Database["public"]["Tables"]["drop_entries"]["Insert"];
-type ThriftFind = Database["public"]["Tables"]["thrift_finds"]["Row"];
-type CommunitySuggestion = Database["public"]["Tables"]["community_suggestions"]["Insert"];
-type CommunitySubmission = Database["public"]["Tables"]["community_submissions"]["Row"];
-type CommunitySubmissionInsert = Database["public"]["Tables"]["community_submissions"]["Insert"];
+type Vote = Database["public"]["Tables"]["votes"]["Row"];
+type VoteInsert = Database["public"]["Tables"]["votes"]["Insert"];
+type Subscriber = Database["public"]["Tables"]["subscribers"]["Row"];
+type SubscriberInsert = Database["public"]["Tables"]["subscribers"]["Insert"];
+type Submission = Database["public"]["Tables"]["submissions"]["Row"];
+type SubmissionInsert = Database["public"]["Tables"]["submissions"]["Insert"];
 
-export type { Episode, ArtPiece, ShortClip, ContentCalendar, ThriftFind, CommunitySubmission };
+export type { Episode, ArtPiece, ShortClip, ContentCalendar, Vote, Subscriber, Submission };
 
 // ─── EPISODES ───────────────────────────────────────────
 
@@ -51,7 +53,6 @@ export function useFeaturedEpisode() {
       const { data, error } = await supabase.from("episodes").select("*").eq("is_featured", true).limit(1).maybeSingle();
       if (error) throw error;
       if (data) return data as Episode;
-      // Fallback to most recent
       const { data: latest } = await supabase.from("episodes").select("*").order("published_at", { ascending: false }).limit(1).single();
       return latest as Episode | null;
     },
@@ -92,7 +93,7 @@ export function useArtPieces(status?: string) {
   return useQuery({
     queryKey: ["art-pieces", status],
     queryFn: async () => {
-      let q = supabase.from("art_pieces").select("*, episodes(title, slug)").order("created_at", { ascending: false });
+      let q = supabase.from("art_pieces").select("*, episodes(title, slug, youtube_id)").order("created_at", { ascending: false });
       if (status && status !== "all") q = q.eq("status", status);
       const { data, error } = await q;
       if (error) throw error;
@@ -209,41 +210,104 @@ export function useSubmitEntry() {
   });
 }
 
-// ─── THRIFT FINDS (voting) ──────────────────────────────
+// ─── VOTES (You Decide) ────────────────────────────────
 
-export function useThriftFinds() {
+export function useVotes() {
   return useQuery({
-    queryKey: ["thrift-finds"],
+    queryKey: ["votes"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("thrift_finds").select("*").eq("is_active", true).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("votes").select("*").eq("is_active", true).order("created_at", { ascending: false });
       if (error) throw error;
-      return data as ThriftFind[];
+      return data as Vote[];
     },
   });
 }
 
-export function useVoteThriftFind() {
+export function useAllVotes() {
+  return useQuery({
+    queryKey: ["votes-all"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("votes").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as Vote[];
+    },
+  });
+}
+
+export function useCastVote() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, choice }: { id: string; choice: "transform" | "leave" }) => {
-      const col = choice === "transform" ? "votes_transform" : "votes_leave";
-      // Fetch current value then increment
-      const { data: current } = await supabase.from("thrift_finds").select(col).eq("id", id).single();
-      if (!current) throw new Error("Not found");
-      const newVal = ((current as Record<string, number>)[col] || 0) + 1;
-      const { error } = await supabase.from("thrift_finds").update({ [col]: newVal }).eq("id", id);
+    mutationFn: async ({ id, currentVotes }: { id: string; currentVotes: number }) => {
+      const { error } = await supabase.from("votes").update({ votes: currentVotes + 1 }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["thrift-finds"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["votes"] }),
   });
 }
 
-// ─── COMMUNITY ──────────────────────────────────────────
-
-export function useSubmitSuggestion() {
+export function useUpsertVote() {
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (s: CommunitySuggestion) => {
-      const { error } = await supabase.from("community_suggestions").insert(s);
+    mutationFn: async (vote: VoteInsert & { id?: string }) => {
+      if (vote.id) {
+        const { data, error } = await supabase.from("votes").update(vote).eq("id", vote.id).select().single();
+        if (error) throw error;
+        return data;
+      }
+      const { data, error } = await supabase.from("votes").insert(vote).select().single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["votes"] });
+      qc.invalidateQueries({ queryKey: ["votes-all"] });
+    },
+  });
+}
+
+export function useDeleteVote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("votes").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["votes"] });
+      qc.invalidateQueries({ queryKey: ["votes-all"] });
+    },
+  });
+}
+
+// ─── SUBSCRIBERS ────────────────────────────────────────
+
+export function useSubscribe() {
+  return useMutation({
+    mutationFn: async (sub: SubscriberInsert) => {
+      const { data, error } = await supabase.from("subscribers").insert(sub).select().single();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useSubscribers() {
+  return useQuery({
+    queryKey: ["subscribers"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("subscribers").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as Subscriber[];
+    },
+  });
+}
+
+// ─── SUBMISSIONS ────────────────────────────────────────
+
+export function useSubmitFind() {
+  return useMutation({
+    mutationFn: async (s: SubmissionInsert) => {
+      const { error } = await supabase.from("submissions").insert(s);
       if (error) throw error;
     },
   });
@@ -251,20 +315,48 @@ export function useSubmitSuggestion() {
 
 export function useApprovedSubmissions() {
   return useQuery({
-    queryKey: ["community-submissions-approved"],
+    queryKey: ["submissions-approved"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("community_submissions").select("*").eq("is_approved", true).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("submissions").select("*").eq("is_approved", true).order("created_at", { ascending: false });
       if (error) throw error;
-      return data as CommunitySubmission[];
+      return data as Submission[];
     },
   });
 }
 
-export function useSubmitFind() {
-  return useMutation({
-    mutationFn: async (s: CommunitySubmissionInsert) => {
-      const { error } = await supabase.from("community_submissions").insert(s);
+export function useAllSubmissions() {
+  return useQuery({
+    queryKey: ["submissions-all"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("submissions").select("*").order("created_at", { ascending: false });
       if (error) throw error;
+      return data as Submission[];
+    },
+  });
+}
+
+export function useUpdateSubmission() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, is_approved }: { id: string; is_approved: boolean }) => {
+      const { error } = await supabase.from("submissions").update({ is_approved }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["submissions"] });
+    },
+  });
+}
+
+export function useDeleteSubmission() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("submissions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["submissions"] });
     },
   });
 }
@@ -288,4 +380,13 @@ export function useSearch(query: string) {
     },
     enabled: query.length >= 2,
   });
+}
+
+// ─── STORAGE HELPERS ────────────────────────────────────
+
+export async function uploadFile(bucket: string, path: string, file: File) {
+  const { data, error } = await supabase.storage.from(bucket).upload(path, file, { upsert: true });
+  if (error) throw error;
+  const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(data.path);
+  return urlData.publicUrl;
 }

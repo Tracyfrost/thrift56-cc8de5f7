@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSubmitSuggestion } from "@/hooks/useSupabaseData";
+import { supabase } from "@/integrations/supabase/client";
 
 const CommunityFeedback = () => {
   const [name, setName] = useState("");
   const [suggestion, setSuggestion] = useState("");
-  const submit = useSubmitSuggestion();
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    submit.mutate({ name, suggestion });
+    setLoading(true);
+    await supabase.from("community_suggestions").insert({ name, suggestion });
+    setLoading(false);
+    setSubmitted(true);
   };
 
   return (
@@ -23,7 +27,7 @@ const CommunityFeedback = () => {
             Suggest art styles, thrift challenges, or items to search for. The best ideas make it into future episodes.
           </p>
 
-          {submit.isSuccess ? (
+          {submitted ? (
             <div className="border border-border rounded-sm bg-card p-8">
               <p className="font-distressed text-rust text-sm tracking-widest mb-2">RECEIVED</p>
               <p className="font-heading text-xl font-bold">Thanks for the idea!</p>
@@ -40,8 +44,8 @@ const CommunityFeedback = () => {
                 className="w-full rounded-md border border-input bg-background/80 px-3 py-2 text-sm font-body resize-none"
                 required
               />
-              <Button type="submit" variant="rust" className="w-full h-11" disabled={submit.isPending}>
-                {submit.isPending ? "Submitting..." : "Submit Suggestion"}
+              <Button type="submit" variant="rust" className="w-full h-11" disabled={loading}>
+                {loading ? "Submitting..." : "Submit Suggestion"}
               </Button>
             </form>
           )}

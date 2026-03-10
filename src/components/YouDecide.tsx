@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { voteItems, type VoteItem } from "@/data/communityData";
+import { useVotes, useCastVote } from "@/hooks/useSupabaseData";
 
 const YouDecide = () => {
-  const [items, setItems] = useState<VoteItem[]>(voteItems);
+  const { data: items, isLoading } = useVotes();
+  const castVote = useCastVote();
   const [votedFor, setVotedFor] = useState<string | null>(null);
+
+  if (isLoading || !items || items.length === 0) return null;
 
   const totalVotes = items.reduce((sum, i) => sum + i.votes, 0);
 
-  const handleVote = (id: string) => {
+  const handleVote = (id: string, currentVotes: number) => {
     if (votedFor) return;
     setVotedFor(id);
-    setItems(items.map((i) => (i.id === id ? { ...i, votes: i.votes + 1 } : i)));
+    castVote.mutate({ id, currentVotes });
   };
 
   return (
@@ -32,30 +35,30 @@ const YouDecide = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => handleVote(item.id)}
+                onClick={() => handleVote(item.id, item.votes)}
                 disabled={!!votedFor}
                 className={`text-left border rounded-sm bg-card overflow-hidden transition-all ${
                   isSelected ? "border-rust ring-2 ring-rust/30" : "border-border hover:border-rust/50"
                 } ${votedFor && !isSelected ? "opacity-60" : ""}`}
               >
-                <div className="aspect-square overflow-hidden">
-                  <img src={item.image} alt={item.caption} className="w-full h-full object-cover" loading="lazy" />
-                </div>
+                {item.image_url && (
+                  <div className="aspect-square overflow-hidden">
+                    <img src={item.image_url} alt={item.item_name} className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                )}
                 <div className="p-3">
-                  <p className="font-heading text-sm font-bold leading-tight mb-2">{item.caption}</p>
+                  <p className="font-heading text-sm font-bold leading-tight mb-2">{item.item_name}</p>
                   {votedFor ? (
                     <div>
                       <div className="h-2 bg-muted rounded-full overflow-hidden mb-1">
                         <div className="h-full bg-rust rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
                       </div>
                       <p className="text-[10px] font-heading uppercase tracking-wider text-muted-foreground">
-                        {pct}% · {item.votes} votes
+                        {pct}% · {item.votes + (isSelected ? 1 : 0)} votes
                       </p>
                     </div>
                   ) : (
-                    <p className="text-[10px] font-heading uppercase tracking-widest text-rust">
-                      Tap to Vote
-                    </p>
+                    <p className="text-[10px] font-heading uppercase tracking-widest text-rust">Tap to Vote</p>
                   )}
                 </div>
               </button>
