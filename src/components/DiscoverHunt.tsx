@@ -1,30 +1,29 @@
 import { useState } from "react";
-import { useThriftFinds, useVoteThriftFind } from "@/hooks/useSupabaseData";
-import { thriftFinds as mockFinds } from "@/data/communityData";
+import { supabase } from "@/integrations/supabase/client";
 
 const DiscoverHunt = () => {
-  const { data: dbFinds } = useThriftFinds();
-  const voteMutation = useVoteThriftFind();
   const [voted, setVoted] = useState<Record<string, string>>({});
+  const [finds, setFinds] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
-  // Use DB data if available, otherwise fall back to mock
-  const finds = dbFinds && dbFinds.length > 0 ? dbFinds : mockFinds.map((f) => ({
-    id: f.id,
-    image_url: f.image,
-    caption: f.caption,
-    price: f.price,
-    location: f.location,
-    votes_transform: f.votesTransform,
-    votes_leave: f.votesLeave,
-    is_active: true,
-    created_at: "",
-  }));
+  // Load thrift finds from DB
+  if (!loaded) {
+    setLoaded(true);
+    supabase.from("thrift_finds").select("*").eq("is_active", true).order("created_at", { ascending: false }).then(({ data }) => {
+      if (data && data.length > 0) setFinds(data);
+    });
+  }
 
-  const vote = (id: string, choice: "transform" | "leave") => {
+  if (finds.length === 0) return null;
+
+  const vote = async (id: string, choice: "transform" | "leave") => {
     if (voted[id]) return;
     setVoted({ ...voted, [id]: choice });
-    if (dbFinds && dbFinds.length > 0) {
-      voteMutation.mutate({ id, choice });
+    const col = choice === "transform" ? "votes_transform" : "votes_leave";
+    const find = finds.find((f) => f.id === id);
+    if (find) {
+      const newVal = ((find as Record<string, number>)[col] || 0) + 1;
+      await supabase.from("thrift_finds").update({ [col]: newVal }).eq("id", id);
     }
   };
 
@@ -66,16 +65,10 @@ const DiscoverHunt = () => {
                     </div>
                   ) : (
                     <div className="flex gap-2">
-                      <button
-                        onClick={() => vote(find.id, "transform")}
-                        className="flex-1 text-[10px] font-heading uppercase tracking-wider py-1.5 border border-rust text-rust rounded-sm hover:bg-rust hover:text-primary-foreground transition-colors"
-                      >
+                      <button onClick={() => vote(find.id, "transform")} className="flex-1 text-[10px] font-heading uppercase tracking-wider py-1.5 border border-rust text-rust rounded-sm hover:bg-rust hover:text-primary-foreground transition-colors">
                         Transform It
                       </button>
-                      <button
-                        onClick={() => vote(find.id, "leave")}
-                        className="flex-1 text-[10px] font-heading uppercase tracking-wider py-1.5 border border-border text-muted-foreground rounded-sm hover:bg-muted transition-colors"
-                      >
+                      <button onClick={() => vote(find.id, "leave")} className="flex-1 text-[10px] font-heading uppercase tracking-wider py-1.5 border border-border text-muted-foreground rounded-sm hover:bg-muted transition-colors">
                         Leave It
                       </button>
                     </div>
