@@ -4,7 +4,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import logo from "@/assets/thrift56-logo-clean.png";
 
 const AdminLogin = () => {
   const { signIn } = useAuth();
@@ -30,10 +31,8 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-6">
-        <div className="text-center space-y-2">
-          <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-            <Lock className="text-primary" size={24} />
-          </div>
+        <div className="text-center space-y-3">
+          <img src={logo} alt="Thrift 56" className="h-16 w-auto mx-auto" />
           <h1 className="text-2xl font-heading font-bold">Admin Login</h1>
           <p className="text-sm text-muted-foreground">Sign in to manage Thrift 56</p>
         </div>
