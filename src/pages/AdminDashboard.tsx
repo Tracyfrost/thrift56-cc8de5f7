@@ -18,6 +18,7 @@ import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Ch
 import ImageUpload from "@/components/ImageUpload";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut } from "lucide-react";
+import adminLogo from "@/assets/thrift56-logo-clean.png";
 
 type Tab = "episodes" | "art-pieces" | "calendar" | "votes" | "submissions" | "subscribers";
 
