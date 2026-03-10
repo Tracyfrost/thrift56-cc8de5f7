@@ -1,30 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useApprovedSubmissions, useSubmitFind, uploadFile } from "@/hooks/useSupabaseData";
+import { useApprovedSubmissions, useSubmitFind } from "@/hooks/useSupabaseData";
+import ImageUpload from "@/components/ImageUpload";
 
 const CommunitySubmissions = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [notes, setNotes] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
   const submitFind = useSubmitFind();
   const { data: approved } = useApprovedSubmissions();
-  const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUploading(true);
-    let image_url: string | undefined;
-    if (imageFile) {
-      try {
-        const path = `${Date.now()}-${imageFile.name}`;
-        image_url = await uploadFile("submissions", path, imageFile);
-      } catch { /* Continue without image */ }
-    }
-    submitFind.mutate({ name, email, location, notes: notes || null, image_url });
-    setUploading(false);
+    submitFind.mutate({ name, email, location, notes: notes || null, image_url: imageUrl || undefined });
   };
 
   return (
