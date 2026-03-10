@@ -14,7 +14,351 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      art_pieces: {
+        Row: {
+          after_image_url: string | null
+          auction_end_date: string | null
+          before_image_url: string | null
+          created_at: string
+          description: string | null
+          drop_date: string | null
+          episode_id: string | null
+          giveaway_end_date: string | null
+          id: string
+          is_featured: boolean | null
+          materials: string[] | null
+          price: number | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          after_image_url?: string | null
+          auction_end_date?: string | null
+          before_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          drop_date?: string | null
+          episode_id?: string | null
+          giveaway_end_date?: string | null
+          id?: string
+          is_featured?: boolean | null
+          materials?: string[] | null
+          price?: number | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          after_image_url?: string | null
+          auction_end_date?: string | null
+          before_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          drop_date?: string | null
+          episode_id?: string | null
+          giveaway_end_date?: string | null
+          id?: string
+          is_featured?: boolean | null
+          materials?: string[] | null
+          price?: number | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "art_pieces_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          image_url: string | null
+          is_approved: boolean | null
+          location: string
+          name: string
+          note: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean | null
+          location: string
+          name: string
+          note?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean | null
+          location?: string
+          name?: string
+          note?: string | null
+        }
+        Relationships: []
+      }
+      community_suggestions: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          suggestion: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          suggestion: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          suggestion?: string
+        }
+        Relationships: []
+      }
+      content_calendar: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_type: string
+          id: string
+          is_published: boolean | null
+          linked_art_piece_id: string | null
+          linked_episode_id: string | null
+          scheduled_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_type: string
+          id?: string
+          is_published?: boolean | null
+          linked_art_piece_id?: string | null
+          linked_episode_id?: string | null
+          scheduled_at: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_type?: string
+          id?: string
+          is_published?: boolean | null
+          linked_art_piece_id?: string | null
+          linked_episode_id?: string | null
+          scheduled_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_calendar_linked_art_piece_id_fkey"
+            columns: ["linked_art_piece_id"]
+            isOneToOne: false
+            referencedRelation: "art_pieces"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_calendar_linked_episode_id_fkey"
+            columns: ["linked_episode_id"]
+            isOneToOne: false
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drop_entries: {
+        Row: {
+          art_piece_id: string
+          created_at: string
+          email: string
+          entry_type: string
+          first_name: string
+          id: string
+        }
+        Insert: {
+          art_piece_id: string
+          created_at?: string
+          email: string
+          entry_type: string
+          first_name: string
+          id?: string
+        }
+        Update: {
+          art_piece_id?: string
+          created_at?: string
+          email?: string
+          entry_type?: string
+          first_name?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drop_entries_art_piece_id_fkey"
+            columns: ["art_piece_id"]
+            isOneToOne: false
+            referencedRelation: "art_pieces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      episodes: {
+        Row: {
+          after_image_url: string | null
+          before_image_url: string | null
+          category: string
+          created_at: string
+          description: string | null
+          episode_number: number | null
+          id: string
+          is_featured: boolean | null
+          published_at: string | null
+          purchase_price: string | null
+          slug: string
+          thrift_store_location: string | null
+          thumbnail_url: string | null
+          title: string
+          transformation_summary: string | null
+          updated_at: string
+          views: number | null
+          youtube_id: string | null
+        }
+        Insert: {
+          after_image_url?: string | null
+          before_image_url?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          episode_number?: number | null
+          id?: string
+          is_featured?: boolean | null
+          published_at?: string | null
+          purchase_price?: string | null
+          slug: string
+          thrift_store_location?: string | null
+          thumbnail_url?: string | null
+          title: string
+          transformation_summary?: string | null
+          updated_at?: string
+          views?: number | null
+          youtube_id?: string | null
+        }
+        Update: {
+          after_image_url?: string | null
+          before_image_url?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          episode_number?: number | null
+          id?: string
+          is_featured?: boolean | null
+          published_at?: string | null
+          purchase_price?: string | null
+          slug?: string
+          thrift_store_location?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          transformation_summary?: string | null
+          updated_at?: string
+          views?: number | null
+          youtube_id?: string | null
+        }
+        Relationships: []
+      }
+      short_clips: {
+        Row: {
+          caption: string | null
+          category: string
+          created_at: string
+          episode_id: string | null
+          id: string
+          thumbnail_url: string | null
+          youtube_id: string
+        }
+        Insert: {
+          caption?: string | null
+          category?: string
+          created_at?: string
+          episode_id?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          youtube_id: string
+        }
+        Update: {
+          caption?: string | null
+          category?: string
+          created_at?: string
+          episode_id?: string | null
+          id?: string
+          thumbnail_url?: string | null
+          youtube_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "short_clips_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "episodes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      thrift_finds: {
+        Row: {
+          caption: string
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean | null
+          location: string | null
+          price: string | null
+          votes_leave: number | null
+          votes_transform: number | null
+        }
+        Insert: {
+          caption: string
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          location?: string | null
+          price?: string | null
+          votes_leave?: number | null
+          votes_transform?: number | null
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          location?: string | null
+          price?: string | null
+          votes_leave?: number | null
+          votes_transform?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
