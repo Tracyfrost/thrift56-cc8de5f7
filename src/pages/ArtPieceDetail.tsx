@@ -113,7 +113,7 @@ const ArtPieceDetail = () => {
                   {piece.giveawayEndDate && (
                     <DropCountdown targetDate={piece.giveawayEndDate} label="Giveaway Ends In" />
                   )}
-                  <EntryForm pieceTitle={piece.title} mode="giveaway" />
+                  <EntryForm pieceId={piece.id} pieceTitle={piece.title} mode="giveaway" />
                 </>
               )}
 
