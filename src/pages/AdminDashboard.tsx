@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
@@ -74,17 +75,28 @@ function EpisodesTab() {
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   const startNew = () => {
-    setEditing({ title: "", slug: "", youtube_id: "", description: "", category: "transformation", episode_number: null, thrift_store_location: "", purchase_price: "", before_image_url: "", after_image_url: "", thumbnail_url: "", is_featured: false });
+    setEditing({ title: "", slug: "", youtube_id: "", description: "", category: "transformation", episode_number: null, thrift_store_location: "", purchase_price: "", thumbnail_url: "", is_featured: false });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
-    await upsert.mutateAsync({ ...editing, slug, published_at: editing.published_at || new Date().toISOString() } as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
+      await upsert.mutateAsync({ ...editing, slug, published_at: editing.published_at || new Date().toISOString() } as any);
+      toast.success("Episode saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save episode.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   return (
@@ -111,31 +123,25 @@ function EpisodesTab() {
                 <option value="studio">Studio</option>
               </select>
             </FieldLabel>
-            <FieldLabel label="YouTube ID"><Input value={editing.youtube_id || ""} onChange={(e) => setEditing({ ...editing, youtube_id: e.target.value })} /></FieldLabel>
-            <FieldLabel label="Episode #"><Input type="number" value={editing.episode_number || ""} onChange={(e) => setEditing({ ...editing, episode_number: e.target.value ? Number(e.target.value) : null })} /></FieldLabel>
-            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.thumbnail_url} onUploaded={(url) => setEditing({ ...editing, thumbnail_url: url })} label="Thumbnail" hint="Upload episode thumbnail image" />
-            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.before_image_url} onUploaded={(url) => setEditing({ ...editing, before_image_url: url })} label="Before Image" hint="Before transformation photo" />
-            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.after_image_url} onUploaded={(url) => setEditing({ ...editing, after_image_url: url })} label="After Image" hint="After transformation photo" />
+            <FieldLabel label="YouTube ID"><Input value={editing.youtube_id || ""} onChange={(e) => setEditing({ ...editing, youtube_id: e.target.value })} placeholder="Optional" /></FieldLabel>
+            <FieldLabel label="Episode #"><Input type="number" value={editing.episode_number || ""} onChange={(e) => setEditing({ ...editing, episode_number: e.target.value ? Number(e.target.value) : null })} placeholder="Optional" /></FieldLabel>
+            <ImageUpload bucket="episode-thumbnails" currentUrl={editing.thumbnail_url} onUploaded={(url) => setEditing({ ...editing, thumbnail_url: url })} label="Thumbnail" hint="Optional — upload episode thumbnail" />
             <div className="md:col-span-2">
               <FieldLabel label="Description">
                 <textarea value={editing.description || ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={3} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none" />
               </FieldLabel>
             </div>
-            <FieldLabel label="Thrift Store Location"><Input value={editing.thrift_store_location || ""} onChange={(e) => setEditing({ ...editing, thrift_store_location: e.target.value })} /></FieldLabel>
-            <FieldLabel label="Purchase Price"><Input value={editing.purchase_price || ""} onChange={(e) => setEditing({ ...editing, purchase_price: e.target.value })} /></FieldLabel>
-            <div className="md:col-span-2">
-              <FieldLabel label="Transformation Summary">
-                <textarea value={editing.transformation_summary || ""} onChange={(e) => setEditing({ ...editing, transformation_summary: e.target.value })} rows={2} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none" />
-              </FieldLabel>
-            </div>
+            <FieldLabel label="Thrift Store Location"><Input value={editing.thrift_store_location || ""} onChange={(e) => setEditing({ ...editing, thrift_store_location: e.target.value })} placeholder="Optional" /></FieldLabel>
+            <FieldLabel label="Purchase Price"><Input value={editing.purchase_price || ""} onChange={(e) => setEditing({ ...editing, purchase_price: e.target.value })} placeholder="Optional — e.g. $5" /></FieldLabel>
             <div className="md:col-span-2 flex items-center gap-2">
               <input type="checkbox" checked={editing.is_featured || false} onChange={(e) => setEditing({ ...editing, is_featured: e.target.checked })} id="ep-featured" />
               <label htmlFor="ep-featured" className="font-heading text-xs uppercase tracking-widest text-muted-foreground">Featured Episode</label>
             </div>
           </div>
+          {error && <p className="text-destructive text-sm mt-3 font-body">{error}</p>}
           <div className="flex gap-3 mt-4">
             <Button variant="rust" onClick={save} disabled={upsert.isPending}>{upsert.isPending ? "Saving..." : "Save"}</Button>
-            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); setError(null); }}>Cancel</Button>
           </div>
         </div>
       )}
@@ -149,10 +155,10 @@ function EpisodesTab() {
               {ep.thumbnail_url && <img src={ep.thumbnail_url} alt="" className="w-14 h-14 object-cover rounded-sm border border-border flex-shrink-0" />}
               <div className="flex-1 min-w-0">
                 <p className="font-heading font-bold text-sm truncate">{ep.title}</p>
-                <p className="text-[10px] font-heading uppercase tracking-wider text-muted-foreground">{ep.category} · Ep {ep.episode_number}</p>
+                <p className="text-[10px] font-heading uppercase tracking-wider text-muted-foreground">{ep.category}{ep.episode_number ? ` · Ep ${ep.episode_number}` : ''}</p>
               </div>
               <div className="flex gap-1 flex-shrink-0">
-                <button onClick={() => { setEditing({ ...ep }); setIsNew(false); }} className="p-2 text-muted-foreground hover:text-foreground"><Pencil size={14} /></button>
+                <button onClick={() => { setEditing({ ...ep }); setIsNew(false); setError(null); }} className="p-2 text-muted-foreground hover:text-foreground"><Pencil size={14} /></button>
                 <button onClick={() => remove.mutate(ep.id)} className="p-2 text-muted-foreground hover:text-destructive"><Trash2 size={14} /></button>
               </div>
             </div>
@@ -172,19 +178,29 @@ function ArtPiecesTab() {
   const remove = useDeleteArtPiece();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing({ title: "", slug: "", description: "", status: "available", before_image_url: "", after_image_url: "", price: null, episode_id: null, materials: [], is_featured: false });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
-    const materials = typeof editing.materials === "string" ? editing.materials.split(",").map((s: string) => s.trim()).filter(Boolean) : editing.materials;
-    await upsert.mutateAsync({ ...editing, slug, materials } as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "");
+      const materials = typeof editing.materials === "string" ? editing.materials.split(",").map((s: string) => s.trim()).filter(Boolean) : editing.materials;
+      await upsert.mutateAsync({ ...editing, slug, materials } as any);
+      toast.success("Art piece saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save art piece.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   const statusBadge: Record<string, string> = {
@@ -237,9 +253,10 @@ function ArtPiecesTab() {
               <label htmlFor="ap-featured" className="font-heading text-xs uppercase tracking-widest text-muted-foreground">Featured Piece</label>
             </div>
           </div>
+          {error && <p className="text-destructive text-sm mt-3 font-body">{error}</p>}
           <div className="flex gap-3 mt-4">
             <Button variant="rust" onClick={save} disabled={upsert.isPending}>{upsert.isPending ? "Saving..." : "Save"}</Button>
-            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); setError(null); }}>Cancel</Button>
           </div>
         </div>
       )}
@@ -275,17 +292,27 @@ function VotesTab() {
   const remove = useDeleteVote();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing({ item_name: "", image_url: "", votes: 0, is_active: true });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    await upsert.mutateAsync(editing as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      await upsert.mutateAsync(editing as any);
+      toast.success("Vote item saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save vote item.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   return (
@@ -310,9 +337,10 @@ function VotesTab() {
               <label htmlFor="vote-active" className="font-heading text-xs uppercase tracking-widest text-muted-foreground">Active</label>
             </div>
           </div>
+          {error && <p className="text-destructive text-sm mt-3 font-body">{error}</p>}
           <div className="flex gap-3 mt-4">
             <Button variant="rust" onClick={save} disabled={upsert.isPending}>{upsert.isPending ? "Saving..." : "Save"}</Button>
-            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); setError(null); }}>Cancel</Button>
           </div>
         </div>
       )}
@@ -417,17 +445,27 @@ function CalendarTab() {
   const upsert = useUpsertCalendarEvent();
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const startNew = () => {
     setEditing({ title: "", event_type: "episode", scheduled_at: "", description: "", linked_episode_id: null, linked_art_piece_id: null, is_published: false });
     setIsNew(true);
+    setError(null);
   };
 
   const save = async () => {
     if (!editing) return;
-    await upsert.mutateAsync({ ...editing, scheduled_at: new Date(editing.scheduled_at).toISOString() } as any);
-    setEditing(null);
-    setIsNew(false);
+    setError(null);
+    try {
+      await upsert.mutateAsync({ ...editing, scheduled_at: new Date(editing.scheduled_at).toISOString() } as any);
+      toast.success("Calendar event saved!");
+      setEditing(null);
+      setIsNew(false);
+    } catch (err: any) {
+      const msg = err?.message || "Failed to save calendar event.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
   const typeColors: Record<string, string> = {
@@ -471,9 +509,10 @@ function CalendarTab() {
             </FieldLabel>
             <div className="md:col-span-2"><FieldLabel label="Description"><textarea value={editing.description || ""} onChange={(e) => setEditing({ ...editing, description: e.target.value })} rows={2} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none" /></FieldLabel></div>
           </div>
+          {error && <p className="text-destructive text-sm mt-3 font-body">{error}</p>}
           <div className="flex gap-3 mt-4">
             <Button variant="rust" onClick={save} disabled={upsert.isPending}>{upsert.isPending ? "Saving..." : "Save"}</Button>
-            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); }}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setEditing(null); setIsNew(false); setError(null); }}>Cancel</Button>
           </div>
         </div>
       )}
