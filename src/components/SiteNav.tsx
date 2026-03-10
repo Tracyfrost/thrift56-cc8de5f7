@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -34,6 +34,9 @@ const SiteNav = () => {
               {link.label}
             </Link>
           ))}
+          <Link to="/search" className="text-muted-foreground hover:text-rust transition-colors" aria-label="Search">
+            <Search size={18} />
+          </Link>
           <a
             href="https://www.youtube.com/@thrift56"
             target="_blank"

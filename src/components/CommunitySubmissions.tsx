@@ -1,21 +1,26 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { communitySubmissions } from "@/data/communityData";
+import { useApprovedSubmissions, useSubmitFind } from "@/hooks/useSupabaseData";
+import { communitySubmissions as mockSubmissions } from "@/data/communityData";
 
 const CommunitySubmissions = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [note, setNote] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const submitFind = useSubmitFind();
+  const { data: dbApproved } = useApprovedSubmissions();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    submitFind.mutate({ name, email, location, note: note || null });
   };
 
-  const approved = communitySubmissions.filter((s) => s.approved);
+  // Use DB data if available, otherwise fall back to mock
+  const approved = dbApproved && dbApproved.length > 0 ? dbApproved : mockSubmissions.filter((s) => s.approved).map((s) => ({
+    id: s.id, name: s.name, image_url: s.image, location: s.location, note: s.note || null, email: "", is_approved: true, created_at: "",
+  }));
 
   return (
     <section className="py-16 md:py-20">
@@ -31,7 +36,7 @@ const CommunitySubmissions = () => {
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Form */}
           <div className="border border-border rounded-sm bg-card p-6">
-            {submitted ? (
+            {submitFind.isSuccess ? (
               <div className="text-center py-8">
                 <p className="font-distressed text-rust text-sm tracking-widest mb-2">SUBMITTED</p>
                 <p className="font-heading text-2xl font-bold mb-2">Thanks for the Find!</p>
@@ -44,10 +49,6 @@ const CommunitySubmissions = () => {
                 <Input placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} className="font-body h-11 bg-background/80" required />
                 <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="font-body h-11 bg-background/80" required />
                 <Input placeholder="Where did you find it?" value={location} onChange={(e) => setLocation(e.target.value)} className="font-body h-11 bg-background/80" required />
-                <div>
-                  <label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Photo</label>
-                  <input type="file" accept="image/*" className="w-full text-sm font-body file:mr-3 file:py-1.5 file:px-3 file:border file:border-border file:rounded-sm file:bg-card file:text-foreground file:font-heading file:text-xs file:uppercase file:tracking-wider" />
-                </div>
                 <textarea
                   placeholder="Anything else we should know? (optional)"
                   value={note}
@@ -55,7 +56,9 @@ const CommunitySubmissions = () => {
                   rows={3}
                   className="w-full rounded-md border border-input bg-background/80 px-3 py-2 text-sm font-body resize-none"
                 />
-                <Button type="submit" variant="rust" className="w-full h-11">Submit Your Find</Button>
+                <Button type="submit" variant="rust" className="w-full h-11" disabled={submitFind.isPending}>
+                  {submitFind.isPending ? "Submitting..." : "Submit Your Find"}
+                </Button>
               </form>
             )}
           </div>
@@ -66,9 +69,11 @@ const CommunitySubmissions = () => {
             <div className="grid grid-cols-2 gap-3">
               {approved.map((s) => (
                 <div key={s.id} className="border border-border rounded-sm overflow-hidden bg-card">
-                  <div className="aspect-square overflow-hidden">
-                    <img src={s.image} alt={`Find by ${s.name}`} className="w-full h-full object-cover" loading="lazy" />
-                  </div>
+                  {s.image_url && (
+                    <div className="aspect-square overflow-hidden">
+                      <img src={s.image_url} alt={`Find by ${s.name}`} className="w-full h-full object-cover" loading="lazy" />
+                    </div>
+                  )}
                   <div className="p-2">
                     <p className="font-heading text-xs font-bold">{s.name}</p>
                     <p className="text-[10px] text-muted-foreground font-body">{s.location}</p>

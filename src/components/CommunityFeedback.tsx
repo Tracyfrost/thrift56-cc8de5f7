@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSubmitSuggestion } from "@/hooks/useSupabaseData";
 
 const CommunityFeedback = () => {
   const [name, setName] = useState("");
   const [suggestion, setSuggestion] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const submit = useSubmitSuggestion();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    submit.mutate({ name, suggestion });
   };
 
   return (
@@ -22,7 +23,7 @@ const CommunityFeedback = () => {
             Suggest art styles, thrift challenges, or items to search for. The best ideas make it into future episodes.
           </p>
 
-          {submitted ? (
+          {submit.isSuccess ? (
             <div className="border border-border rounded-sm bg-card p-8">
               <p className="font-distressed text-rust text-sm tracking-widest mb-2">RECEIVED</p>
               <p className="font-heading text-xl font-bold">Thanks for the idea!</p>
@@ -39,7 +40,9 @@ const CommunityFeedback = () => {
                 className="w-full rounded-md border border-input bg-background/80 px-3 py-2 text-sm font-body resize-none"
                 required
               />
-              <Button type="submit" variant="rust" className="w-full h-11">Submit Suggestion</Button>
+              <Button type="submit" variant="rust" className="w-full h-11" disabled={submit.isPending}>
+                {submit.isPending ? "Submitting..." : "Submit Suggestion"}
+              </Button>
             </form>
           )}
         </div>

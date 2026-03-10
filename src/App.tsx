@@ -10,6 +10,8 @@ import Livestream from "./pages/Livestream.tsx";
 import ArtDrops from "./pages/ArtDrops.tsx";
 import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
 import AdminDrops from "./pages/AdminDrops.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
+import SearchPage from "./pages/SearchPage.tsx";
 import Community from "./pages/Community.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ReturnVisitBanner from "./components/ReturnVisitBanner.tsx";
@@ -31,6 +33,8 @@ const App = () => (
           <Route path="/drops/:slug" element={<ArtPieceDetail />} />
           <Route path="/admin/drops" element={<AdminDrops />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

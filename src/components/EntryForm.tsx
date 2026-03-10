@@ -1,24 +1,30 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSubmitEntry } from "@/hooks/useSupabaseData";
 
 interface EntryFormProps {
+  pieceId: string;
   pieceTitle: string;
   mode: "raffle" | "giveaway";
 }
 
-const EntryForm = ({ pieceTitle, mode }: EntryFormProps) => {
+const EntryForm = ({ pieceId, pieceTitle, mode }: EntryFormProps) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const submitEntry = useSubmitEntry();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: integrate with backend
-    setSubmitted(true);
+    submitEntry.mutate({
+      art_piece_id: pieceId,
+      first_name: firstName,
+      email,
+      entry_type: mode,
+    });
   };
 
-  if (submitted) {
+  if (submitEntry.isSuccess) {
     return (
       <div className="text-center py-8 px-4 border border-border rounded-sm bg-card">
         <p className="font-distressed text-rust text-sm tracking-widest mb-2">YOU'RE IN</p>
@@ -36,6 +42,11 @@ const EntryForm = ({ pieceTitle, mode }: EntryFormProps) => {
         {mode === "raffle" ? "ENTER THE RAFFLE" : "ENTER THE GIVEAWAY"}
       </p>
       <p className="font-heading text-xl font-bold mb-4">{pieceTitle}</p>
+      {submitEntry.isError && (
+        <p className="text-destructive text-sm font-body mb-3">
+          {(submitEntry.error as any)?.message?.includes("duplicate") ? "You've already entered!" : "Something went wrong. Try again."}
+        </p>
+      )}
       <form onSubmit={handleSubmit} className="space-y-3">
         <Input
           type="text"
@@ -53,8 +64,8 @@ const EntryForm = ({ pieceTitle, mode }: EntryFormProps) => {
           className="bg-background/80 border-border font-body h-11"
           required
         />
-        <Button type="submit" variant="rust" className="w-full h-11">
-          {mode === "raffle" ? "Join Raffle" : "Enter Giveaway"}
+        <Button type="submit" variant="rust" className="w-full h-11" disabled={submitEntry.isPending}>
+          {submitEntry.isPending ? "Submitting..." : mode === "raffle" ? "Join Raffle" : "Enter Giveaway"}
         </Button>
       </form>
     </div>
