@@ -10,6 +10,8 @@ import Livestream from "./pages/Livestream.tsx";
 import ArtDrops from "./pages/ArtDrops.tsx";
 import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
 import AdminDrops from "./pages/AdminDrops.tsx";
+import AdminDashboard from "./pages/AdminDashboard.tsx";
+import SearchPage from "./pages/SearchPage.tsx";
 import Community from "./pages/Community.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ReturnVisitBanner from "./components/ReturnVisitBanner.tsx";
