@@ -1,11 +1,19 @@
 import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/thrift56-logo-clean.png";
+import ShieldWatermark from "@/components/ShieldWatermark";
 
 const FinalCtaSection = () => {
   return (
-    <section className="py-24 md:py-32 bg-primary texture-paper">
-      <div className="container text-center">
+    <section className="relative py-24 md:py-32 bg-primary texture-paper overflow-hidden">
+      {/* Shield watermark */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-primary-foreground">
+        <ShieldWatermark size={500} opacity={0.03} />
+      </div>
+
+      <div className="container relative z-10 text-center">
+        <img src={logo} alt="Thrift 56" className="h-16 md:h-20 w-auto mx-auto mb-8 brightness-[1.8] contrast-[0.85]" />
         <p className="font-distressed text-rust text-sm tracking-[0.3em] mb-4">DON'T MISS OUT</p>
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground mb-5">
           Don't Miss the Next Drop

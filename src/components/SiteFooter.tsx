@@ -1,14 +1,20 @@
 import { Link } from "react-router-dom";
 import logo from "@/assets/thrift56-logo-clean.png";
+import ShieldWatermark from "@/components/ShieldWatermark";
 
 const SiteFooter = () => {
   return (
-    <footer className="py-12 md:py-16 bg-primary border-t border-border">
-      <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+    <footer className="relative py-14 md:py-20 bg-primary border-t border-border overflow-hidden">
+      {/* Shield watermark background */}
+      <div className="absolute right-6 top-1/2 -translate-y-1/2 text-primary-foreground">
+        <ShieldWatermark size={320} opacity={0.04} />
+      </div>
+
+      <div className="container relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
           <div>
-            <Link to="/" className="inline-block mb-4 hover:opacity-80 transition-opacity">
-              <img src={logo} alt="Thrift 56" className="h-14 w-auto brightness-[1.8] contrast-[0.85]" />
+            <Link to="/" className="inline-block mb-5 hover:opacity-80 transition-opacity">
+              <img src={logo} alt="Thrift 56" className="h-20 w-auto brightness-[1.8] contrast-[0.85]" />
             </Link>
             <p className="text-sm text-primary-foreground/50 font-body leading-relaxed">
               Found objects, transformed art.<br />Every piece tells a story.
@@ -32,10 +38,11 @@ const SiteFooter = () => {
             </div>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/10 pt-6 text-center">
+        <div className="border-t border-primary-foreground/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-primary-foreground/30 font-body">
             © {new Date().getFullYear()} Thrift 56. All rights reserved.
           </p>
+          <img src={logo} alt="" className="h-6 w-auto brightness-[1.8] contrast-[0.85] opacity-30" aria-hidden="true" />
         </div>
       </div>
     </footer>

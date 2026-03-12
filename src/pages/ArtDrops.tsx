@@ -3,6 +3,9 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import ArtPieceCard from "@/components/ArtPieceCard";
 import DropCountdown from "@/components/DropCountdown";
+import ShieldWatermark from "@/components/ShieldWatermark";
+import ShieldDivider from "@/components/ShieldDivider";
+import logo from "@/assets/thrift56-logo-clean.png";
 import { useArtPieces } from "@/hooks/useSupabaseData";
 
 const filters = [
@@ -26,8 +29,13 @@ const ArtDrops = () => {
     <div className="min-h-screen">
       <SiteNav />
 
-      <section className="py-16 md:py-20 texture-paper text-center">
-        <div className="container">
+      <section className="relative py-16 md:py-20 texture-paper text-center overflow-hidden">
+        {/* Shield watermark */}
+        <div className="absolute right-[-2%] top-[15%] text-foreground hidden md:block">
+          <ShieldWatermark size={350} opacity={0.03} />
+        </div>
+        <div className="container relative z-10">
+          <img src={logo} alt="" className="h-14 w-auto mx-auto mb-5 opacity-20" aria-hidden="true" />
           <p className="font-distressed text-rust text-sm tracking-widest mb-2">THE COLLECTION</p>
           <h1 className="text-4xl md:text-6xl font-heading font-bold mb-4">Art Drops</h1>
           <p className="text-muted-foreground max-w-lg mx-auto font-body leading-relaxed">
@@ -42,6 +50,7 @@ const ArtDrops = () => {
       </section>
 
       <div className="container py-6">
+        <ShieldDivider className="mb-6" />
         <div className="flex flex-wrap gap-2 justify-center">
           {filters.map((f) => (
             <button
@@ -73,8 +82,11 @@ const ArtDrops = () => {
         )}
       </section>
 
-      <section className="py-16 bg-primary text-primary-foreground text-center">
-        <div className="container">
+      <section className="relative py-16 bg-primary text-primary-foreground text-center overflow-hidden">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-primary-foreground">
+          <ShieldWatermark size={300} opacity={0.04} />
+        </div>
+        <div className="container relative z-10">
           <p className="font-distressed text-sm tracking-widest mb-2 opacity-70">NEVER MISS A DROP</p>
           <h2 className="text-3xl md:text-4xl font-heading font-bold mb-2">Get First Access</h2>
           <p className="opacity-70 mb-6 font-body text-sm">New drops, giveaways, and raffles — straight to your inbox.</p>

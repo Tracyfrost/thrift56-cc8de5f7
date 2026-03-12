@@ -4,6 +4,8 @@ import EpisodeCard, { categoryLabels } from "@/components/EpisodeCard";
 import SubscribePrompt from "@/components/SubscribePrompt";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import ShieldDivider from "@/components/ShieldDivider";
+import logo from "@/assets/thrift56-logo-clean.png";
 
 const categories = ["all", "thrift-hunt", "transformation", "giveaway", "livestream", "studio"];
 
@@ -18,12 +20,15 @@ const EpisodesPage = () => {
       <section className="py-12 md:py-16 texture-paper">
         <div className="container">
           <div className="text-center mb-10">
+            <img src={logo} alt="" className="h-12 w-auto mx-auto mb-4 opacity-20" aria-hidden="true" />
             <p className="font-distressed text-rust text-sm tracking-widest mb-2">ALL EPISODES</p>
             <h1 className="text-4xl md:text-5xl font-heading font-bold">Episode Hub</h1>
             <p className="text-muted-foreground mt-2 max-w-lg mx-auto">
               Every thrift hunt, transformation, giveaway, and livestream — all in one place.
             </p>
           </div>
+
+          <ShieldDivider className="mb-8" />
 
           <div className="flex flex-wrap gap-2 justify-center mb-8">
             {categories.map((cat) => (
