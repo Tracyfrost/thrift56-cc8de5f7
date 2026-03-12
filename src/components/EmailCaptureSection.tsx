@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSubscribe } from "@/hooks/useSupabaseData";
 import { toast } from "@/hooks/use-toast";
+import ShieldWatermark from "@/components/ShieldWatermark";
 
 const EmailCaptureSection = () => {
   const [name, setName] = useState("");
@@ -27,8 +28,13 @@ const EmailCaptureSection = () => {
   };
 
   return (
-    <section id="email-capture" className="py-24 md:py-32 bg-bone">
-      <div className="container">
+    <section id="email-capture" className="relative py-24 md:py-32 bg-bone overflow-hidden">
+      {/* Shield watermark */}
+      <div className="absolute left-8 top-1/2 -translate-y-1/2 text-foreground hidden md:block">
+        <ShieldWatermark size={280} opacity={0.035} />
+      </div>
+
+      <div className="container relative z-10">
         <div className="max-w-lg mx-auto text-center">
           <p className="font-distressed text-rust text-sm tracking-[0.3em] mb-3">STAY IN THE LOOP</p>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-5">

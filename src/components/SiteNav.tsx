@@ -16,9 +16,9 @@ const SiteNav = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="container flex items-center justify-between h-16">
+      <div className="container flex items-center justify-between h-18">
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <img src={logo} alt="Thrift 56" className="h-10 w-auto" />
+          <img src={logo} alt="Thrift 56" className="h-14 md:h-16 w-auto" />
         </Link>
 
         {/* Desktop */}

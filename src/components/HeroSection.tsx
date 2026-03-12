@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-tracie.jpg";
 import logo from "@/assets/thrift56-logo-clean.png";
+import ShieldWatermark from "@/components/ShieldWatermark";
 
 const HeroSection = () => {
   return (
@@ -16,12 +17,17 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-background/98 via-background/85 to-background/30 md:from-background/95 md:via-background/75 md:to-transparent" />
       </div>
 
+      {/* Shield watermark — large faint motif behind content */}
+      <div className="absolute right-[-5%] top-[10%] hidden md:block text-foreground">
+        <ShieldWatermark size={600} opacity={0.03} />
+      </div>
+
       <div className="container relative z-10 py-16 md:py-24">
         <div className="max-w-2xl">
           <img
             src={logo}
             alt="Thrift 56"
-            className="h-16 md:h-20 w-auto mb-6"
+            className="h-24 md:h-32 w-auto mb-8 drop-shadow-lg"
           />
           <h1 className="text-[3.2rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] font-heading font-bold leading-[0.88] mb-7 tracking-tight">
             Found.<br />

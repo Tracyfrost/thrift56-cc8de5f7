@@ -15,6 +15,7 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import DiscoverHunt from "@/components/DiscoverHunt";
 import YouDecide from "@/components/YouDecide";
+import ShieldDivider from "@/components/ShieldDivider";
 
 const Index = () => {
   return (
@@ -28,8 +29,10 @@ const Index = () => {
       <div className="container py-8">
         <SubscribePrompt />
       </div>
+      <ShieldDivider className="container" />
       <FeaturedDropSection />
       <TransformationShowcase />
+      <ShieldDivider className="container" />
       <HowItWorksSection />
       <ShortFormSection />
       <DiscoverHunt />
