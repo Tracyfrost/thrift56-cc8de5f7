@@ -12,6 +12,7 @@ import EpisodeDetail from "./pages/EpisodeDetail.tsx";
 import Livestream from "./pages/Livestream.tsx";
 import ArtDrops from "./pages/ArtDrops.tsx";
 import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
+import ProductDetail from "./pages/ProductDetail.tsx";
 import AdminDrops from "./pages/AdminDrops.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
