@@ -12,6 +12,7 @@ import EpisodeDetail from "./pages/EpisodeDetail.tsx";
 import Livestream from "./pages/Livestream.tsx";
 import ArtDrops from "./pages/ArtDrops.tsx";
 import ArtPieceDetail from "./pages/ArtPieceDetail.tsx";
+import ProductDetail from "./pages/ProductDetail.tsx";
 import AdminDrops from "./pages/AdminDrops.tsx";
 import AdminDashboard from "./pages/AdminDashboard.tsx";
 import AdminLogin from "./pages/AdminLogin.tsx";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/livestream" element={<Livestream />} />
             <Route path="/drops" element={<ArtDrops />} />
             <Route path="/drops/:slug" element={<ArtPieceDetail />} />
+            <Route path="/product/:slug" element={<ProductDetail />} />
             <Route path="/community" element={<Community />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
