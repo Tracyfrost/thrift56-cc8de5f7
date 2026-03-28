@@ -1,100 +1,55 @@
 
 
-# THRIFT 56 — Brutalist Homepage (Alternate Page)
+# Episode Hub — Brutalist Redesign
 
 ## Overview
-Build a new standalone homepage at `/v2` using brutalist industrial design language. The current homepage at `/` remains untouched. A new route and page component will be created alongside a set of dedicated section components.
+Rewrite `/episodes` as a brutalist content-to-commerce funnel with hardcoded mock data. Creates 6 new section components in `src/components/episodes/`, rewrites `src/pages/Episodes.tsx` to compose them.
 
----
+## Components (`src/components/episodes/`)
 
-## Route Setup
-- Add `/v2` route in `App.tsx` pointing to a new `src/pages/IndexV2.tsx`
+### 1. `EpisodeHero.tsx`
+- `texture-paper` background, title "EVERY PIECE HAS A STORY" (`text-5xl md:text-7xl font-sans font-black tracking-tighter`), serif italic subtitle
+- CSS triangle arrow pointing down (`border` trick + `animate-bounce`)
+- Full-width YouTube iframe in `aspect-video` with `border-4 border-stone-950`
+- Below: bold title + 3-column stats row (`divide-x divide-stone-300`): Original Price / Time / Result
+- Two CTAs: solid black "WATCH FULL EPISODE ON YOUTUBE" + outline "VIEW THIS PIECE"
 
----
+### 2. `EpisodeCategoryFilter.tsx`
+- Horizontal flex of blocky `border-2 border-stone-950 rounded-none` buttons
+- Categories: All, Thrift Hunts, Transformations, Drops, Studio
+- Active: `bg-orange-800 text-stone-50 border-orange-800`; inactive: `bg-transparent text-stone-950`
+- Accepts `filter`/`onFilterChange` props
 
-## Component Architecture
+### 3. `EpisodeGrid.tsx`
+- `grid-cols-1 md:grid-cols-3 gap-6`, 6 hardcoded cards using existing thumb assets
+- Each card: `group` class, thumbnail with `group-hover:scale-105`, overlay hook text ("$3 → THIS?"), "Watch Now" fades in on hover (`opacity-0 group-hover:opacity-100`)
+- Below image: aggressive title, muted serif micro-details (views, EP#, category tag)
+- Status badge: rust "AVAILABLE" or gray strikethrough "SOLD"
+- Accepts `filter` prop to show/hide by category
 
-All new components live in `src/components/v2/`:
+### 4. `EpisodeBingeReel.tsx`
+- Title "WATCH WHAT HAPPENS NEXT"
+- `overflow-x-auto snap-x snap-mandatory` horizontal scroll, ~8 compact cards (`snap-start`)
+- Progress bar at bottom: `h-1 bg-stone-800` track with rust indicator, synced via `useRef` + `onScroll`
 
-### 1. `HeroBrutalist.tsx`
-- Responsive grid: mobile stacks image-first, desktop (`lg:grid-cols-2`) text-left / image-right
-- **Left column**: Eyebrow "THRIFT 56" in rust + wide tracking; headline "FOUND. TRANSFORMED. RELEASED." in massive black sans; secondary italic serif line; body copy; two CTAs (solid black + outline); micro-tension italic line below
-- **Right column**: `hero-tracie.jpg` with absolute positioning + negative margin overhang; CSS filter chain (`contrast-125 saturate-50 sepia-[.25]`); `::after` pseudo-element with inline SVG `feTurbulence` noise at 10% opacity + `mix-blend-overlay`; warm drop shadow
-- **Stamp animation**: On mount, the "THRIFT 56" eyebrow scales from 150% → 100% with opacity 0 → 1 via a CSS `@keyframes stamp` animation
+### 5. `EpisodeStorySteps.tsx`
+- Title "FROM THRIFT TO ART"
+- 4 horizontal steps (Find, Transform, Reveal, Drop) connected by `h-1 bg-stone-950` line
+- Each step: Lucide icon in a `w-12 h-12 border-2 border-stone-950` circle + label below
 
-### 2. `MarqueeBrutalist.tsx`
-- Full-width `bg-stone-950 text-stone-50` bar
-- Infinite horizontal scroll via CSS `@keyframes marquee` (60s linear infinite)
-- Content strings: "$3 → $185" · "1 of 1 pieces" · "New drops weekly" · "Seen on YouTube" — duplicated for seamless loop
-- Dot separator between items
+### 6. `EpisodeCtaBreak.tsx`
+- `bg-stone-950 py-24` full-width block
+- "DON'T MISS THE NEXT TRANSFORMATION" in bone white
+- `bg-stone-50 text-stone-950 rounded-none` subscribe button
+- `fixed bottom-6 right-6 z-50 bg-orange-800 text-white` floating badge: "Next drop in 3 days"
 
-### 3. `BeforeAfterSlider.tsx`
-- Title: "FROM FORGOTTEN TO FEATURED"
-- Custom React component (no shadcn carousel)
-- `aspect-[4/3]` wrapper; "Before" image as base; "After" image absolute on top
-- `useState` tracks drag position; `clip-path: polygon()` on After image reveals Before
-- Mouse + touch event handlers for drag
-- Vertical drag line + circular thumb indicator
-- "VIEW THIS PIECE" outline button below
-- Uses `before-piece.jpg` and `after-piece.jpg`
-
-### 4. `LatestTransformationBrutalist.tsx`
-- Title: "LATEST TRANSFORMATION" (left-aligned)
-- Placeholder YouTube iframe in `aspect-video` with `border-4 border-stone-950`
-- Flex row below: left = "Original price: $3 thrift vase" (muted, line-through); right = "Transformed: $200 art piece" (bold, rust)
-- "WATCH FULL EPISODE" solid button
-
-### 5. `AvailableNowGrid.tsx`
-- Title: "AVAILABLE NOW"
-- 3-column CSS grid with hardcoded mock product data
-- Each card: relative container with Before image base + After image absolute overlay
-- Tailwind `group` / `group-hover:opacity-100` for hover reveal transition
-- Badges: "1 of 1" (top-right, black bg); "AVAILABLE" (top-left, rust bg) on cards 1-2; "SOLD" (top-left, gray bg, line-through) on card 3
-- "VIEW ALL DROPS" outline button
-
-### 6. `EmailCaptureBrutalist.tsx`
-- `bg-stone-950` full-width, massive padding
-- Headline "DON'T MISS THE NEXT RESURRECTION" (bone white, oversized sans)
-- Subtext in muted gray
-- Horizontal flex form: transparent input with `border-b-2 border-stone-500`, no focus ring; bone white submit button "GET DROP ALERTS"
-- "Next drop in 3 days" in rust italic below form
-- Wires into existing `useSubscribe` hook for real functionality
-
----
-
-## Page Composition — `IndexV2.tsx`
-```text
-SiteNav
-HeroBrutalist
-MarqueeBrutalist
-BeforeAfterSlider
-LatestTransformationBrutalist
-AvailableNowGrid
-EmailCaptureBrutalist
-SiteFooter
+## Page Composition — `Episodes.tsx` (rewritten)
+```
+SiteNav → EpisodeHero → EpisodeCategoryFilter + EpisodeGrid (shared filter state) → EpisodeBingeReel → EpisodeStorySteps → EpisodeCtaBreak → SiteFooter
 ```
 
----
-
-## CSS / Tailwind Changes
-
-Add to `src/index.css`:
-- `@keyframes stamp` — scale(1.5) + opacity 0 → scale(1) + opacity 1, 0.4s cubic-bezier
-- `@keyframes marquee` — translateX(0) → translateX(-50%), 60s linear infinite
-- `@keyframes grain-drift` — background-position shift over 60s for texture overlays
-
-Add corresponding `animate-*` utilities in `tailwind.config.ts`.
-
----
-
-## Design Tokens Applied
-- Backgrounds: `bg-[#F9F6F0]` (bone) content areas, `bg-stone-950` interruption sections
-- Typography: `font-sans font-black tracking-tighter` headlines, `font-serif italic text-stone-600` accents
-- Accent: `text-orange-800`, `bg-orange-800` for rust; `rounded-none` / `rounded-sm` everywhere
-- No bright colors, no pastels, no rounded playful elements
-
-## What Does NOT Change
-- Current `/` homepage and all existing components
-- SiteNav, SiteFooter (reused as-is)
-- All other routes, admin, auth, database, RLS policies
+## Files
+- **Create**: 6 files in `src/components/episodes/`
+- **Rewrite**: `src/pages/Episodes.tsx`
+- **No changes** to routes, database, other pages, or shared components
 
