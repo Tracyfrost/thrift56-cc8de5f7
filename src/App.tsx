@@ -32,6 +32,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/v2" element={<IndexV2 />} />
             <Route path="/episodes" element={<Episodes />} />
             <Route path="/episodes/:slug" element={<EpisodeDetail />} />
             <Route path="/livestream" element={<Livestream />} />
