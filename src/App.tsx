@@ -39,6 +39,7 @@ const App = () => (
             <Route path="/livestream" element={<Livestream />} />
             <Route path="/drops" element={<ArtDrops />} />
             <Route path="/drops/:slug" element={<ArtPieceDetail />} />
+            <Route path="/product/:slug" element={<ProductDetail />} />
             <Route path="/community" element={<Community />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
