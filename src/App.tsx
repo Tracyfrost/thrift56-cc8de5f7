@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
+import IndexV2 from "./pages/IndexV2.tsx";
 import Episodes from "./pages/Episodes.tsx";
 import EpisodeDetail from "./pages/EpisodeDetail.tsx";
 import Livestream from "./pages/Livestream.tsx";
@@ -31,6 +32,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/v2" element={<IndexV2 />} />
             <Route path="/episodes" element={<Episodes />} />
             <Route path="/episodes/:slug" element={<EpisodeDetail />} />
             <Route path="/livestream" element={<Livestream />} />
