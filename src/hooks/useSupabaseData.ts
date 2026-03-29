@@ -319,7 +319,7 @@ export function useApprovedSubmissions() {
     queryFn: async () => {
       const { data, error } = await supabase.from("approved_submissions_public" as any).select("*").order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Omit<Submission, "email">[];
+      return data as unknown as Omit<Submission, "email">[];
     },
   });
 }
