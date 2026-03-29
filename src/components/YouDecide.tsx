@@ -10,10 +10,10 @@ const YouDecide = () => {
 
   const totalVotes = items.reduce((sum, i) => sum + i.votes, 0);
 
-  const handleVote = (id: string, currentVotes: number) => {
+  const handleVote = (id: string) => {
     if (votedFor) return;
     setVotedFor(id);
-    castVote.mutate({ id, currentVotes });
+    castVote.mutate({ id });
   };
 
   return (
@@ -37,7 +37,7 @@ const YouDecide = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => handleVote(item.id, item.votes)}
+                onClick={() => handleVote(item.id)}
                 disabled={!!votedFor}
                 className={`text-left border-2 rounded-sm bg-card overflow-hidden transition-all duration-300 ${
                   isSelected ? "border-rust shadow-lg scale-[1.02]" : "border-border hover:border-rust/40 hover:shadow-md"

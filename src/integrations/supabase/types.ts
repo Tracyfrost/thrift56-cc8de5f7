@@ -470,6 +470,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_vote: { Args: { vote_id: string }; Returns: undefined }
+      vote_thrift_find: {
+        Args: { choice: string; find_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"

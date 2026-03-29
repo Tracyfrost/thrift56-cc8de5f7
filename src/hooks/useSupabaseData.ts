@@ -237,8 +237,8 @@ export function useAllVotes() {
 export function useCastVote() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, currentVotes }: { id: string; currentVotes: number }) => {
-      const { error } = await supabase.from("votes").update({ votes: currentVotes + 1 }).eq("id", id);
+    mutationFn: async ({ id }: { id: string }) => {
+      const { error } = await supabase.rpc("increment_vote", { vote_id: id });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["votes"] }),
