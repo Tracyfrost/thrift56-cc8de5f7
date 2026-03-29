@@ -317,9 +317,9 @@ export function useApprovedSubmissions() {
   return useQuery({
     queryKey: ["submissions-approved"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("submissions").select("*").eq("is_approved", true).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("approved_submissions_public" as any).select("*").order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Submission[];
+      return data as unknown as Omit<Submission, "email">[];
     },
   });
 }
