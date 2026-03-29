@@ -19,12 +19,7 @@ const DiscoverHunt = () => {
   const vote = async (id: string, choice: "transform" | "leave") => {
     if (voted[id]) return;
     setVoted({ ...voted, [id]: choice });
-    const col = choice === "transform" ? "votes_transform" : "votes_leave";
-    const find = finds.find((f) => f.id === id);
-    if (find) {
-      const newVal = ((find as Record<string, number>)[col] || 0) + 1;
-      await supabase.from("thrift_finds").update({ [col]: newVal }).eq("id", id);
-    }
+    await supabase.rpc("vote_thrift_find", { find_id: id, choice });
   };
 
   return (
