@@ -37,7 +37,7 @@ const YouDecide = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => handleVote(item.id, item.votes)}
+                onClick={() => handleVote(item.id)}
                 disabled={!!votedFor}
                 className={`text-left border-2 rounded-sm bg-card overflow-hidden transition-all duration-300 ${
                   isSelected ? "border-rust shadow-lg scale-[1.02]" : "border-border hover:border-rust/40 hover:shadow-md"
