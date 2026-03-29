@@ -1,41 +1,55 @@
 
 
-# Product Detail Page — Brutalist Gallery Acquisition
+# Fix Database Security Vulnerabilities
 
 ## Overview
-Create a new brutalist Product Detail Page at `/product/:slug` using hardcoded mock data from `src/data/artPieces.ts`. This is a standalone high-conversion page separate from the existing `/drops/:slug` detail page.
+Address three categories of security issues: unrestricted anonymous UPDATE policies, overly permissive INSERT policies, and leaked password protection.
 
-## Architecture — Single Page Component
+## 1. Votes Table — Restrict Anonymous UPDATE
 
-### `src/pages/ProductDetail.tsx`
-A 2-column responsive layout (`grid-cols-1 lg:grid-cols-2`) with `bg-stone-50` and `::after` SVG film grain overlay on the page wrapper.
+**Problem:** The "Anyone can increment votes" policy lets anonymous users modify ANY column (item_name, image_url, is_active), not just the `votes` counter.
 
-**Column 1 — Visual Story (left, scrollable):**
-- Vertical image stack separated by `border-b-4 border-stone-950`
-- Image 1: After/hero shot (full-width)
-- Image 2: Before shot with "BEFORE" label overlay
-- YouTube iframe in `aspect-video` container with `border-4 border-stone-950`
-- Image 3: Reuse after image as macro detail shot
-- "Viewer Reactions" block: 4-5 hardcoded fake YouTube-style comments in a raw list (`border-l-4 border-stone-300` left-border styling, mono/serif mix)
+**Fix:** Drop the existing policy and replace it with one that only allows incrementing the `votes` column. Use a `SECURITY DEFINER` function that accepts a vote ID and increments by 1, then restrict the anon UPDATE policy to only allow changes to the `votes` column via a WITH CHECK that ensures no other columns are modified.
 
-**Column 2 — Brutalist Buy Box (right, `sticky top-8`):**
-- "1 OF 1 WORLDWIDE" badge: `bg-stone-950 text-stone-50` full-width block
-- Aggressive title: `text-3xl md:text-4xl font-sans font-black tracking-tighter`
-- Value Stack:
-  - "Thrifted Origin: $3" — `text-stone-400 line-through`
-  - "Labor & Vision: 4 Hours" — `font-serif italic text-stone-600`
-  - "Acquisition Price: $185" — `text-3xl font-black text-orange-800`
-- CTA: Full-width `bg-orange-800 text-stone-50 rounded-none` button "ACQUIRE THIS PIECE" (disabled + gray if status is "archived")
-- Micro-tension: `font-serif italic text-stone-500 text-sm` disclaimer
-- Artist's Manifest: Collapsible accordion using existing `Accordion` component — materials list with brutalist styling
-- Back to Drops link at bottom
+Simpler approach — replace the policy with a database function:
+- Drop the "Anyone can increment votes" policy
+- Create a `SECURITY DEFINER` function `increment_vote(vote_id uuid)` that performs the update internally
+- No direct UPDATE access needed for anon users at all
+- Update frontend `useCastVote` to call the RPC function instead of `.update()`
 
-## Route
-- Add `/product/:slug` to `App.tsx` importing `ProductDetail`
-- Uses `getArtPieceBySlug()` from mock data (no DB calls)
+## 2. Thrift Finds Table — Restrict Anonymous UPDATE
 
-## Files
-- **Create**: `src/pages/ProductDetail.tsx`
-- **Edit**: `src/App.tsx` (add route)
-- **No changes** to database, existing pages, or shared components
+**Problem:** Same issue — "Anyone can vote on thrift finds" lets anon users modify any column.
+
+**Fix:** Same pattern — drop the policy, create a `SECURITY DEFINER` function `vote_thrift_find(find_id uuid, choice text)` that only increments `votes_transform` or `votes_leave`.
+- Update `DiscoverHunt.tsx` to call the RPC function instead of `.update()`
+
+## 3. INSERT Policies — Scope Down
+
+The following tables have `WITH CHECK (true)` INSERT policies for anon. These are acceptable for public-facing forms but should be tightened to only allow inserting specific columns (no admin-only fields):
+
+- **subscribers** — Keep as-is (only has name/email, no sensitive columns)
+- **community_suggestions** — Keep as-is (only has name/suggestion)
+- **drop_entries** — Keep as-is (only has form fields)
+- **submissions** — Tighten: ensure `is_approved` cannot be set to `true` by anon. Add `WITH CHECK (is_approved = false)`
+- **community_submissions** — Same fix: `WITH CHECK (is_approved = false)`
+
+## 4. Leaked Password Protection
+
+This does NOT require a database migration. To enable it:
+- Go to **Cloud → Users → Auth Settings** (gear icon) → **Email settings** → activate the **Password HIBP Check** switch
+
+## Files Changed
+
+**Migration (single SQL migration):**
+- Drop "Anyone can increment votes" on `votes`
+- Drop "Anyone can vote on thrift finds" on `thrift_finds`
+- Create `increment_vote(vote_id uuid)` SECURITY DEFINER function
+- Create `vote_thrift_find(find_id uuid, choice text)` SECURITY DEFINER function
+- Drop and recreate "Anyone can submit finds" on `submissions` with `WITH CHECK (is_approved = false)`
+- Drop and recreate "Anyone can submit finds" on `community_submissions` with `WITH CHECK (is_approved = false)`
+
+**Code changes:**
+- `src/hooks/useSupabaseData.ts` — Update `useCastVote` to use `supabase.rpc('increment_vote', { vote_id: id })`
+- `src/components/DiscoverHunt.tsx` — Update `vote()` to use `supabase.rpc('vote_thrift_find', { find_id: id, choice })`
 
