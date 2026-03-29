@@ -10,10 +10,10 @@ const YouDecide = () => {
 
   const totalVotes = items.reduce((sum, i) => sum + i.votes, 0);
 
-  const handleVote = (id: string, currentVotes: number) => {
+  const handleVote = (id: string) => {
     if (votedFor) return;
     setVotedFor(id);
-    castVote.mutate({ id, currentVotes });
+    castVote.mutate({ id });
   };
 
   return (
