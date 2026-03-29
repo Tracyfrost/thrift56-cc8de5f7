@@ -460,7 +460,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      approved_submissions_public: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          image_url: string | null
+          location: string | null
+          name: string | null
+          notes: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          image_url?: string | null
+          location?: string | null
+          name?: string | null
+          notes?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          image_url?: string | null
+          location?: string | null
+          name?: string | null
+          notes?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
