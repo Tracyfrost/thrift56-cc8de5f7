@@ -1,19 +1,29 @@
 
 
-## Plan: Full-Bleed Background Image on V2 Hero
+## Plan: Harden Overly Permissive INSERT Policies
 
-Take the V1 approach — disco balloon image as a full-bleed background with a gradient fade — and apply it to the V2 brutalist hero, keeping all V2 content (text, buttons, copy, styling).
+The scan flags two tables with `WITH CHECK (true)` on INSERT policies:
 
-### Changes — `src/components/v2/HeroBrutalist.tsx`
+1. **`subscribers`** — "Anyone can subscribe" allows inserting any data with no validation
+2. **`community_suggestions`** — "Anyone can submit suggestions" allows inserting any data with no validation
 
-**Layout shift:** Replace the current 2-column grid (text left, image right) with a single full-width layout where the image sits behind everything as an absolute-positioned background.
+### Fix (single migration)
 
-1. Add the disco image as `absolute inset-0` background with `object-cover` and the existing film filters (`contrast-125 saturate-50 sepia-[.25]`)
-2. Layer a gradient overlay on top: fade from `#F9F6F0` (bone white) on the left to transparent on the right, similar to V1's `from-background/98 via-background/85 to-background/30`
-3. Place all existing V2 text content (THRIFT 56 label, headline, taglines, buttons, micro-copy) in a `relative z-10` container constrained to `max-w-2xl`
-4. Remove the standalone image column entirely
-5. Keep `min-h-[85vh]` and add `flex items-center` for vertical centering
-6. Add a bottom fade gradient like V1 for smooth section transition
+**`subscribers`**: Replace `WITH CHECK (true)` with constraints that ensure `email` and `name` are non-empty:
+```sql
+WITH CHECK (
+  char_length(email) > 0 AND char_length(name) > 0
+)
+```
 
-No other files change — just `HeroBrutalist.tsx`.
+**`community_suggestions`**: Replace `WITH CHECK (true)` with constraints that ensure `name` and `suggestion` are non-empty:
+```sql
+WITH CHECK (
+  char_length(name) > 0 AND char_length(suggestion) > 0
+)
+```
+
+Both tables remain open for anonymous inserts (the intended behavior for public forms) but now validate that required fields aren't empty, removing the blanket `true` that triggers the linter warning.
+
+No code changes needed — the frontend already sends valid data for both forms.
 
