@@ -1,7 +1,7 @@
 import { Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import heroImage from "@/assets/hero-tracie.jpg";
+import heroImage from "@/assets/hero-tracie-disco.jpg";
 import logo from "@/assets/thrift56-logo-clean.png";
 import ShieldWatermark from "@/components/ShieldWatermark";
 
