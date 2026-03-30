@@ -19,7 +19,7 @@ const HeroBrutalist = () => {
           <p className="text-orange-800 font-sans text-xs font-bold uppercase tracking-[0.35em] mb-6 animate-stamp">
             THRIFT 56
           </p>
-          <h1 className="font-sans font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tighter leading-[0.85] text-stone-950 mb-6">
+          <h1 className="font-sans font-black text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] tracking-tighter leading-[0.85] text-stone-950 mb-6">
             FOUND.<br />
             TRANSFORMED.<br />
             RELEASED.
