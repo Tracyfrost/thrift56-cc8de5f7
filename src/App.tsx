@@ -32,8 +32,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/v2" element={<IndexV2 />} />
+            <Route path="/v1" element={<Index />} />
+            <Route path="/" element={<IndexV2 />} />
             <Route path="/episodes" element={<Episodes />} />
             <Route path="/episodes/:slug" element={<EpisodeDetail />} />
             <Route path="/livestream" element={<Livestream />} />

@@ -1,4 +1,4 @@
-import heroTracie from "@/assets/hero-tracie.jpg";
+import heroTracie from "@/assets/hero-tracie-disco.jpg";
 
 const HeroBrutalist = () => {
   return (
