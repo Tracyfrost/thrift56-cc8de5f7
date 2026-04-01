@@ -15,6 +15,7 @@ const emptyPiece: Omit<ArtPiece, "id" | "slug"> = {
   afterImage: "",
   createdAt: new Date().toISOString().split("T")[0],
   status: "available",
+  category: "resurrected",
   price: undefined,
   dropDate: undefined,
   giveawayEndDate: undefined,
