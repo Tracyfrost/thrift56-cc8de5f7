@@ -1,128 +1,88 @@
 
 
-## Plan: Upgrade Art Drops into a Tiered Drop System
+## Plan: Visual Overhaul of Art Drops Page
 
-Transform the existing `/drops` page from a flat product grid into a structured, narrative-driven drop platform with three tiers: **Resurrected**, **Curated Finds**, and **The Vault**.
-
----
-
-### Database Migration
-
-Add a `category` column to the `art_pieces` table:
-
-```sql
-ALTER TABLE public.art_pieces 
-ADD COLUMN category text NOT NULL DEFAULT 'resurrected' 
-CHECK (category IN ('resurrected', 'curated', 'vault'));
-```
-
-This lets each piece be classified independently from its status (available, raffle, giveaway, auction, archived).
+Keep the existing tiered section structure (Hero → Current Release → Resurrected → Curated → Vault → Archive → Email) but overhaul the visual execution of every component for stronger hierarchy, better storytelling, and brand-aligned aesthetics.
 
 ---
 
-### Page Structure — `src/pages/ArtDrops.tsx`
+### 1. DropsHero.tsx — Cinematic upgrade
 
-Reorganize the page layout from top to bottom:
+- Replace flat `bg-[#F9F6F0]` with a layered hero: subtle SVG film grain overlay + faint diagonal stripe texture
+- Make countdown timer larger with rust-colored numbers and stronger typographic weight
+- Add a pulsing dot or subtle glow next to "LIVE NOW" for tension
+- Tighten spacing — reduce padding, make the headline feel more compressed/urgent
+- Status strip: add a faint rust left-border accent for visual punch
 
-1. **Hero** (upgraded `DropsHero`)
-2. **Current Release** (upgraded `DropsFeatured`, moved up)
-3. **Resurrected Section** (new component)
-4. **Curated Finds Section** (new component)
-5. **The Vault Section** (new component)
-6. **Archive** (upgraded `DropsPreviousSold`)
-7. **Email Capture** (updated copy)
+### 2. DropsCurrentRelease.tsx — Dominant focus section
 
-Remove the old `DropsFilterBar` + `DropsGrid` combo entirely. Each tier becomes its own section with distinct visual treatment.
+- Increase image size (change aspect from `4/3` to `1/1` or `3/4` for more visual weight)
+- Add a faint grit texture overlay on the image container
+- Make the "CURRENT RELEASE" label sit on a dark strip/band rather than floating text
+- Increase CTA button size — full-width on the right column, taller padding
+- Add a thin rust divider line between price stack and CTA
+- Story text: switch from `line-clamp-3` to `line-clamp-2` for tighter feel
 
----
+### 3. DropsResurrected.tsx — Hero tier, must dominate
 
-### Component Changes
+- Increase card size: switch from 3-col to 2-col on desktop for larger, more impactful cards
+- Add the before/after hover-swap interaction (show `after_image_url` by default, reveal `before_image_url` on hover with crossfade)
+- Add a subtle dark gradient overlay at bottom of each image for text readability
+- Make "1 OF 1" tag more prominent — larger, with rust border
+- Add price display on cards
+- "WATCH TRANSFORMATION" button: add a Play icon, make it more visually distinct with border treatment
+- "VIEW PIECE" button: solid rust background
+- Add a micro-story line: serif italic, 1 line under title
 
-**`DropsHero.tsx`** — Update copy:
-- Title: `DROP #001 — LIVE NOW`
-- Subtext: `From Forgotten to Featured`
-- Move countdown timer into hero with rust accent
-- Keep status strip with pieces count + next drop timer
+### 4. DropsCurated.tsx — Lighter, faster
 
-**`DropsFeatured.tsx` → `DropsCurrentRelease.tsx`** — Rename and upgrade:
-- Section label: `CURRENT RELEASE`
-- Add before/after slider (reuse existing `BeforeAfterSlider` logic)
-- Add edition label ("1 of 1"), value stack (original → final price), status badge
-- Pull from database via `useFeaturedArtPiece()`
+- Keep 4-col grid but add slightly more vertical spacing
+- Add a thin top border line to visually separate from Resurrected
+- Add hover: slight scale + shadow lift
+- "Field Pick" tag: change to outlined style (border instead of filled background) for lighter feel vs Resurrected's heavy cards
 
-**New: `DropsResurrected.tsx`** — Primary tier section:
-- Header: `RESURRECTED` with serif subtitle
-- 3-column grid of art pieces where `category = 'resurrected'`
-- Each card: before/after hover swap, title, price, "1 of 1" tag, status badge, story snippet, "Watch Transformation" button (links to episode), "View Piece" link
-- Uses `useArtPieces()` filtered by category
+### 5. DropsVault.tsx — Premium dark section
 
-**New: `DropsCurated.tsx`** — Clean grid section:
-- Header: `CURATED FINDS`
-- Cleaner, faster-browsing grid layout
-- Each card: image, title, price, "Field Pick" tag
-- Lighter visual weight than Resurrected
+- Add a subtle gradient or noise texture to the dark background
+- Increase card aspect ratio to `3/4` (already done) — add a bottom gradient overlay
+- Add more letter-spacing to "THE VAULT" heading
+- Cards: add a thin rust-colored bottom border on hover
+- Price: display larger, more prominent
+- Add a short description/story line under title in muted stone text
 
-**New: `DropsVault.tsx`** — Premium section:
-- Dark background (`bg-stone-950`), bone white text
-- Header: `THE VAULT`
-- More spacing, slower premium feel
-- Each card: image, title, price, "Archive Grade" tag
-- Minimal, high-contrast treatment
+### 6. DropsArchive.tsx — Historical credibility
 
-**`DropsPreviousSold.tsx` → `DropsArchive.tsx`** — Rename and upgrade:
-- Header: `ARCHIVE`
-- Grayscale thumbnails with rotated "SOLD" stamp (already exists)
-- Add drop number label: `DROP #000 — SOLD OUT`
+- Switch from horizontal scroll to a 4-col grid (better for desktop)
+- Make "SOLD" stamp more visible — larger text, stronger opacity
+- Add drop number prominently
+- Add a "VIEW ALL ARCHIVE" link at bottom if more than 8 items
 
-**`DropsEmailCapture.tsx`** — Update copy:
-- Headline: `GET DROP ACCESS`
-- Subtext: `Early releases. Private drops. No noise.`
+### 7. DropsEmailCapture.tsx — Tighten
 
-**Delete:** `DropsFilterBar.tsx`, `DropsGrid.tsx` (replaced by tier sections)
+- Add film grain overlay to match hero
+- Make heading slightly larger
+- Add a thin top border accent in rust
 
----
+### 8. Global micro-UX
 
-### Product Card Updates — `ArtPieceCard.tsx`
-
-Add support for tier-specific sub-labels:
-- Resurrected: "1 of 1", "Episode Piece"
-- Curated: "Field Pick"
-- Vault: "Archive Grade"
-
-Add `video_url` / episode link support with a "Watch Transformation" overlay icon on cards.
-
-Micro-UX: SOLD items render grayscale. AVAILABLE items full color. Status remains a visual badge on the card (not a filter).
+- SOLD items → grayscale filter applied consistently across all sections
+- AVAILABLE → full color with slight warm filter
+- Add `transition-all duration-300` on all card hover states for smoother interactions
+- Ensure all images have `loading="lazy"`
 
 ---
 
-### Data Layer
+### Files to edit
 
-- `useArtPieces()` already supports status filtering; extend to support category filtering
-- Local hardcoded `artPieces` in `src/data/artPieces.ts`: add `category` field to mock data for components still using it
-- Update `ArtPiece` type in `artPieces.ts` to include `category`
+| File | Change |
+|------|--------|
+| `src/components/drops/DropsHero.tsx` | Cinematic hero, larger countdown, live indicator |
+| `src/components/drops/DropsCurrentRelease.tsx` | Bigger image, stronger CTA, tighter layout |
+| `src/components/drops/DropsResurrected.tsx` | 2-col grid, hover before/after, stronger cards |
+| `src/components/drops/DropsCurated.tsx` | Spacing, outlined tags, hover polish |
+| `src/components/drops/DropsVault.tsx` | Texture, hover accents, description text |
+| `src/components/drops/DropsArchive.tsx` | Grid layout, stronger SOLD stamps |
+| `src/components/drops/DropsEmailCapture.tsx` | Texture overlay, sizing |
 
----
-
-### Routing
-
-No route changes needed. `/drops` stays, `/drops/:slug` stays. The old `DropsGrid`/`DropsFilterBar` are simply replaced inline.
-
----
-
-### Summary of files
-
-| Action | File |
-|--------|------|
-| Migrate | `art_pieces` table — add `category` column |
-| Edit | `src/pages/ArtDrops.tsx` — new section layout |
-| Edit | `src/components/drops/DropsHero.tsx` — updated copy + countdown |
-| Rename+Edit | `DropsFeatured.tsx` → `DropsCurrentRelease.tsx` |
-| Create | `src/components/drops/DropsResurrected.tsx` |
-| Create | `src/components/drops/DropsCurated.tsx` |
-| Create | `src/components/drops/DropsVault.tsx` |
-| Rename+Edit | `DropsPreviousSold.tsx` → `DropsArchive.tsx` |
-| Edit | `src/components/drops/DropsEmailCapture.tsx` — copy update |
-| Edit | `src/data/artPieces.ts` — add category field |
-| Edit | `src/hooks/useSupabaseData.ts` — category filter support |
-| Delete | `DropsFilterBar.tsx`, `DropsGrid.tsx` |
+No database changes needed. No new components — all refinements to existing files.
 
