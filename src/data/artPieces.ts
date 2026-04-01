@@ -19,6 +19,7 @@ export interface ArtPiece {
   episodeSlug?: string;
   createdAt: string;
   status: ArtStatus;
+  category: ArtCategory;
   price?: number;
   dropDate?: string;
   giveawayEndDate?: string;
