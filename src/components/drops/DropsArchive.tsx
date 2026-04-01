@@ -5,19 +5,21 @@ const DropsArchive = () => {
   const archived = pieces || [];
   if (archived.length === 0) return null;
 
+  const visible = archived.slice(0, 8);
+
   return (
-    <section className="py-16 bg-[#F9F6F0] border-t border-stone-300">
-      <div className="container">
+    <section className="py-20 bg-[#F9F6F0] border-t border-stone-300">
+      <div className="container max-w-5xl">
         <h2 className="font-sans font-black text-3xl md:text-4xl tracking-tighter text-stone-950 mb-2">
           ARCHIVE
         </h2>
-        <p className="font-serif italic text-stone-500 text-sm mb-8">
+        <p className="font-serif italic text-stone-500 text-sm mb-10">
           Every piece ever made. History preserved.
         </p>
 
-        <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-hide">
-          {archived.map((piece, i) => (
-            <div key={piece.id} className="relative flex-shrink-0 w-64 snap-start">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {visible.map((piece, i) => (
+            <div key={piece.id} className="relative">
               {/* Desaturated image */}
               <div className="relative aspect-square overflow-hidden bg-stone-200 grayscale">
                 {piece.after_image_url ? (
@@ -25,9 +27,9 @@ const DropsArchive = () => {
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-stone-400 font-serif italic text-sm">No image</div>
                 )}
-                {/* SOLD stamp */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="font-sans font-black text-5xl text-orange-800/25 uppercase rotate-[-12deg] select-none">
+                {/* SOLD stamp — larger, more visible */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none bg-stone-950/10">
+                  <span className="font-sans font-black text-5xl md:text-6xl text-orange-800/40 uppercase rotate-[-12deg] select-none tracking-wider">
                     SOLD
                   </span>
                 </div>
@@ -46,6 +48,14 @@ const DropsArchive = () => {
             </div>
           ))}
         </div>
+
+        {archived.length > 8 && (
+          <div className="mt-10 text-center">
+            <button className="font-sans font-bold text-xs tracking-[0.15em] uppercase text-stone-500 border border-stone-300 px-8 py-3 hover:bg-stone-950 hover:text-stone-50 hover:border-stone-950 transition-all duration-300">
+              VIEW ALL ARCHIVE
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

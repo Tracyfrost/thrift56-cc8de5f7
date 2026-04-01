@@ -45,15 +45,19 @@ const DropsCurrentRelease = () => {
   return (
     <section className="container pb-20 pt-8">
       <div className="max-w-5xl mx-auto">
-        <p className="font-sans font-bold text-xs tracking-[0.2em] text-orange-800 uppercase mb-6">
-          ★ CURRENT RELEASE
-        </p>
+        {/* Dark band label */}
+        <div className="bg-stone-950 px-5 py-2.5 mb-8 inline-block">
+          <span className="font-sans font-bold text-xs tracking-[0.2em] text-orange-800 uppercase">
+            ★ CURRENT RELEASE
+          </span>
+        </div>
+
         <Link to={`/drops/${piece.slug}`} className="group block">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            {/* Image / Before-After Slider */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+            {/* Image / Before-After Slider — taller aspect */}
             <div
               ref={containerRef}
-              className={`relative aspect-[4/3] overflow-hidden bg-stone-200 ${hasBothImages ? "cursor-ew-resize select-none touch-none" : ""}`}
+              className={`relative aspect-[3/4] overflow-hidden bg-stone-200 ${hasBothImages ? "cursor-ew-resize select-none touch-none" : ""}`}
               onPointerDown={hasBothImages ? onPointerDown : undefined}
               onPointerMove={hasBothImages ? onPointerMove : undefined}
               onPointerUp={hasBothImages ? onPointerUp : undefined}
@@ -85,25 +89,32 @@ const DropsCurrentRelease = () => {
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-stone-400 font-serif italic">No image</div>
               )}
-              <div className="absolute inset-0 bg-stone-950/5 pointer-events-none mix-blend-multiply" />
+              {/* Grit texture overlay */}
+              <div
+                className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-[0.06]"
+                style={{
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
+                }}
+              />
               <span className={`absolute top-4 right-4 px-4 py-1.5 text-xs font-sans font-bold tracking-wider ${badge.cls} z-20`}>
                 {badge.text}
               </span>
             </div>
 
             {/* Details */}
-            <div>
-              <h2 className="font-sans font-black text-3xl md:text-4xl tracking-tighter text-stone-950 leading-[0.9] mb-4">
+            <div className="flex flex-col justify-center py-4">
+              <h2 className="font-sans font-black text-4xl md:text-5xl tracking-tighter text-stone-950 leading-[0.85] mb-4">
                 {piece.title}
               </h2>
               {piece.description && (
-                <p className="font-serif italic text-stone-500 text-sm leading-relaxed mb-6 line-clamp-3">
+                <p className="font-serif italic text-stone-500 text-sm leading-relaxed mb-8 line-clamp-2">
                   {piece.description}
                 </p>
               )}
 
               {piece.materials && piece.materials.length > 0 && (
-                <div className="mb-6">
+                <div className="mb-8">
                   <p className="font-sans font-bold text-[10px] tracking-[0.2em] text-stone-400 uppercase mb-2">Materials</p>
                   <p className="font-serif text-stone-600 text-sm">
                     {piece.materials.join(" · ")}
@@ -111,29 +122,32 @@ const DropsCurrentRelease = () => {
                 </div>
               )}
 
-              <div className="flex items-center gap-6 mb-6">
+              <div className="flex items-center gap-6 mb-8">
                 <div>
                   <p className="font-sans font-bold text-xs text-stone-400 tracking-wider uppercase">Original</p>
-                  <p className="font-sans font-black text-lg text-stone-950">$3</p>
+                  <p className="font-sans font-black text-xl text-stone-950">$3</p>
                 </div>
-                <div className="w-px h-8 bg-stone-300" />
+                <div className="w-px h-10 bg-stone-300" />
                 {piece.price && (
                   <>
                     <div>
                       <p className="font-sans font-bold text-xs text-stone-400 tracking-wider uppercase">Final Price</p>
-                      <p className="font-sans font-black text-lg text-orange-800">${piece.price}</p>
+                      <p className="font-sans font-black text-xl text-orange-800">${piece.price}</p>
                     </div>
-                    <div className="w-px h-8 bg-stone-300" />
+                    <div className="w-px h-10 bg-stone-300" />
                   </>
                 )}
                 <div>
                   <p className="font-sans font-bold text-xs text-stone-400 tracking-wider uppercase">Edition</p>
-                  <p className="font-sans font-black text-lg text-stone-950">1 of 1</p>
+                  <p className="font-sans font-black text-xl text-stone-950">1 of 1</p>
                 </div>
               </div>
 
+              {/* Rust divider */}
+              <div className="w-full h-px bg-orange-800/30 mb-8" />
+
               <button
-                className="bg-orange-800 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-10 py-4 rounded-none hover:bg-orange-900 transition-colors"
+                className="w-full bg-orange-800 text-stone-50 font-sans font-bold text-sm uppercase tracking-[0.15em] px-10 py-5 rounded-none hover:bg-orange-900 transition-all duration-300"
                 onClick={(e) => e.preventDefault()}
               >
                 {piece.status === "available" ? `BUY NOW${piece.price ? ` — $${piece.price}` : ""}` : badge.text}
