@@ -1,24 +1,23 @@
-import { useState } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import DropsHero from "@/components/drops/DropsHero";
-import DropsFilterBar from "@/components/drops/DropsFilterBar";
-import DropsGrid from "@/components/drops/DropsGrid";
-import DropsFeatured from "@/components/drops/DropsFeatured";
-import DropsPreviousSold from "@/components/drops/DropsPreviousSold";
+import DropsCurrentRelease from "@/components/drops/DropsCurrentRelease";
+import DropsResurrected from "@/components/drops/DropsResurrected";
+import DropsCurated from "@/components/drops/DropsCurated";
+import DropsVault from "@/components/drops/DropsVault";
+import DropsArchive from "@/components/drops/DropsArchive";
 import DropsEmailCapture from "@/components/drops/DropsEmailCapture";
 
 const ArtDrops = () => {
-  const [filter, setFilter] = useState("all");
-
   return (
     <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
       <DropsHero />
-      <DropsFilterBar filter={filter} onFilterChange={setFilter} />
-      <DropsGrid filter={filter} />
-      <DropsFeatured />
-      <DropsPreviousSold />
+      <DropsCurrentRelease />
+      <DropsResurrected />
+      <DropsCurated />
+      <DropsVault />
+      <DropsArchive />
       <DropsEmailCapture />
       <SiteFooter />
     </div>
