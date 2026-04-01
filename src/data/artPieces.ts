@@ -97,6 +97,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "live-studio-session",
     createdAt: "2026-02-01",
     status: "auction",
+    category: "curated",
     price: 75,
     auctionEndDate: "2026-03-16T20:00:00Z",
     materials: ["Metal tray", "Primer", "Acrylic paint", "Polyurethane seal"],
