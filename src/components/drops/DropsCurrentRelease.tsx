@@ -38,6 +38,7 @@ const DropsCurrentRelease = ({ statusFilter = "all" }: { statusFilter?: string }
 
   if (isLoading) return <div className="container py-20 text-center text-stone-400 font-serif italic">Loading...</div>;
   if (!piece) return null;
+  if (statusFilter !== "all" && piece.status !== statusFilter) return null;
 
   const badge = statusBadge(piece.status);
   const hasBothImages = piece.before_image_url && piece.after_image_url;

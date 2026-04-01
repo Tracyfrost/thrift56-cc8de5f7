@@ -37,7 +37,7 @@ const DropsResurrected = ({ statusFilter = "all" }: { statusFilter?: string }) =
 
         {/* 2-col grid for dominance */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {active.map((piece) => {
+          {filtered.map((piece) => {
             const badge = statusBadge(piece.status);
             const isSold = piece.status === "archived";
             const episode = piece.episodes as any;

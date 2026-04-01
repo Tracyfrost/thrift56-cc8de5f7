@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import { useArtPieces } from "@/hooks/useSupabaseData";
 
-const DropsCurated = () => {
+const DropsCurated = ({ statusFilter = "all" }: { statusFilter?: string }) => {
   const { data: pieces, isLoading } = useArtPieces({ category: "curated" });
 
-  const active = pieces?.filter((p) => p.status !== "archived") || [];
+  const active = pieces?.filter((p) => {
+    if (statusFilter !== "all" && p.status !== statusFilter) return false;
+    if (statusFilter === "all" && p.status === "archived") return false;
+    return true;
+  }) || [];
   if (isLoading || active.length === 0) return null;
 
   return (
