@@ -66,6 +66,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "frame-transformation",
     createdAt: "2026-02-08",
     status: "raffle",
+    category: "resurrected",
     dropDate: "2026-03-14T19:00:00Z",
     giveawayEndDate: "2026-03-20T23:59:00Z",
     materials: ["Wood frame", "Wood filler", "Oil paint", "Antiquing wax"],
