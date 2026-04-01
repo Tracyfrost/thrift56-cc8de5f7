@@ -1,36 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSubscribe } from "@/hooks/useSupabaseData";
 import { toast } from "@/hooks/use-toast";
-
-function useCountdown(targetDate: string) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, expired: false });
-
-  useEffect(() => {
-    const calc = () => {
-      const diff = new Date(targetDate).getTime() - Date.now();
-      if (diff <= 0) return { days: 0, hours: 0, minutes: 0, expired: true };
-      return {
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff % 86400000) / 3600000),
-        minutes: Math.floor((diff % 3600000) / 60000),
-        expired: false,
-      };
-    };
-    setTimeLeft(calc());
-    const id = setInterval(() => setTimeLeft(calc()), 60000);
-    return () => clearInterval(id);
-  }, [targetDate]);
-
-  return timeLeft;
-}
 
 const DropsEmailCapture = () => {
   const [email, setEmail] = useState("");
   const subscribe = useSubscribe();
-
-  // Mock next drop date: 3 days from now
-  const nextDropDate = new Date(Date.now() + 3 * 86400000).toISOString();
-  const { days, hours, minutes, expired } = useCountdown(nextDropDate);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,13 +26,13 @@ const DropsEmailCapture = () => {
     <section className="bg-stone-950 py-24 md:py-32">
       <div className="container max-w-2xl text-center">
         <h2 className="font-sans font-black text-3xl sm:text-4xl md:text-5xl tracking-tighter text-[#F9F6F0] leading-[0.9] mb-4">
-          GET FIRST ACCESS TO<br />THE NEXT DROP
+          GET DROP ACCESS
         </h2>
         <p className="text-stone-500 font-serif italic text-sm mb-10">
-          One-of-one pieces. No restocks. No second chances.
+          Early releases. Private drops. No noise.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-4 mb-8">
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch gap-4">
           <input
             type="email"
             placeholder="your@email.com"
@@ -75,27 +49,6 @@ const DropsEmailCapture = () => {
             {subscribe.isPending ? "Joining..." : "GET DROP ALERTS"}
           </button>
         </form>
-
-        {/* Countdown */}
-        {!expired && (
-          <div className="flex items-center justify-center gap-6">
-            <p className="font-sans font-bold text-[10px] tracking-[0.2em] text-stone-500 uppercase">
-              Next drop in
-            </p>
-            <div className="flex items-center gap-3 text-orange-800 font-sans font-black text-2xl tracking-wider">
-              <span>{String(days).padStart(2, "0")}</span>
-              <span className="text-stone-600">:</span>
-              <span>{String(hours).padStart(2, "0")}</span>
-              <span className="text-stone-600">:</span>
-              <span>{String(minutes).padStart(2, "0")}</span>
-            </div>
-            <div className="flex gap-6 text-stone-600 font-sans text-[9px] tracking-wider uppercase">
-              <span>Days</span>
-              <span>Hrs</span>
-              <span>Min</span>
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

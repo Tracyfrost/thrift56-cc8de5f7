@@ -19,6 +19,7 @@ export type Database = {
           after_image_url: string | null
           auction_end_date: string | null
           before_image_url: string | null
+          category: string
           created_at: string
           description: string | null
           drop_date: string | null
@@ -37,6 +38,7 @@ export type Database = {
           after_image_url?: string | null
           auction_end_date?: string | null
           before_image_url?: string | null
+          category?: string
           created_at?: string
           description?: string | null
           drop_date?: string | null
@@ -55,6 +57,7 @@ export type Database = {
           after_image_url?: string | null
           auction_end_date?: string | null
           before_image_url?: string | null
+          category?: string
           created_at?: string
           description?: string | null
           drop_date?: string | null

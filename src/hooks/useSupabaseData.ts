@@ -89,12 +89,13 @@ export function useDeleteEpisode() {
 
 // ─── ART PIECES ─────────────────────────────────────────
 
-export function useArtPieces(status?: string) {
+export function useArtPieces(opts?: { status?: string; category?: string }) {
   return useQuery({
-    queryKey: ["art-pieces", status],
+    queryKey: ["art-pieces", opts?.status, opts?.category],
     queryFn: async () => {
       let q = supabase.from("art_pieces").select("*, episodes(title, slug, youtube_id)").order("created_at", { ascending: false });
-      if (status && status !== "all") q = q.eq("status", status);
+      if (opts?.status && opts.status !== "all") q = q.eq("status", opts.status);
+      if (opts?.category && opts.category !== "all") q = q.eq("category", opts.category);
       const { data, error } = await q;
       if (error) throw error;
       return data;
@@ -118,11 +119,11 @@ export function useFeaturedArtPiece() {
   return useQuery({
     queryKey: ["featured-art-piece"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("art_pieces").select("*").eq("is_featured", true).limit(1).maybeSingle();
+      const { data, error } = await supabase.from("art_pieces").select("*, episodes(title, slug, youtube_id)").eq("is_featured", true).limit(1).maybeSingle();
       if (error) throw error;
-      if (data) return data as ArtPiece;
-      const { data: fallback } = await supabase.from("art_pieces").select("*").neq("status", "archived").order("created_at", { ascending: false }).limit(1).maybeSingle();
-      return fallback as ArtPiece | null;
+      if (data) return data;
+      const { data: fallback } = await supabase.from("art_pieces").select("*, episodes(title, slug, youtube_id)").neq("status", "archived").order("created_at", { ascending: false }).limit(1).maybeSingle();
+      return fallback;
     },
   });
 }

@@ -1,0 +1,1 @@
+ALTER TABLE public.art_pieces ADD COLUMN category text NOT NULL DEFAULT 'resurrected' CHECK (category IN ('resurrected', 'curated', 'vault'));

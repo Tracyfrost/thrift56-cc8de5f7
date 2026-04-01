@@ -6,6 +6,7 @@ import thumbTransform from "@/assets/thumb-transform.jpg";
 import thumbGiveaway from "@/assets/thumb-giveaway.jpg";
 
 export type ArtStatus = "available" | "raffle" | "giveaway" | "auction" | "archived";
+export type ArtCategory = "resurrected" | "curated" | "vault";
 
 export interface ArtPiece {
   id: string;
@@ -18,6 +19,7 @@ export interface ArtPiece {
   episodeSlug?: string;
   createdAt: string;
   status: ArtStatus;
+  category: ArtCategory;
   price?: number;
   dropDate?: string;
   giveawayEndDate?: string;
@@ -47,6 +49,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "3-dollar-vase",
     createdAt: "2026-03-01",
     status: "available",
+    category: "resurrected",
     price: 200,
     dropDate: "2026-03-10T19:00:00Z",
     materials: ["Ceramic", "Acrylic paint", "Sealant glaze", "Gold leaf accent"],
@@ -63,6 +66,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "frame-transformation",
     createdAt: "2026-02-08",
     status: "raffle",
+    category: "resurrected",
     dropDate: "2026-03-14T19:00:00Z",
     giveawayEndDate: "2026-03-20T23:59:00Z",
     materials: ["Wood frame", "Wood filler", "Oil paint", "Antiquing wax"],
@@ -78,6 +82,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "wooden-box-magic",
     createdAt: "2026-01-25",
     status: "giveaway",
+    category: "resurrected",
     giveawayEndDate: "2026-03-18T23:59:00Z",
     materials: ["Pine wood", "Acrylic paint", "Brass hardware", "Leather accents"],
   },
@@ -92,6 +97,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "live-studio-session",
     createdAt: "2026-02-01",
     status: "auction",
+    category: "curated",
     price: 75,
     auctionEndDate: "2026-03-16T20:00:00Z",
     materials: ["Metal tray", "Primer", "Acrylic paint", "Polyurethane seal"],
@@ -106,7 +112,7 @@ export const artPieces: ArtPiece[] = [
     episodeYoutubeId: "dQw4w9WgXcQ",
     createdAt: "2025-12-15",
     status: "archived",
-    price: 350,
+    category: "vault",
     materials: ["Wood frame", "Mirror glass", "Gesso", "Oil paint"],
   },
   {
@@ -119,7 +125,7 @@ export const artPieces: ArtPiece[] = [
     episodeYoutubeId: "dQw4w9WgXcQ",
     createdAt: "2025-11-20",
     status: "archived",
-    price: 180,
+    category: "resurrected",
     materials: ["Ceramic bowl", "Broken tiles", "Grout", "Epoxy resin"],
   },
 ];
