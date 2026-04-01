@@ -49,6 +49,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "3-dollar-vase",
     createdAt: "2026-03-01",
     status: "available",
+    category: "resurrected",
     price: 200,
     dropDate: "2026-03-10T19:00:00Z",
     materials: ["Ceramic", "Acrylic paint", "Sealant glaze", "Gold leaf accent"],
