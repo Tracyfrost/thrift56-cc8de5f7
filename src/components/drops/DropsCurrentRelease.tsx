@@ -10,7 +10,7 @@ const statusBadge = (status: string) => {
   }
 };
 
-const DropsCurrentRelease = () => {
+const DropsCurrentRelease = ({ statusFilter = "all" }: { statusFilter?: string }) => {
   const { data: piece, isLoading } = useFeaturedArtPiece();
   const [sliderPos, setSliderPos] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
