@@ -6,6 +6,7 @@ import thumbTransform from "@/assets/thumb-transform.jpg";
 import thumbGiveaway from "@/assets/thumb-giveaway.jpg";
 
 export type ArtStatus = "available" | "raffle" | "giveaway" | "auction" | "archived";
+export type ArtCategory = "resurrected" | "curated" | "vault";
 
 export interface ArtPiece {
   id: string;
