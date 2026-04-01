@@ -125,7 +125,7 @@ export const artPieces: ArtPiece[] = [
     episodeYoutubeId: "dQw4w9WgXcQ",
     createdAt: "2025-11-20",
     status: "archived",
-    price: 180,
+    category: "resurrected",
     materials: ["Ceramic bowl", "Broken tiles", "Grout", "Epoxy resin"],
   },
 ];
