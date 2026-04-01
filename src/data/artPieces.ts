@@ -82,6 +82,7 @@ export const artPieces: ArtPiece[] = [
     episodeSlug: "wooden-box-magic",
     createdAt: "2026-01-25",
     status: "giveaway",
+    category: "resurrected",
     giveawayEndDate: "2026-03-18T23:59:00Z",
     materials: ["Pine wood", "Acrylic paint", "Brass hardware", "Leather accents"],
   },
