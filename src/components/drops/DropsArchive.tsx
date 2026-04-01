@@ -1,9 +1,10 @@
 import { useArtPieces } from "@/hooks/useSupabaseData";
 
-const DropsArchive = () => {
+const DropsArchive = ({ statusFilter = "all" }: { statusFilter?: string }) => {
   const { data: pieces } = useArtPieces({ status: "archived" });
   const archived = pieces || [];
   if (archived.length === 0) return null;
+  if (statusFilter !== "all" && statusFilter !== "archived") return null;
 
   const visible = archived.slice(0, 8);
 

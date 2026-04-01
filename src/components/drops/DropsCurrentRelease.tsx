@@ -10,7 +10,7 @@ const statusBadge = (status: string) => {
   }
 };
 
-const DropsCurrentRelease = () => {
+const DropsCurrentRelease = ({ statusFilter = "all" }: { statusFilter?: string }) => {
   const { data: piece, isLoading } = useFeaturedArtPiece();
   const [sliderPos, setSliderPos] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,6 +38,7 @@ const DropsCurrentRelease = () => {
 
   if (isLoading) return <div className="container py-20 text-center text-stone-400 font-serif italic">Loading...</div>;
   if (!piece) return null;
+  if (statusFilter !== "all" && piece.status !== statusFilter) return null;
 
   const badge = statusBadge(piece.status);
   const hasBothImages = piece.before_image_url && piece.after_image_url;

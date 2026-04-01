@@ -13,11 +13,15 @@ const statusBadge = (status: string) => {
   }
 };
 
-const DropsResurrected = () => {
+const DropsResurrected = ({ statusFilter = "all" }: { statusFilter?: string }) => {
   const { data: pieces, isLoading } = useArtPieces({ category: "resurrected" });
 
-  const active = pieces?.filter((p) => p.status !== "archived") || [];
-  if (isLoading || active.length === 0) return null;
+  const filtered = pieces?.filter((p) => {
+    if (statusFilter !== "all" && p.status !== statusFilter) return false;
+    if (statusFilter === "all" && p.status === "archived") return false;
+    return true;
+  }) || [];
+  if (isLoading || filtered.length === 0) return null;
 
   return (
     <section className="bg-[#F9F6F0] py-20 md:py-28">
@@ -33,7 +37,7 @@ const DropsResurrected = () => {
 
         {/* 2-col grid for dominance */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {active.map((piece) => {
+          {filtered.map((piece) => {
             const badge = statusBadge(piece.status);
             const isSold = piece.status === "archived";
             const episode = piece.episodes as any;
