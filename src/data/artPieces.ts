@@ -112,7 +112,7 @@ export const artPieces: ArtPiece[] = [
     episodeYoutubeId: "dQw4w9WgXcQ",
     createdAt: "2025-12-15",
     status: "archived",
-    price: 350,
+    category: "vault",
     materials: ["Wood frame", "Mirror glass", "Gesso", "Oil paint"],
   },
   {
