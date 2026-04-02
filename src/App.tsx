@@ -42,6 +42,7 @@ const App = () => (
             <Route path="/drops/:slug" element={<ArtPieceDetail />} />
             <Route path="/product/:slug" element={<ProductDetail />} />
             <Route path="/community" element={<Community />} />
+            <Route path="/shop/:slug" element={<ShopItemDetail />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/setup" element={<AdminSetup />} />
