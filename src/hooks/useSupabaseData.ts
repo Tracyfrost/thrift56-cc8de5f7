@@ -383,6 +383,64 @@ export function useSearch(query: string) {
   });
 }
 
+// ─── THRIFT ITEMS (Shop) ────────────────────────────────
+
+export function useThriftItems(opts?: { category?: string; sold?: boolean }) {
+  return useQuery({
+    queryKey: ["thrift-items", opts?.category, opts?.sold],
+    queryFn: async () => {
+      let q = supabase.from("thrift_items" as any).select("*").order("is_sold", { ascending: true }).order("created_at", { ascending: false });
+      if (opts?.category) q = q.eq("category", opts.category);
+      if (opts?.sold !== undefined) q = q.eq("is_sold", opts.sold);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data as any[];
+    },
+  });
+}
+
+export function useThriftItem(slug: string) {
+  return useQuery({
+    queryKey: ["thrift-item", slug],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("thrift_items" as any).select("*").eq("slug", slug).single();
+      if (error) throw error;
+      return data as any;
+    },
+    enabled: !!slug,
+  });
+}
+
+export function useEpisodeDrops() {
+  return useQuery({
+    queryKey: ["episode-drops"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("episode_drops" as any).select("*").order("drop_date", { ascending: false });
+      if (error) throw error;
+      return data as any[];
+    },
+  });
+}
+
+export function useThriftItemRealtime() {
+  const qc = useQueryClient();
+  useQuery({
+    queryKey: ["thrift-items-realtime-sub"],
+    queryFn: () => {
+      const channel = supabase
+        .channel("thrift-items-changes")
+        .on("postgres_changes" as any, { event: "UPDATE", schema: "public", table: "thrift_items" }, () => {
+          qc.invalidateQueries({ queryKey: ["thrift-items"] });
+          qc.invalidateQueries({ queryKey: ["thrift-item"] });
+        })
+        .subscribe();
+      return channel;
+    },
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+  });
+}
+
 // ─── STORAGE HELPERS ────────────────────────────────────
 
 export async function uploadFile(bucket: string, path: string, file: File) {

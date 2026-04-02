@@ -1,4 +1,17 @@
+import { Link } from "react-router-dom";
+import { useEpisodeDrops } from "@/hooks/useSupabaseData";
+
 const LatestTransformationBrutalist = () => {
+  const { data: drops } = useEpisodeDrops();
+  const latestDrop = drops?.find((d: any) => d.status === "live") || drops?.[0];
+
+  const getEmbedUrl = (url: string) => {
+    if (!url) return "";
+    if (url.includes("/embed/")) return url;
+    const match = url.match(/(?:v=|\/)([\w-]{11})/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+  };
+
   return (
     <section id="latest-transformation" className="bg-[#F9F6F0] py-20 md:py-28">
       <div className="container">
@@ -9,29 +22,28 @@ const LatestTransformationBrutalist = () => {
         <div className="max-w-4xl">
           <div className="aspect-video border-4 border-stone-950 bg-stone-900">
             <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Latest Thrift 56 Transformation"
+              src={latestDrop?.youtube_url ? getEmbedUrl(latestDrop.youtube_url) : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
+              title={latestDrop?.title || "Latest Thrift 56 Transformation"}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-6 mb-8">
-            <p className="text-stone-500 font-serif text-sm line-through">
-              Original price: $3 thrift vase
+          {latestDrop?.title && (
+            <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950 mt-6">
+              {latestDrop.title}
             </p>
-            <p className="font-sans font-bold text-orange-800 text-sm uppercase tracking-wide">
-              Transformed: $200 art piece
-            </p>
-          </div>
+          )}
 
-          <a
-            href="/episodes"
-            className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-800 transition-colors"
-          >
-            Watch Full Episode
-          </a>
+          <div className="mt-4">
+            <Link
+              to="/episodes"
+              className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-800 transition-colors"
+            >
+              Watch Full Episode
+            </Link>
+          </div>
         </div>
       </div>
     </section>

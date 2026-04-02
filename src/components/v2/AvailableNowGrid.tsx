@@ -1,35 +1,10 @@
-import beforeImg from "@/assets/before-piece.jpg";
-import afterImg from "@/assets/after-piece.jpg";
-import featuredDrop from "@/assets/featured-drop.jpg";
-
-const mockProducts = [
-  {
-    id: 1,
-    name: "Oxidized Vessel",
-    price: "$185",
-    before: beforeImg,
-    after: afterImg,
-    status: "available" as const,
-  },
-  {
-    id: 2,
-    name: "Reclaimed Frame No. 7",
-    price: "$240",
-    before: featuredDrop,
-    after: afterImg,
-    status: "available" as const,
-  },
-  {
-    id: 3,
-    name: "Weathered Basin",
-    price: "$160",
-    before: beforeImg,
-    after: featuredDrop,
-    status: "sold" as const,
-  },
-];
+import { Link } from "react-router-dom";
+import { useThriftItems } from "@/hooks/useSupabaseData";
 
 const AvailableNowGrid = () => {
+  const { data: items, isLoading } = useThriftItems();
+  const products = (items || []).slice(0, 6);
+
   return (
     <section id="available-now" className="bg-[#F9F6F0] py-20 md:py-28">
       <div className="container">
@@ -37,58 +12,67 @@ const AvailableNowGrid = () => {
           AVAILABLE NOW
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {mockProducts.map((product) => (
-            <div key={product.id} className="group relative cursor-pointer">
-              {/* Image container */}
-              <div className="relative aspect-square overflow-hidden bg-stone-200">
-                {/* Before (base) */}
-                <img
-                  src={product.before}
-                  alt={`${product.name} before`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                {/* After (hover reveal) */}
-                <img
-                  src={product.after}
-                  alt={`${product.name} after`}
-                  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                />
-                {/* 1 of 1 badge — top right */}
-                <span className="absolute top-3 right-3 bg-stone-950 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10">
-                  1 of 1
-                </span>
-                {/* Status badge — top left */}
-                {product.status === "available" ? (
-                  <span className="absolute top-3 left-3 bg-orange-800 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10">
-                    Available
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <div className="w-8 h-8 border-2 border-stone-950 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : products.length === 0 ? (
+          <p className="text-center font-serif italic text-stone-500 py-12">No pieces yet — check back soon.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {products.map((product: any) => (
+              <Link key={product.id} to={`/shop/${product.slug}`} className="group block">
+                <div className="relative aspect-square overflow-hidden bg-stone-200">
+                  {product.before_image_url && (
+                    <img
+                      src={product.before_image_url}
+                      alt={`${product.title} before`}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  )}
+                  {product.after_image_url && (
+                    <img
+                      src={product.after_image_url}
+                      alt={`${product.title} after`}
+                      className={`absolute inset-0 w-full h-full object-cover ${product.before_image_url ? "opacity-0 group-hover:opacity-100 transition-opacity duration-500" : ""}`}
+                    />
+                  )}
+                  {!product.before_image_url && !product.after_image_url && (
+                    <div className="absolute inset-0 flex items-center justify-center text-stone-400 font-sans text-sm">No Image</div>
+                  )}
+                  <span className="absolute top-3 right-3 bg-stone-950 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10">
+                    1 of 1
                   </span>
-                ) : (
-                  <span className="absolute top-3 left-3 bg-stone-500 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 line-through z-10">
-                    Sold
-                  </span>
-                )}
-              </div>
-              {/* Info */}
-              <div className="mt-3">
-                <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950">
-                  {product.name}
-                </p>
-                <p className={`font-serif text-sm mt-1 ${product.status === "sold" ? "text-stone-400 line-through" : "text-orange-800"}`}>
-                  {product.price}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+                  {product.is_sold ? (
+                    <span className="absolute top-3 left-3 bg-stone-500 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 line-through z-10">
+                      Sold
+                    </span>
+                  ) : (
+                    <span className="absolute top-3 left-3 bg-orange-800 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10">
+                      Available
+                    </span>
+                  )}
+                </div>
+                <div className="mt-3">
+                  <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950">
+                    {product.title}
+                  </p>
+                  <p className={`font-serif text-sm mt-1 ${product.is_sold ? "text-stone-400 line-through" : "text-orange-800"}`}>
+                    {product.price ? `$${product.price}` : ""}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
 
         <div className="text-center">
-          <a
-            href="/drops"
+          <Link
+            to="/drops"
             className="inline-flex items-center justify-center bg-transparent border-2 border-stone-950 text-stone-950 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-950 hover:text-stone-50 transition-colors"
           >
             View All Drops
-          </a>
+          </Link>
         </div>
       </div>
     </section>
