@@ -225,6 +225,33 @@ export type Database = {
           },
         ]
       }
+      episode_drops: {
+        Row: {
+          created_at: string
+          drop_date: string | null
+          id: string
+          status: string
+          title: string
+          youtube_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          drop_date?: string | null
+          id?: string
+          status?: string
+          title: string
+          youtube_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          drop_date?: string | null
+          id?: string
+          status?: string
+          title?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       episodes: {
         Row: {
           after_image_url: string | null
@@ -413,6 +440,60 @@ export type Database = {
           price?: string | null
           votes_leave?: number | null
           votes_transform?: number | null
+        }
+        Relationships: []
+      }
+      thrift_items: {
+        Row: {
+          after_image_url: string | null
+          before_image_url: string | null
+          category: string
+          created_at: string
+          episode_number: number | null
+          id: string
+          is_sold: boolean
+          price: number | null
+          slug: string
+          square_catalog_id: string | null
+          story: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          youtube_episode_url: string | null
+        }
+        Insert: {
+          after_image_url?: string | null
+          before_image_url?: string | null
+          category?: string
+          created_at?: string
+          episode_number?: number | null
+          id?: string
+          is_sold?: boolean
+          price?: number | null
+          slug: string
+          square_catalog_id?: string | null
+          story?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          youtube_episode_url?: string | null
+        }
+        Update: {
+          after_image_url?: string | null
+          before_image_url?: string | null
+          category?: string
+          created_at?: string
+          episode_number?: number | null
+          id?: string
+          is_sold?: boolean
+          price?: number | null
+          slug?: string
+          square_catalog_id?: string | null
+          story?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          youtube_episode_url?: string | null
         }
         Relationships: []
       }
