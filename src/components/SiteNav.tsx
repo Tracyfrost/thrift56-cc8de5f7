@@ -5,7 +5,7 @@ import logo from "@/assets/thrift56-logo-clean.png";
 
 const navLinks = [
   { to: "/episodes", label: "Episodes" },
-  { to: "/drops", label: "Art Drops" },
+  { to: "/drops", label: "Shop" },
   { to: "/livestream", label: "Live" },
   { to: "/community", label: "Community" },
 ];

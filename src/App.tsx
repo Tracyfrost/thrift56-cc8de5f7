@@ -19,6 +19,7 @@ import AdminLogin from "./pages/AdminLogin.tsx";
 import AdminSetup from "./pages/AdminSetup.tsx";
 import SearchPage from "./pages/SearchPage.tsx";
 import Community from "./pages/Community.tsx";
+import ShopItemDetail from "./pages/ShopItemDetail.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ReturnVisitBanner from "./components/ReturnVisitBanner.tsx";
 
