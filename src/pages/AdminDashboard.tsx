@@ -74,6 +74,7 @@ const AdminDashboard = () => {
         {tab === "submissions" && <SubmissionsTab />}
         {tab === "subscribers" && <SubscribersTab />}
         {tab === "calendar" && <CalendarTab />}
+        {tab === "square-sync" && <SquareSyncTab />}
       </div>
       <SiteFooter />
     </div>
