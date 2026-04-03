@@ -6,6 +6,7 @@ import { useThriftItem, useThriftItems } from "@/hooks/useSupabaseData";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
+import SquarePaymentForm from "@/components/shop/SquarePaymentForm";
 
 const ShopItemDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -209,16 +210,17 @@ const ShopItemDetail = () => {
                   {item.price ? `Acquired for $${item.price}` : "This piece has found its home."}
                 </p>
               </div>
+            ) : item.price ? (
+              <SquarePaymentForm
+                itemId={item.id}
+                itemTitle={item.title}
+                price={item.price}
+              />
             ) : (
-              <div className="border-4 border-stone-950 p-8">
-                {item.price && (
-                  <p className="font-sans font-black text-4xl tracking-tighter text-stone-950 mb-4">
-                    ${item.price}
-                  </p>
-                )}
-                <button className="w-full bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-800 transition-colors">
-                  ACQUIRE THIS PIECE
-                </button>
+              <div className="border-4 border-stone-950 p-8 text-center">
+                <p className="font-sans font-black text-lg tracking-tighter text-stone-950">
+                  INQUIRE FOR PRICING
+                </p>
               </div>
             )}
           </div>

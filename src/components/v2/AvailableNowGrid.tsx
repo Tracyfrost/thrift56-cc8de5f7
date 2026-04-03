@@ -47,6 +47,10 @@ const AvailableNowGrid = () => {
                     <span className="absolute top-3 left-3 bg-stone-500 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 line-through z-10">
                       Sold
                     </span>
+                  ) : product.square_inventory_count === 1 ? (
+                    <span className="absolute top-3 left-3 bg-orange-800 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10 animate-pulse">
+                      ONLY 1 LEFT
+                    </span>
                   ) : (
                     <span className="absolute top-3 left-3 bg-orange-800 text-stone-50 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10">
                       Available

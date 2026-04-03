@@ -455,6 +455,8 @@ export type Database = {
           price: number | null
           slug: string
           square_catalog_id: string | null
+          square_inventory_count: number
+          square_variation_id: string | null
           story: string | null
           tags: string[] | null
           title: string
@@ -472,6 +474,8 @@ export type Database = {
           price?: number | null
           slug: string
           square_catalog_id?: string | null
+          square_inventory_count?: number
+          square_variation_id?: string | null
           story?: string | null
           tags?: string[] | null
           title: string
@@ -489,6 +493,8 @@ export type Database = {
           price?: number | null
           slug?: string
           square_catalog_id?: string | null
+          square_inventory_count?: number
+          square_variation_id?: string | null
           story?: string | null
           tags?: string[] | null
           title?: string
