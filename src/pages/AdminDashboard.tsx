@@ -20,7 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { LogOut } from "lucide-react";
 import adminLogo from "@/assets/thrift56-logo-clean.png";
 
-type Tab = "episodes" | "art-pieces" | "calendar" | "votes" | "submissions" | "subscribers";
+type Tab = "episodes" | "art-pieces" | "calendar" | "votes" | "submissions" | "subscribers" | "square-sync";
 
 const AdminDashboard = () => {
   const { signOut, user } = useAuth();
