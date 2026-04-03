@@ -6,6 +6,7 @@ import { useThriftItem, useThriftItems } from "@/hooks/useSupabaseData";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
+import SquarePaymentForm from "@/components/shop/SquarePaymentForm";
 
 const ShopItemDetail = () => {
   const { slug } = useParams<{ slug: string }>();
