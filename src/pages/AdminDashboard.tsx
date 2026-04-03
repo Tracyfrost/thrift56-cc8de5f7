@@ -557,6 +557,121 @@ function CalendarTab() {
   );
 }
 
+// ─── SQUARE SYNC TAB ────────────────────────────────────
+
+function SquareSyncTab() {
+  const [syncing, setSyncing] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [lastSync, setLastSync] = useState<string | null>(
+    () => localStorage.getItem("square-last-sync")
+  );
+
+  const handleSync = async () => {
+    setSyncing(true);
+    setResult(null);
+    try {
+      const { data: { session } } = await (await import("@/integrations/supabase/client")).supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/square-sync`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Sync failed");
+
+      setResult(data);
+      const now = new Date().toISOString();
+      localStorage.setItem("square-last-sync", now);
+      setLastSync(now);
+      toast.success(data.placeholder ? "Square not configured yet" : `Synced ${data.synced} items`);
+    } catch (err: any) {
+      toast.error(err.message || "Sync failed");
+      setResult({ error: err.message });
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  return (
+    <div>
+      <div className="border border-border rounded-sm bg-card p-6 mb-6">
+        <h2 className="font-heading text-xl font-bold mb-2">Square Catalog Sync</h2>
+        <p className="font-body text-sm text-muted-foreground mb-4">
+          Pull the latest catalog items, pricing, and inventory from Square into your shop.
+        </p>
+
+        {lastSync && (
+          <p className="font-body text-xs text-muted-foreground mb-4">
+            Last synced: {new Date(lastSync).toLocaleString()}
+          </p>
+        )}
+
+        <Button variant="rust" onClick={handleSync} disabled={syncing} className="gap-2">
+          <RefreshCw size={16} className={syncing ? "animate-spin" : ""} />
+          {syncing ? "Syncing..." : "Sync Now"}
+        </Button>
+
+        {result && (
+          <div className="mt-4 border border-border rounded-sm p-4 bg-background">
+            {result.error ? (
+              <p className="text-destructive font-body text-sm">{result.error}</p>
+            ) : result.placeholder ? (
+              <div>
+                <p className="font-heading text-sm font-bold text-orange-800 mb-1">PREVIEW MODE</p>
+                <p className="font-body text-sm text-muted-foreground">{result.message}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p className="font-heading text-2xl font-bold">{result.synced}</p>
+                  <p className="font-body text-xs text-muted-foreground uppercase tracking-wider">Total Items</p>
+                </div>
+                <div>
+                  <p className="font-heading text-2xl font-bold text-green-700">{result.created}</p>
+                  <p className="font-body text-xs text-muted-foreground uppercase tracking-wider">Created</p>
+                </div>
+                <div>
+                  <p className="font-heading text-2xl font-bold">{result.updated}</p>
+                  <p className="font-body text-xs text-muted-foreground uppercase tracking-wider">Updated</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="border border-border rounded-sm bg-card p-6">
+        <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-muted-foreground mb-3">Setup Checklist</h3>
+        <ul className="space-y-2 font-body text-sm">
+          <li className="flex items-center gap-2 text-muted-foreground">
+            <span className="w-5 h-5 border border-border rounded-sm flex items-center justify-center text-[10px]">1</span>
+            Add SQUARE_ACCESS_TOKEN secret
+          </li>
+          <li className="flex items-center gap-2 text-muted-foreground">
+            <span className="w-5 h-5 border border-border rounded-sm flex items-center justify-center text-[10px]">2</span>
+            Add SQUARE_LOCATION_ID secret
+          </li>
+          <li className="flex items-center gap-2 text-muted-foreground">
+            <span className="w-5 h-5 border border-border rounded-sm flex items-center justify-center text-[10px]">3</span>
+            Add SQUARE_APPLICATION_ID as VITE env var
+          </li>
+          <li className="flex items-center gap-2 text-muted-foreground">
+            <span className="w-5 h-5 border border-border rounded-sm flex items-center justify-center text-[10px]">4</span>
+            Register webhook URL in Square Dashboard
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 // ─── SHARED FIELD LABEL ─────────────────────────────────
 
 function FieldLabel({ label, children }: { label: string; children: React.ReactNode }) {
