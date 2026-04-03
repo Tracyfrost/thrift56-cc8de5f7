@@ -33,6 +33,7 @@ const AdminDashboard = () => {
     { key: "submissions", label: "Submissions", icon: Send },
     { key: "subscribers", label: "Subscribers", icon: Users },
     { key: "calendar", label: "Calendar", icon: Calendar },
+    { key: "square-sync", label: "Square", icon: RefreshCw },
   ];
 
   return (
