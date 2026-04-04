@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,15 @@ import logo from "@/assets/thrift56-logo-clean.png";
 import ShieldWatermark from "@/components/ShieldWatermark";
 
 const AdminLogin = () => {
-  const { signIn } = useAuth();
+  const { user, isAdmin, signIn } = useAuth();
   const navigate = useNavigate();
+
+  // Fallback: navigate when auth state confirms admin
+  useEffect(() => {
+    if (user && isAdmin) {
+      navigate("/admin", { replace: true });
+    }
+  }, [user, isAdmin, navigate]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
