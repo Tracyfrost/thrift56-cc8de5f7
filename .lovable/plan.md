@@ -1,45 +1,35 @@
 
-Diagnosis
 
-- The client-side blind insert fix is already present in `src/hooks/useSupabaseData.ts`, so the old read-after-insert RLS problem is no longer the active issue.
-- The `subscribers` table already allows anonymous inserts, and the policy is compatible with the current payload (`name` + `email`).
-- The table is still empty, which means submissions are not completing.
-- There are no matching backend write/error traces for this flow, so the current failure looks like a request-transport / pending-state problem rather than a schema problem.
+## Retro-Industrial Art Bar with Wavy Edges
 
-Implementation plan
+### Concept
 
-1. Replace the direct browser insert with a dedicated backend function for newsletter signup.
-   - Validate and normalize `email` and `name`
-   - Insert into `subscribers`
-   - Return explicit outcomes like `success`, `duplicate`, and `invalid`
+Same retro-industrial redesign as previously proposed, but replacing all straight border lines with **organic wavy edges** using inline SVG clip-paths — giving the nav a hand-cut, torn-paper feel that fits the thrift/art brand.
 
-2. Update `useSubscribe` in `src/hooks/useSupabaseData.ts` to call that backend function instead of inserting directly from the browser.
-   - Make sure the request path cannot remain paused indefinitely
-   - Add a timeout/fail-fast guard so `"Joining..."` never stalls forever
+```text
+╭~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~╮
+│  [LOGO]      ◆ EPISODES ◆ SHOP ◆ LIVE ◆ COMMUNITY    [TAG]  │
+╰~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~╯
+  ∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿  ← wavy rust stripe
+```
 
-3. Keep all three signup UIs on the same shared submission logic:
-   - `src/components/v2/EmailCaptureBrutalist.tsx`
-   - `src/components/drops/DropsEmailCapture.tsx`
-   - `src/components/EmailCaptureSection.tsx`
+### Key Changes from Previous Plan
 
-4. Improve the UI state handling in those forms.
-   - Always clear pending state on success, duplicate, timeout, and failure
-   - Show specific feedback for duplicate vs timeout vs generic error
-   - Keep the success copy consistent across the site
+1. **Wavy bottom edge** — Replace `border-b` with an absolutely-positioned SVG wave using a `path` with bezier curves, filled in rust color. This creates an irregular, hand-drawn separation line below the nav.
 
-5. Audit the other anonymous public mutations for the same pattern, especially `useSubmitEntry`, so another public form does not get stuck the same way later.
+2. **Wavy mobile menu divider** — The mobile dropdown also gets a wavy top separator instead of a straight `border-t`.
 
-Technical details
+3. **SVG approach** — A simple inline SVG (`viewBox="0 0 1200 12"`, `preserveAspectRatio="none"`) stretched full-width, with a hand-drawn-style bezier path. This is lightweight, scalable, and doesn't require images.
 
-- No database table change is required for `subscribers`; the current insert policy is already sufficient.
-- The backend function is mainly for reliability, explicit responses, and easier debugging.
-- The existing unique email constraint should be used for duplicate handling rather than custom client guesses.
-- The current console warning around `ReturnVisitBanner` looks unrelated to the newsletter stall.
+### Files Changed
 
-Validation
+- **`src/components/SiteNav.tsx`** — Full restyle: `bg-stone-950` dark bar, film-grain overlay, diamond `◆` separators between links, stamp active state, tag-shaped Subscribe CTA with clip-path, wavy SVG bottom edge in rust, redesigned mobile menu with diagonal stripes and wavy divider.
 
-- Submit a brand-new email from `/` and confirm a row is created
-- Re-submit the same email and confirm duplicate handling is immediate
-- Test the same flow on `/drops` and the legacy email section
-- Confirm the button always returns from `"Joining..."` in both success and failure cases
-- Verify the behavior in both preview and published builds
+- **`src/index.css`** — Add `.nav-tag-clip` utility for the tag-shaped button clip-path. No other CSS changes needed since the wave is inline SVG.
+
+### What Stays the Same
+
+- All routes, links, logo import, search icon, mobile toggle logic
+- Sticky positioning, z-50, container width
+- Brand fonts (Oswald for links, Special Elite for diamond accents)
+
