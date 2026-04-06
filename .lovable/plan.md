@@ -1,37 +1,45 @@
 
+Diagnosis
 
-## Fix: "Get Drop Alerts" Email Submission Silently Fails
+- The client-side blind insert fix is already present in `src/hooks/useSupabaseData.ts`, so the old read-after-insert RLS problem is no longer the active issue.
+- The `subscribers` table already allows anonymous inserts, and the policy is compatible with the current payload (`name` + `email`).
+- The table is still empty, which means submissions are not completing.
+- There are no matching backend write/error traces for this flow, so the current failure looks like a request-transport / pending-state problem rather than a schema problem.
 
-### Root Cause
+Implementation plan
 
-In `src/hooks/useSupabaseData.ts`, the `useSubscribe` mutation does:
+1. Replace the direct browser insert with a dedicated backend function for newsletter signup.
+   - Validate and normalize `email` and `name`
+   - Insert into `subscribers`
+   - Return explicit outcomes like `success`, `duplicate`, and `invalid`
 
-```typescript
-const { data, error } = await supabase.from("subscribers").insert(sub).select().single();
-```
+2. Update `useSubscribe` in `src/hooks/useSupabaseData.ts` to call that backend function instead of inserting directly from the browser.
+   - Make sure the request path cannot remain paused indefinitely
+   - Add a timeout/fail-fast guard so `"Joining..."` never stalls forever
 
-The `.select().single()` tries to read back the just-inserted row. But the `subscribers` table only has a SELECT policy for **admins** (`has_role(auth.uid(), 'admin')`). Anonymous site visitors can INSERT but cannot SELECT, so `.single()` returns an error (no rows found), causing the mutation to throw — even though the row was actually inserted successfully.
+3. Keep all three signup UIs on the same shared submission logic:
+   - `src/components/v2/EmailCaptureBrutalist.tsx`
+   - `src/components/drops/DropsEmailCapture.tsx`
+   - `src/components/EmailCaptureSection.tsx`
 
-The button shows "Joining..." because the mutation starts, but the response triggers the error path. The error message doesn't contain "duplicate", so the generic "Something went wrong" toast should fire — but the user may not notice it or it may be briefly visible.
+4. Improve the UI state handling in those forms.
+   - Always clear pending state on success, duplicate, timeout, and failure
+   - Show specific feedback for duplicate vs timeout vs generic error
+   - Keep the success copy consistent across the site
 
-### Fix
+5. Audit the other anonymous public mutations for the same pattern, especially `useSubmitEntry`, so another public form does not get stuck the same way later.
 
-Remove `.select().single()` from the subscribe mutation in `useSupabaseData.ts`. We don't need the returned data — we just need to know the insert succeeded.
+Technical details
 
-**File: `src/hooks/useSupabaseData.ts` (line 288)**
+- No database table change is required for `subscribers`; the current insert policy is already sufficient.
+- The backend function is mainly for reliability, explicit responses, and easier debugging.
+- The existing unique email constraint should be used for duplicate handling rather than custom client guesses.
+- The current console warning around `ReturnVisitBanner` looks unrelated to the newsletter stall.
 
-Change:
-```typescript
-const { data, error } = await supabase.from("subscribers").insert(sub).select().single();
-if (error) throw error;
-return data;
-```
+Validation
 
-To:
-```typescript
-const { error } = await supabase.from("subscribers").insert(sub);
-if (error) throw error;
-```
-
-This is a one-line fix. The insert will succeed for anonymous users, the success toast will fire, and the email field will clear.
-
+- Submit a brand-new email from `/` and confirm a row is created
+- Re-submit the same email and confirm duplicate handling is immediate
+- Test the same flow on `/drops` and the legacy email section
+- Confirm the button always returns from `"Joining..."` in both success and failure cases
+- Verify the behavior in both preview and published builds
