@@ -1,31 +1,46 @@
 
 
-## Fix: Admin Login Race Condition on Published Site
+## Fix: Admin Login Fails on Published Site
 
 ### Root Cause
 
-When `signIn` completes, `AdminLogin` immediately calls `navigate("/admin")`. But the `AuthProvider`'s `onAuthStateChange` callback (which sets `user` and `isAdmin`) fires asynchronously. On the published/optimized build, `ProtectedRoute` renders before the auth state updates propagate, sees `user = null` / `isAdmin = false`, and redirects back to `/admin/login`. In the dev preview, the timing is slightly different so it usually works.
+The `user_roles` table has two SELECT policies, both requiring `has_role(auth.uid(), 'admin')`. This means only users already confirmed as admin can read the table. When `checkAdmin()` in `useAuth.tsx` queries `user_roles` directly after login, there's a timing window on the published site where the query runs before the JWT is fully applied, returning no rows and setting `isAdmin = false`.
 
-### The Fix
+### Solution
 
 Two changes:
 
-**1. `useAuth.tsx` — Make `signIn` wait for the admin check to complete before returning**
+**1. Add RLS policy: "Users can read their own roles"**
 
-Instead of just calling `signInWithPassword` and returning, `signIn` should also immediately set the user/session/isAdmin state before resolving. This way, by the time `AdminLogin` calls `navigate`, the auth context already has the correct values.
-
+```sql
+CREATE POLICY "Users can read own role"
+  ON public.user_roles
+  FOR SELECT
+  TO authenticated
+  USING (user_id = auth.uid());
 ```
-signIn → signInWithPassword → getUser → checkAdmin → setState → return
+
+This allows any authenticated user to check their own role without needing to already be admin. Eliminates the chicken-and-egg problem.
+
+**2. Update `checkAdmin` in `useAuth.tsx` to use the `has_role` RPC function**
+
+Instead of querying `user_roles` directly (which hits RLS), call the existing `has_role` SECURITY DEFINER function via RPC. This bypasses RLS entirely and is the most reliable approach:
+
+```typescript
+const checkAdmin = async (userId: string) => {
+  const { data, error } = await supabase.rpc("has_role", {
+    _user_id: userId,
+    _role: "admin",
+  });
+  if (error) return false;
+  return data === true;
+};
 ```
-
-**2. `AdminLogin.tsx` — React to auth state instead of navigating blindly**
-
-Add a `useEffect` that watches `user` and `isAdmin` from the auth context. When both are truthy, navigate to `/admin`. This provides a reliable fallback regardless of timing.
 
 ### Files Changed
 
 | File | Change |
 |------|--------|
-| `src/hooks/useAuth.tsx` | Update `signIn` to set user/session/isAdmin before returning |
-| `src/pages/AdminLogin.tsx` | Add `useEffect` to navigate on auth state change as fallback |
+| Migration SQL | Add "Users can read own role" SELECT policy |
+| `src/hooks/useAuth.tsx` | Replace direct query with `supabase.rpc("has_role", ...)` |
 
