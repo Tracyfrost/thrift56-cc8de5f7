@@ -65,7 +65,7 @@ const SiteNav = () => {
   return (
     <nav className="sticky top-0 z-50">
       {/* Main bar */}
-      <div className="relative bg-grunge film-grain">
+      <div className="relative bg-grunge film-grain shadow-[inset_0_-4px_20px_rgba(140,60,20,0.15)]">
         <div
           className={`container flex items-center justify-between transition-all duration-300 ${
             scrolled ? "h-14" : "h-18"
@@ -90,7 +90,7 @@ const SiteNav = () => {
             {navLinks.map((link, i) => (
               <div key={link.to} className="flex items-center">
                 {i > 0 && (
-                  <span className="font-distressed text-rust text-xs mx-3 opacity-60 select-none">
+                <span className="font-distressed text-rust text-xs mx-3 opacity-80 select-none">
                     ◆
                   </span>
                 )}
@@ -99,7 +99,7 @@ const SiteNav = () => {
                   className={`relative font-heading text-xs uppercase tracking-[0.2em] transition-colors hover:text-rust ${
                     isActive(link.to)
                       ? "text-rust"
-                      : "text-stone-300"
+                    : "text-stone-200"
                   }`}
                 >
                   {link.label}
@@ -111,12 +111,12 @@ const SiteNav = () => {
             ))}
 
             {/* Search */}
-            <span className="font-distressed text-rust text-xs mx-3 opacity-60 select-none">
+            <span className="font-distressed text-rust text-xs mx-3 opacity-80 select-none">
               ◆
             </span>
             <Link
               to="/search"
-              className="text-stone-400 hover:text-rust transition-colors"
+              className="text-stone-300 hover:text-rust transition-colors"
               aria-label="Search"
             >
               <Search size={17} />

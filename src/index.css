@@ -97,10 +97,11 @@
   }
   .bg-grunge {
     background: linear-gradient(
-      180deg,
-      hsl(20 8% 8%) 0%,
-      hsl(25 12% 11%) 50%,
-      hsl(18 10% 9%) 100%
+      135deg,
+      hsl(18 12% 8%) 0%,
+      hsl(16 18% 12%) 35%,
+      hsl(20 25% 10%) 65%,
+      hsl(14 15% 7%) 100%
     );
   }
   .border-rust {
