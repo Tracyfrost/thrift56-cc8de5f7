@@ -42,13 +42,13 @@ const EpisodeHero = () => {
         {/* Title & stats */}
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-sans font-black tracking-tighter text-stone-950 mb-4">
-            I Turned a $3 Vase Into This
+            I Turned a $7 Vase Into This
           </h2>
 
           <div className="grid grid-cols-3 divide-x divide-stone-300 border-2 border-stone-950 mb-6">
             <div className="px-4 py-3 text-center">
               <p className="font-serif italic text-stone-500 text-xs uppercase tracking-wider">Original Price</p>
-              <p className="font-sans font-black text-stone-950 text-xl md:text-2xl">$3</p>
+              <p className="font-sans font-black text-stone-950 text-xl md:text-2xl">$7</p>
             </div>
             <div className="px-4 py-3 text-center">
               <p className="font-serif italic text-stone-500 text-xs uppercase tracking-wider">Transformation Time</p>
