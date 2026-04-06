@@ -285,9 +285,8 @@ export function useDeleteVote() {
 export function useSubscribe() {
   return useMutation({
     mutationFn: async (sub: SubscriberInsert) => {
-      const { data, error } = await supabase.from("subscribers").insert(sub).select().single();
+      const { error } = await supabase.from("subscribers").insert(sub);
       if (error) throw error;
-      return data;
     },
   });
 }
