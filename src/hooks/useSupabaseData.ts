@@ -291,8 +291,14 @@ export function useSubscribe() {
       const request = supabase.functions.invoke("subscribe-drop-alerts", {
         body: { name: sub.name, email: sub.email },
       });
-      const { data, error } = await Promise.race([request, timeout]);
-      if (error) throw new Error(error.message || "Something went wrong");
+      const result = await Promise.race([request, timeout]);
+      console.log("[subscribe] raw result:", JSON.stringify(result));
+      const { data, error } = result;
+      if (error) {
+        console.error("[subscribe] error:", error);
+        throw new Error(error.message || "Something went wrong");
+      }
+      console.log("[subscribe] data:", JSON.stringify(data));
       if (data?.status === "duplicate") throw new Error("duplicate");
       if (data?.status === "error" || data?.status === "invalid") {
         throw new Error(data?.message || "Something went wrong");
