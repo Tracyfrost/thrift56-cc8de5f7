@@ -27,15 +27,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const checkAdmin = async (userId: string) => {
-    // Use rpc or raw fetch to avoid type issues with user_roles not in generated types
-    const { data, error } = await supabase
-      .from("user_roles" as any)
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
+    const { data, error } = await supabase.rpc("has_role", {
+      _user_id: userId,
+      _role: "admin",
+    });
     if (error) return false;
-    return !!data;
+    return data === true;
   };
 
   useEffect(() => {
