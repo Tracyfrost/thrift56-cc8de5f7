@@ -1,35 +1,36 @@
 
 
-## Retro-Industrial Art Bar with Wavy Edges
+## Make Nav Bar Colors More Artistic — Thrift 56 Theme
 
-### Concept
+The current nav uses `bg-grunge` (a simple dark gradient). The plan is to enrich it with the brand's signature palette — oxidized rust, aged warmth, and industrial texture — while keeping the dark, gritty feel.
 
-Same retro-industrial redesign as previously proposed, but replacing all straight border lines with **organic wavy edges** using inline SVG clip-paths — giving the nav a hand-cut, torn-paper feel that fits the thrift/art brand.
+### Changes — `src/index.css`
 
-```text
-╭~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~╮
-│  [LOGO]      ◆ EPISODES ◆ SHOP ◆ LIVE ◆ COMMUNITY    [TAG]  │
-╰~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~╯
-  ∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿∿  ← wavy rust stripe
+Update the `.bg-grunge` gradient to incorporate warm rust and aged-paper undertones instead of plain dark browns:
+
+```css
+.bg-grunge {
+  background: linear-gradient(
+    135deg,
+    hsl(18 12% 8%) 0%,
+    hsl(16 18% 12%) 35%,
+    hsl(20 25% 10%) 65%,
+    hsl(14 15% 7%) 100%
+  );
+}
 ```
 
-### Key Changes from Previous Plan
+This shifts from a flat vertical dark gradient to a **diagonal blend with warm rust-brown undertones** — matching the oxidized, industrial aesthetic.
 
-1. **Wavy bottom edge** — Replace `border-b` with an absolutely-positioned SVG wave using a `path` with bezier curves, filled in rust color. This creates an irregular, hand-drawn separation line below the nav.
+### Changes — `src/components/SiteNav.tsx`
 
-2. **Wavy mobile menu divider** — The mobile dropdown also gets a wavy top separator instead of a straight `border-t`.
+1. Add a subtle **inner rust glow** to the nav bar container using a box-shadow or an overlay pseudo-element — `shadow-[inset_0_-4px_20px_rgba(140,60,20,0.15)]` — giving the bottom edge a warm ember-like glow that ties into the wavy rust line below.
 
-3. **SVG approach** — A simple inline SVG (`viewBox="0 0 1200 12"`, `preserveAspectRatio="none"`) stretched full-width, with a hand-drawn-style bezier path. This is lightweight, scalable, and doesn't require images.
+2. Shift the diamond separators from `opacity-60` to `opacity-80` for more presence against the richer background.
 
-### Files Changed
+3. Update link idle color from `text-stone-300` to `text-stone-200` for better contrast against the warmer, darker background.
 
-- **`src/components/SiteNav.tsx`** — Full restyle: `bg-stone-950` dark bar, film-grain overlay, diamond `◆` separators between links, stamp active state, tag-shaped Subscribe CTA with clip-path, wavy SVG bottom edge in rust, redesigned mobile menu with diagonal stripes and wavy divider.
-
-- **`src/index.css`** — Add `.nav-tag-clip` utility for the tag-shaped button clip-path. No other CSS changes needed since the wave is inline SVG.
-
-### What Stays the Same
-
-- All routes, links, logo import, search icon, mobile toggle logic
-- Sticky positioning, z-50, container width
-- Brand fonts (Oswald for links, Special Elite for diamond accents)
+### Files Modified
+- `src/index.css` — updated `.bg-grunge` gradient
+- `src/components/SiteNav.tsx` — inner glow shadow, link/separator contrast tweaks
 
