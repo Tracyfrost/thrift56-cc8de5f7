@@ -10,18 +10,35 @@ const navLinks = [
   { to: "/community", label: "Community" },
 ];
 
-const WavyEdge = ({ className = "" }: { className?: string }) => (
+const WavyEdge = ({ className = "", thick = false }: { className?: string; thick?: boolean }) => (
   <svg
-    viewBox="0 0 1200 12"
+    viewBox="0 0 1200 20"
     preserveAspectRatio="none"
-    className={`w-full h-[8px] ${className}`}
+    className={`w-full ${thick ? "h-[14px]" : "h-[10px]"} ${className}`}
     xmlns="http://www.w3.org/2000/svg"
   >
+    {/* Shadow/glow layer */}
     <path
-      d="M0,6 C50,2 100,10 150,5 C200,0 250,11 300,6 C350,1 400,10 450,4 C500,0 550,12 600,6 C650,1 700,11 750,5 C800,0 850,10 900,6 C950,2 1000,11 1050,5 C1100,0 1150,10 1200,6"
+      d="M0,10 C40,3 80,16 130,8 C170,1 220,17 270,10 C320,3 360,15 420,7 C460,1 510,18 560,10 C610,2 650,16 710,9 C750,2 800,17 850,10 C900,3 940,15 1000,8 C1040,2 1090,16 1140,9 C1170,4 1190,14 1200,10"
+      fill="none"
+      stroke="hsl(var(--rust) / 0.3)"
+      strokeWidth={thick ? "6" : "4"}
+      strokeLinecap="round"
+    />
+    {/* Main wavy line */}
+    <path
+      d="M0,10 C40,3 80,16 130,8 C170,1 220,17 270,10 C320,3 360,15 420,7 C460,1 510,18 560,10 C610,2 650,16 710,9 C750,2 800,17 850,10 C900,3 940,15 1000,8 C1040,2 1090,16 1140,9 C1170,4 1190,14 1200,10"
       fill="none"
       stroke="hsl(var(--rust))"
-      strokeWidth="2.5"
+      strokeWidth={thick ? "3.5" : "2.5"}
+      strokeLinecap="round"
+    />
+    {/* Thin highlight */}
+    <path
+      d="M0,10 C40,3 80,16 130,8 C170,1 220,17 270,10 C320,3 360,15 420,7 C460,1 510,18 560,10 C610,2 650,16 710,9 C750,2 800,17 850,10 C900,3 940,15 1000,8 C1040,2 1090,16 1140,9 C1170,4 1190,14 1200,10"
+      fill="none"
+      stroke="hsl(var(--cream) / 0.15)"
+      strokeWidth="1"
       strokeLinecap="round"
     />
   </svg>
@@ -31,9 +48,13 @@ const SiteNav = () => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [wavyOffset, setWavyOffset] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setWavyOffset(window.scrollY * 0.15);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -44,7 +65,7 @@ const SiteNav = () => {
   return (
     <nav className="sticky top-0 z-50">
       {/* Main bar */}
-      <div className="relative bg-stone-950 film-grain">
+      <div className="relative bg-grunge film-grain">
         <div
           className={`container flex items-center justify-between transition-all duration-300 ${
             scrolled ? "h-14" : "h-18"
@@ -123,9 +144,12 @@ const SiteNav = () => {
         </div>
       </div>
 
-      {/* Wavy bottom edge */}
-      <div className="relative -mt-[1px]">
-        <WavyEdge />
+      {/* Wavy bottom edge with parallax */}
+      <div
+        className="relative -mt-[1px] transition-transform duration-100 ease-out"
+        style={{ transform: `translateX(${wavyOffset % 30 - 15}px)` }}
+      >
+        <WavyEdge thick />
       </div>
 
       {/* Mobile menu */}
