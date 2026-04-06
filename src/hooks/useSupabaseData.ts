@@ -285,25 +285,43 @@ export function useDeleteVote() {
 export function useSubscribe() {
   return useMutation({
     mutationFn: async (sub: SubscriberInsert) => {
-      const timeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Request timed out. Please try again.")), 10000)
-      );
-      const request = supabase.functions.invoke("subscribe-drop-alerts", {
-        body: { name: sub.name, email: sub.email },
-      });
-      const result = await Promise.race([request, timeout]);
-      console.log("[subscribe] raw result:", JSON.stringify(result));
-      const { data, error } = result;
-      if (error) {
-        console.error("[subscribe] error:", error);
-        throw new Error(error.message || "Something went wrong");
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+
+      try {
+        const res = await fetch(
+          `${supabaseUrl}/functions/v1/subscribe-drop-alerts`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: supabaseKey,
+              Authorization: `Bearer ${supabaseKey}`,
+            },
+            body: JSON.stringify({ name: sub.name, email: sub.email }),
+            signal: controller.signal,
+          }
+        );
+        clearTimeout(timer);
+
+        const data = await res.json();
+        if (!res.ok && data?.status !== "duplicate") {
+          throw new Error(data?.message || "Something went wrong");
+        }
+        if (data?.status === "duplicate") throw new Error("duplicate");
+        if (data?.status === "error" || data?.status === "invalid") {
+          throw new Error(data?.message || "Something went wrong");
+        }
+        return data;
+      } catch (err: any) {
+        clearTimeout(timer);
+        if (err.name === "AbortError") {
+          throw new Error("Request timed out. Please try again.");
+        }
+        throw err;
       }
-      console.log("[subscribe] data:", JSON.stringify(data));
-      if (data?.status === "duplicate") throw new Error("duplicate");
-      if (data?.status === "error" || data?.status === "invalid") {
-        throw new Error(data?.message || "Something went wrong");
-      }
-      return data;
     },
   });
 }
