@@ -95,6 +95,14 @@
   .bg-aged-paper {
     background-color: hsl(var(--aged-paper));
   }
+  .bg-grunge {
+    background: linear-gradient(
+      180deg,
+      hsl(20 8% 8%) 0%,
+      hsl(25 12% 11%) 50%,
+      hsl(18 10% 9%) 100%
+    );
+  }
   .border-rust {
     border-color: hsl(var(--rust));
   }
