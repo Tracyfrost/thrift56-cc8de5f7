@@ -1,46 +1,37 @@
 
 
-## Fix: Admin Login Fails on Published Site
+## Fix: "Get Drop Alerts" Email Submission Silently Fails
 
 ### Root Cause
 
-The `user_roles` table has two SELECT policies, both requiring `has_role(auth.uid(), 'admin')`. This means only users already confirmed as admin can read the table. When `checkAdmin()` in `useAuth.tsx` queries `user_roles` directly after login, there's a timing window on the published site where the query runs before the JWT is fully applied, returning no rows and setting `isAdmin = false`.
-
-### Solution
-
-Two changes:
-
-**1. Add RLS policy: "Users can read their own roles"**
-
-```sql
-CREATE POLICY "Users can read own role"
-  ON public.user_roles
-  FOR SELECT
-  TO authenticated
-  USING (user_id = auth.uid());
-```
-
-This allows any authenticated user to check their own role without needing to already be admin. Eliminates the chicken-and-egg problem.
-
-**2. Update `checkAdmin` in `useAuth.tsx` to use the `has_role` RPC function**
-
-Instead of querying `user_roles` directly (which hits RLS), call the existing `has_role` SECURITY DEFINER function via RPC. This bypasses RLS entirely and is the most reliable approach:
+In `src/hooks/useSupabaseData.ts`, the `useSubscribe` mutation does:
 
 ```typescript
-const checkAdmin = async (userId: string) => {
-  const { data, error } = await supabase.rpc("has_role", {
-    _user_id: userId,
-    _role: "admin",
-  });
-  if (error) return false;
-  return data === true;
-};
+const { data, error } = await supabase.from("subscribers").insert(sub).select().single();
 ```
 
-### Files Changed
+The `.select().single()` tries to read back the just-inserted row. But the `subscribers` table only has a SELECT policy for **admins** (`has_role(auth.uid(), 'admin')`). Anonymous site visitors can INSERT but cannot SELECT, so `.single()` returns an error (no rows found), causing the mutation to throw — even though the row was actually inserted successfully.
 
-| File | Change |
-|------|--------|
-| Migration SQL | Add "Users can read own role" SELECT policy |
-| `src/hooks/useAuth.tsx` | Replace direct query with `supabase.rpc("has_role", ...)` |
+The button shows "Joining..." because the mutation starts, but the response triggers the error path. The error message doesn't contain "duplicate", so the generic "Something went wrong" toast should fire — but the user may not notice it or it may be briefly visible.
+
+### Fix
+
+Remove `.select().single()` from the subscribe mutation in `useSupabaseData.ts`. We don't need the returned data — we just need to know the insert succeeded.
+
+**File: `src/hooks/useSupabaseData.ts` (line 288)**
+
+Change:
+```typescript
+const { data, error } = await supabase.from("subscribers").insert(sub).select().single();
+if (error) throw error;
+return data;
+```
+
+To:
+```typescript
+const { error } = await supabase.from("subscribers").insert(sub);
+if (error) throw error;
+```
+
+This is a one-line fix. The insert will succeed for anonymous users, the success toast will fire, and the email field will clear.
 
