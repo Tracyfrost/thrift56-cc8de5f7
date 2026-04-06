@@ -99,6 +99,11 @@
     border-color: hsl(var(--rust));
   }
 
+  /* Tag-shaped clip for nav CTA */
+  .nav-tag-clip {
+    clip-path: polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%);
+  }
+
   /* Scrollbar hide utility */
   .scrollbar-hide {
     -ms-overflow-style: none;
