@@ -285,28 +285,19 @@ export function useDeleteVote() {
 export function useSubscribe() {
   return useMutation({
     mutationFn: async (sub: SubscriberInsert) => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10000);
-      try {
-        const { data, error } = await supabase.functions.invoke("subscribe-drop-alerts", {
-          body: { name: sub.name, email: sub.email },
-        });
-        clearTimeout(timeout);
-        if (error) throw new Error(error.message || "Something went wrong");
-        if (data?.status === "duplicate") {
-          throw new Error("duplicate");
-        }
-        if (data?.status === "error" || data?.status === "invalid") {
-          throw new Error(data?.message || "Something went wrong");
-        }
-        return data;
-      } catch (err: any) {
-        clearTimeout(timeout);
-        if (err?.name === "AbortError") {
-          throw new Error("Request timed out. Please try again.");
-        }
-        throw err;
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Request timed out. Please try again.")), 10000)
+      );
+      const request = supabase.functions.invoke("subscribe-drop-alerts", {
+        body: { name: sub.name, email: sub.email },
+      });
+      const { data, error } = await Promise.race([request, timeout]);
+      if (error) throw new Error(error.message || "Something went wrong");
+      if (data?.status === "duplicate") throw new Error("duplicate");
+      if (data?.status === "error" || data?.status === "invalid") {
+        throw new Error(data?.message || "Something went wrong");
       }
+      return data;
     },
   });
 }
