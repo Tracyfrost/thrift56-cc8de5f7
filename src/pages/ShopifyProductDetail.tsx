@@ -93,13 +93,13 @@ const ShopifyProductDetail = () => {
         </Link>
       </div>
 
-      <div className="container pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Left — Images */}
-          <div className="space-y-3">
+      <div className="container pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+          {/* Left — Cinematic Gallery */}
+          <div className="space-y-4">
             {images.length > 0 ? (
               images.map((img: { node: { url: string; altText: string | null } }, i: number) => (
-                <div key={i} className="aspect-square bg-stone-900 overflow-hidden border border-stone-800">
+                <div key={i} className="aspect-[4/5] bg-stone-900 overflow-hidden border border-stone-800">
                   <img
                     src={img.node.url}
                     alt={img.node.altText || product.title}
@@ -108,7 +108,7 @@ const ShopifyProductDetail = () => {
                 </div>
               ))
             ) : (
-              <div className="aspect-square bg-stone-900 border border-stone-800 flex items-center justify-center">
+              <div className="aspect-[4/5] bg-stone-900 border border-stone-800 flex items-center justify-center">
                 <span className="font-heading text-stone-700 text-xs uppercase tracking-wider">
                   No Image
                 </span>
@@ -117,11 +117,11 @@ const ShopifyProductDetail = () => {
           </div>
 
           {/* Right — Sticky Buy Box */}
-          <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
+          <div className="lg:sticky lg:top-24 lg:self-start space-y-8">
             {/* Exclusivity badge */}
             {isOneOfOne && (
-              <div className="inline-block border border-rust/50 bg-rust/10 px-3 py-1">
-                <span className="font-heading text-[10px] uppercase tracking-[0.2em] text-rust">
+              <div className="inline-block border border-rust/50 bg-rust/10 px-4 py-1.5">
+                <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-rust">
                   1 of 1 Worldwide
                 </span>
               </div>
@@ -129,26 +129,31 @@ const ShopifyProductDetail = () => {
 
             {/* Title + Type */}
             <div>
-              <p className="text-[10px] text-stone-500 uppercase tracking-wider font-heading mb-1">
+              <p className="text-[10px] text-stone-600 uppercase tracking-[0.2em] font-heading mb-2">
                 {product.productType}
               </p>
-              <h1 className="font-heading text-2xl md:text-3xl uppercase tracking-tighter text-stone-100 leading-tight">
+              <h1 className="font-heading text-3xl md:text-4xl uppercase tracking-tighter text-stone-100 leading-none">
                 {product.title}
               </h1>
             </div>
 
             {/* Price */}
-            <div className="font-heading text-2xl text-rust">
+            <div className="font-heading text-3xl text-rust">
               ${parseFloat(selectedVariant?.price.amount || "0").toFixed(2)}
             </div>
 
             {/* Four Pillars */}
             <FourPillars />
 
-            {/* Description */}
-            <p className="text-stone-400 text-sm leading-relaxed">
-              {product.description}
-            </p>
+            {/* Origin Line + Description */}
+            <div className="space-y-3 border-l-2 border-rust/30 pl-5">
+              <p className="font-body italic text-stone-400 text-sm leading-relaxed">
+                {product.description?.split('.')[0]}.
+              </p>
+              <p className="text-stone-500 text-sm leading-relaxed">
+                {product.description?.split('.').slice(1).join('.').trim()}
+              </p>
+            </div>
 
             {/* Variant selector */}
             {hasMultipleVariants && product.options && (
@@ -173,7 +178,7 @@ const ShopifyProductDetail = () => {
                             <button
                               key={value}
                               onClick={() => setSelectedVariantIdx(variantIdx >= 0 ? variantIdx : 0)}
-                              className={`px-3 py-1.5 border font-heading text-[10px] uppercase tracking-wider transition-colors ${
+                              className={`px-4 py-2 border font-heading text-[10px] uppercase tracking-wider transition-colors ${
                                 isSelected
                                   ? "border-rust bg-rust/10 text-rust"
                                   : "border-stone-700 text-stone-400 hover:border-stone-500"
@@ -193,7 +198,7 @@ const ShopifyProductDetail = () => {
             <button
               onClick={handleAddToCart}
               disabled={cartLoading || !selectedVariant?.availableForSale}
-              className="w-full bg-rust text-cream font-heading text-xs uppercase tracking-[0.15em] py-4 hover:bg-rust/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-rust text-cream font-heading text-sm uppercase tracking-[0.15em] py-5 hover:bg-rust/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {cartLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -206,21 +211,32 @@ const ShopifyProductDetail = () => {
 
             {/* Accordions */}
             <Accordion type="multiple" className="border-t border-stone-800">
+              <AccordionItem value="journey" className="border-b border-stone-800">
+                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-4 hover:no-underline">
+                  The Journey
+                </AccordionTrigger>
+                <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4 space-y-2">
+                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Discovery</span> — Pulled from a place most people ignore.</p>
+                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Transformation</span> — Restored, reimagined, and finished by hand.</p>
+                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Story</span> — The entire process documented on film.</p>
+                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Release</span> — Limited. Once it's gone, it stays gone.</p>
+                </AccordionContent>
+              </AccordionItem>
               <AccordionItem value="shipping" className="border-b border-stone-800">
-                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-3 hover:no-underline">
+                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-4 hover:no-underline">
                   Shipping & Returns
                 </AccordionTrigger>
-                <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-3">
+                <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4">
                   All originals ship within 5–7 business days via insured carrier. Merch ships within 3–5 business days.
                   Returns accepted within 14 days of delivery for items in original condition. Buyer pays return shipping.
                   Digital products are non-refundable after download.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="safety" className="border-b border-stone-800">
-                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-3 hover:no-underline">
+                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-4 hover:no-underline">
                   Product Safety
                 </AccordionTrigger>
-                <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-3">
+                <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4">
                   All transformed items are inspected for structural integrity and finished with non-toxic, archival-grade materials.
                   Items labeled as decorative are not intended for food contact unless specifically noted.
                   For questions about materials used, contact us directly.
