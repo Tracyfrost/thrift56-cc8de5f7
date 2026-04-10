@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
+import { useCartSync } from "@/hooks/useCartSync";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index.tsx";
 import IndexV2 from "./pages/IndexV2.tsx";
@@ -20,10 +21,46 @@ import AdminSetup from "./pages/AdminSetup.tsx";
 import SearchPage from "./pages/SearchPage.tsx";
 import Community from "./pages/Community.tsx";
 import ShopItemDetail from "./pages/ShopItemDetail.tsx";
+import Shop from "./pages/Shop.tsx";
+import ShopifyProductDetail from "./pages/ShopifyProductDetail.tsx";
+import About from "./pages/About.tsx";
+import Contact from "./pages/Contact.tsx";
+import Policies from "./pages/Policies.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ReturnVisitBanner from "./components/ReturnVisitBanner.tsx";
 
 const queryClient = new QueryClient();
+
+const AppContent = () => {
+  useCartSync();
+  return (
+    <>
+      <Routes>
+        <Route path="/v1" element={<Index />} />
+        <Route path="/" element={<IndexV2 />} />
+        <Route path="/episodes" element={<Episodes />} />
+        <Route path="/episodes/:slug" element={<EpisodeDetail />} />
+        <Route path="/livestream" element={<Livestream />} />
+        <Route path="/drops" element={<ArtDrops />} />
+        <Route path="/drops/:slug" element={<ArtPieceDetail />} />
+        <Route path="/product/:handle" element={<ShopifyProductDetail />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/shop/:slug" element={<ShopItemDetail />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/policies" element={<Policies />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/setup" element={<AdminSetup />} />
+        <Route path="/admin/drops" element={<ProtectedRoute><AdminDrops /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <ReturnVisitBanner />
+    </>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -32,26 +69,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/v1" element={<Index />} />
-            <Route path="/" element={<IndexV2 />} />
-            <Route path="/episodes" element={<Episodes />} />
-            <Route path="/episodes/:slug" element={<EpisodeDetail />} />
-            <Route path="/livestream" element={<Livestream />} />
-            <Route path="/drops" element={<ArtDrops />} />
-            <Route path="/drops/:slug" element={<ArtPieceDetail />} />
-            <Route path="/product/:slug" element={<ProductDetail />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/shop/:slug" element={<ShopItemDetail />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/setup" element={<AdminSetup />} />
-            <Route path="/admin/drops" element={<ProtectedRoute><AdminDrops /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ReturnVisitBanner />
+          <AppContent />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
