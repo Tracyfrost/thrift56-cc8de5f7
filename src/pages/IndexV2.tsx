@@ -6,6 +6,7 @@ import BeforeAfterSlider from "@/components/v2/BeforeAfterSlider";
 import LatestTransformationBrutalist from "@/components/v2/LatestTransformationBrutalist";
 import AvailableNowGrid from "@/components/v2/AvailableNowGrid";
 import EmailCaptureBrutalist from "@/components/v2/EmailCaptureBrutalist";
+import EmailPopup from "@/components/EmailPopup";
 
 const IndexV2 = () => {
   return (
@@ -18,6 +19,7 @@ const IndexV2 = () => {
       <AvailableNowGrid />
       <EmailCaptureBrutalist />
       <SiteFooter />
+      <EmailPopup />
     </div>
   );
 };
