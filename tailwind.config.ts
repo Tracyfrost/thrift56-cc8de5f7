@@ -107,6 +107,7 @@ export default {
         "fade-in": "fade-in 0.6s ease-out forwards",
         stamp: "stamp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "marquee-scroll": "marquee-scroll 30s linear infinite",
+        "ken-burns": "ken-burns 20s ease-in-out infinite",
       },
     },
   },

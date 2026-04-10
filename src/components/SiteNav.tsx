@@ -25,7 +25,7 @@ const SiteNav = () => {
   }, []);
 
   const isActive = (path: string) =>
-    location.pathname === path || location.pathname.startsWith(path + "/");
+    path === "/" ? location.pathname === "/" : location.pathname === path || location.pathname.startsWith(path + "/");
 
   return (
     <nav className="sticky top-0 z-50">
