@@ -31,10 +31,10 @@ const EpisodeBingeReel = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-stone-50">
-      <div className="container mb-8">
+    <section className="section-dark texture-grain py-16 md:py-24">
+      <div className="container mb-8 relative z-10">
         <p className="font-serif italic text-stone-500 text-sm mb-2">Keep watching</p>
-        <h2 className="text-3xl md:text-5xl font-sans font-black tracking-tighter text-stone-950">
+        <h2 className="text-3xl md:text-5xl font-sans font-black tracking-tighter text-stone-50">
           WATCH WHAT HAPPENS NEXT
         </h2>
       </div>
@@ -42,21 +42,21 @@ const EpisodeBingeReel = () => {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6 md:px-[max(1.5rem,calc((100vw-1200px)/2+1.5rem))] pb-4"
+        className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-6 md:px-[max(1.5rem,calc((100vw-1200px)/2+1.5rem))] pb-4 relative z-10"
       >
         {bingeItems.map((item) => (
           <div
             key={item.id}
             className="min-w-[260px] max-w-[260px] flex-shrink-0 snap-start group cursor-pointer"
           >
-            <div className="relative aspect-video overflow-hidden border-2 border-stone-950 bg-stone-900">
+            <div className="relative aspect-video overflow-hidden border-2 border-stone-700 bg-stone-900 group-hover:border-orange-800 transition-colors">
               <img
                 src={item.thumbnail}
                 alt={item.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-stone-950/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-10 h-10 border-2 border-stone-50 rounded-none flex items-center justify-center">
+              <div className="absolute inset-0 bg-stone-950/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-10 h-10 border-2 border-stone-50 flex items-center justify-center">
                   <div
                     className="w-0 h-0 ml-0.5"
                     style={{
@@ -68,7 +68,7 @@ const EpisodeBingeReel = () => {
                 </div>
               </div>
             </div>
-            <p className="font-sans font-black text-stone-950 text-sm tracking-tight mt-2">
+            <p className="font-sans font-black text-stone-200 text-sm tracking-tight mt-2">
               {item.title}
             </p>
           </div>
@@ -76,8 +76,8 @@ const EpisodeBingeReel = () => {
       </div>
 
       {/* Progress bar */}
-      <div className="container mt-4">
-        <div className="h-1 bg-stone-300 rounded-none max-w-md mx-auto">
+      <div className="container mt-4 relative z-10">
+        <div className="h-1 bg-stone-800 rounded-none max-w-md mx-auto">
           <div
             className="h-full bg-orange-800 rounded-none transition-all duration-150"
             style={{ width: `${Math.max(progress, 5)}%` }}
