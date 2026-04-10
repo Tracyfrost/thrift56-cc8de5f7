@@ -95,6 +95,11 @@ export default {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "ken-burns": {
+          "0%": { transform: "scale(1) translate(0, 0)" },
+          "50%": { transform: "scale(1.08) translate(-1%, -1%)" },
+          "100%": { transform: "scale(1) translate(0, 0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -102,6 +107,7 @@ export default {
         "fade-in": "fade-in 0.6s ease-out forwards",
         stamp: "stamp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards",
         "marquee-scroll": "marquee-scroll 30s linear infinite",
+        "ken-burns": "ken-burns 20s ease-in-out infinite",
       },
     },
   },
