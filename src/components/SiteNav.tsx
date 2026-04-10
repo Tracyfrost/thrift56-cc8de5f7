@@ -5,12 +5,12 @@ import { CartDrawer } from "@/components/shop/CartDrawer";
 import logo from "@/assets/thrift56-logo-clean.png";
 
 const navLinks = [
+  { to: "/", label: "Home" },
   { to: "/episodes", label: "Episodes" },
   { to: "/shop", label: "Shop" },
-  { to: "/drops", label: "Drops" },
-  { to: "/livestream", label: "Live" },
-  { to: "/community", label: "Community" },
   { to: "/about", label: "About" },
+  { to: "/drops", label: "Drops" },
+  { to: "/contact", label: "Contact" },
 ];
 
 const SiteNav = () => {
