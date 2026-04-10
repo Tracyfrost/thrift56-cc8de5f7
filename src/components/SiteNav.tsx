@@ -104,7 +104,7 @@ const SiteNav = () => {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-stone-950 pb-5">
+        <div className="md:hidden bg-grunge film-grain pb-5">
           <div
             className="h-2"
             style={{

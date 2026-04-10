@@ -30,8 +30,8 @@ const BeforeAfterSlider = () => {
   }, []);
 
   return (
-    <section className="bg-[#F9F6F0] py-20 md:py-28">
-      <div className="container">
+    <section className="section-bone texture-grain texture-stripes py-20 md:py-28">
+      <div className="container relative z-10">
         <h2 className="font-sans font-black text-3xl md:text-5xl tracking-tighter text-stone-950 text-center mb-12">
           FROM FORGOTTEN TO FEATURED
         </h2>
@@ -39,7 +39,7 @@ const BeforeAfterSlider = () => {
         <div className="max-w-3xl mx-auto">
           <div
             ref={containerRef}
-            className="relative aspect-[4/3] overflow-hidden rounded-none cursor-ew-resize select-none touch-none"
+            className="relative aspect-[4/3] overflow-hidden rounded-none cursor-ew-resize select-none touch-none border-4 border-stone-950"
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
@@ -61,21 +61,21 @@ const BeforeAfterSlider = () => {
             />
             {/* Drag line */}
             <div
-              className="absolute top-0 bottom-0 w-0.5 bg-stone-50 z-10 pointer-events-none"
+              className="absolute top-0 bottom-0 w-1 bg-orange-800 z-10 pointer-events-none"
               style={{ left: `${position}%`, transform: "translateX(-50%)" }}
             >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-stone-50 border-2 border-stone-950 flex items-center justify-center shadow-lg pointer-events-none">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-stone-950">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-stone-950 border-2 border-orange-800 flex items-center justify-center shadow-lg pointer-events-none">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-stone-50">
                   <path d="M5 3L1 8L5 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M11 3L15 8L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
             </div>
             {/* Labels */}
-            <span className="absolute bottom-4 left-4 bg-stone-950/80 text-stone-50 font-sans text-xs uppercase tracking-wider px-3 py-1 z-10">
+            <span className="absolute bottom-4 left-4 bg-stone-950/90 text-stone-50 font-sans font-bold text-xs uppercase tracking-wider px-3 py-1.5 z-10">
               Before
             </span>
-            <span className="absolute bottom-4 right-4 bg-stone-950/80 text-stone-50 font-sans text-xs uppercase tracking-wider px-3 py-1 z-10">
+            <span className="absolute bottom-4 right-4 bg-orange-800/90 text-stone-50 font-sans font-bold text-xs uppercase tracking-wider px-3 py-1.5 z-10">
               After
             </span>
           </div>
@@ -83,7 +83,7 @@ const BeforeAfterSlider = () => {
           <div className="text-center mt-8">
             <a
               href="/drops"
-              className="inline-flex items-center justify-center bg-transparent border-2 border-stone-950 text-stone-950 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-950 hover:text-stone-50 transition-colors"
+              className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
             >
               View This Piece
             </a>
