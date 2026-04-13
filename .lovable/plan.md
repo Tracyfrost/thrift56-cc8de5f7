@@ -1,85 +1,38 @@
 
 
-# Site-Wide Aesthetic Consistency Audit & Polish
+# Unify Site to Light Retro 50s/60s Palette
 
-## Issues Found
+The Home and Drops pages use `bg-[#F9F6F0]` (warm bone white) with dark text. Shop, Episodes, About, and Contact all use `bg-stone-950` (near-black). The user wants everything light and retro.
 
-The site has a solid foundation but several sections feel "too clean" — lacking the raw, gritty, high-contrast industrial energy the brand demands. Here's what needs fixing:
+## Color Shift Strategy
 
-### 1. Homepage Sections Too Sterile
-- **BeforeAfterSlider**: Plain `bg-[#F9F6F0]` background with no texture. Missing film grain, diagonal stripes, or any visual grit. The slider handle is a clean white circle — should feel more industrial.
-- **LatestTransformationBrutalist**: Same flat bone-white bg, no texture overlays. Video embed border is good but the section lacks atmosphere.
-- **AvailableNowGrid**: Flat, clean bone-white. Product cards lack the industrial edge found in the Shop page's `ProductCard` (which uses dark `bg-stone-950` cards). Inconsistent with Shop page aesthetic.
-- **MarqueeBrutalist**: Good concept but the `bg-stone-950` bar needs more grit — add a diagonal stripe texture or noise overlay.
+Replace all dark backgrounds (`bg-stone-950`, `section-dark`, `bg-stone-900`) with the warm bone palette (`bg-[#F9F6F0]`) and flip text colors from light (`text-stone-50/100/200`) to dark (`text-stone-950`, `text-stone-700`). Keep rust (`text-orange-800`) as the accent. Borders shift from `border-stone-800` to `border-stone-300`.
 
-### 2. Episodes Page
-- **EpisodeHero**: Uses `texture-paper` class (good) but the background is too light/clean. Needs the darker industrial treatment. The bouncing arrow feels playful — wrong energy.
-- **EpisodeBingeReel**: `bg-stone-50` is too basic. Needs texture and darker tone.
-- **EpisodeStorySteps**: Uses `texture-paper` but the step boxes are clean white squares with thin borders — should be more industrial (thicker borders, slight skew/rotation, rust accents).
-- **EpisodeCategoryFilter**: Needs review for dark industrial styling.
+## Files to Modify
 
-### 3. About Page
-- Already uses `bg-stone-950` — dark industrial tone is correct. The four pillars grid is a bit undersized and could use rust accent borders.
+### Pages (4 files)
+- **`src/pages/Shop.tsx`**: Change wrapper and hero from `bg-stone-950` to `bg-[#F9F6F0]`. Flip all text to dark tones. Filter bar borders to `border-stone-300`. Inactive filter text to `text-stone-600`.
+- **`src/pages/About.tsx`**: Change wrapper from `bg-stone-950` to `bg-[#F9F6F0]`. Flip heading to `text-stone-950`, body text to `text-stone-600`, borders to `border-stone-300`.
+- **`src/pages/Contact.tsx`**: Change wrapper from `bg-stone-950` to `bg-[#F9F6F0]`. Inputs from `bg-stone-900` to `bg-white border-stone-300`. Text to dark tones.
+- **`src/pages/Episodes.tsx`**: Change wrapper `min-h-screen` to include `bg-[#F9F6F0]`.
 
-### 4. Contact Page
-- Dark bg is correct. Form inputs are consistent. Minor: button could have a skewed/rotated micro-detail for brand flavor.
+### Episode Components (5 files)
+- **`EpisodeHero.tsx`**: Replace `section-dark texture-grain` with `bg-[#F9F6F0] texture-grain relative overflow-hidden`. All text flipped to dark (`text-stone-950`, `text-stone-600`). Video border stays `border-orange-800`. Stats grid border to `border-stone-300`. CTA buttons adapted to light bg.
+- **`EpisodeCategoryFilter.tsx`**: Inactive buttons from `text-stone-200 border-stone-600` to `text-stone-700 border-stone-400 hover:bg-stone-200`.
+- **`EpisodeGrid.tsx`**: Card text to `text-stone-950`. Hook overlay gradient stays dark for contrast on thumbnails.
+- **`EpisodeBingeReel.tsx`**: Replace `section-dark` with `bg-[#F9F6F0]` light variant. Headings to dark. Thumbnail borders to `border-stone-300`. Progress bar bg to `border-stone-300`.
+- **`EpisodeStorySteps.tsx`**: Replace `section-dark` with bone bg. Step boxes to `bg-white border-stone-400`. Labels to `text-stone-950`.
+- **`EpisodeCtaBreak.tsx`**: Switch from `bg-stone-950` to `bg-[#F9F6F0]`. Heading to dark. CTA button inverted.
 
-### 5. Drops Page (`ArtDrops`)
-- Uses `bg-[#F9F6F0]` as base — the hero has grain overlays (good), but the rest of the page sections likely feel clean.
+### Homepage Components (2 files)
+- **`AvailableNowGrid.tsx`**: Replace `section-dark` with `bg-[#F9F6F0]` bone-white. Flip all text to dark. Product card backgrounds to `bg-white border-stone-300`. Badges adapted.
+- **`EmailCaptureBrutalist.tsx`**: Switch from `bg-stone-950` to `bg-[#F9F6F0]`. Text to dark. Input border to `border-stone-400`. Button to `bg-stone-950 text-[#F9F6F0]`.
 
-### 6. Footer
-- Currently `bg-primary` which maps to near-black. Decent but needs texture overlay (grain/stripes) to match nav energy.
+### Shop Component (1 file)
+- **`ProductCard.tsx`**: Card bg from `bg-stone-950` to `bg-white border-stone-300`. Text to dark tones. Add-to-cart button from `bg-stone-800` to `bg-stone-200 text-stone-800 hover:bg-orange-800 hover:text-white`.
 
-### 7. Mobile Issues
-- Hero mobile: CTAs stack well but the text overlay readability could be stronger — gradient fade needs more opacity on small screens.
-- Mobile nav menu: `bg-stone-950` is fine but lacks texture matching the nav bar's `.bg-grunge` treatment.
-- MarqueeBrutalist: Text may be too small on mobile.
+### Footer (1 file)
+- **`SiteFooter.tsx`**: Keep slightly darker for visual anchoring but warm it up — use `bg-stone-100` with warm grain. Text stays muted. Or match `bg-[#F9F6F0]` with a top border divider.
 
-### 8. Email Popup
-- Mixes `font-heading` (Oswald) with the brand pattern of `font-sans` — needs consistency with the brutalist V2 system.
-
-## Plan
-
-### A. Add Shared Texture Utilities (index.css)
-- Create `.texture-grain` and `.texture-stripes` utility classes that can be applied anywhere for consistent grit
-- Create a `.section-dark` and `.section-bone` base pattern with built-in grain
-
-### B. Homepage Sections Polish (4 files)
-- **BeforeAfterSlider.tsx**: Add film grain overlay, diagonal stripe texture, darken slider handle to industrial style (stone-950 bg, rust accent ring)
-- **LatestTransformationBrutalist.tsx**: Add grain overlay, slight diagonal stripe, add a rust left-border accent to the section
-- **AvailableNowGrid.tsx**: Switch to dark bg (`bg-stone-950`) with grain overlay to match shop aesthetic. Update product card text colors accordingly. Add "paint splatter" energy via asymmetric rust accent lines.
-- **MarqueeBrutalist.tsx**: Add diagonal stripe texture overlay. Increase text size on mobile. Add rust-colored dots instead of stone-500.
-
-### C. Episodes Page Polish (4 files)
-- **EpisodeHero.tsx**: Replace `texture-paper` with dark industrial bg (`bg-stone-950`), white text, film grain. Remove bouncing arrow (too playful). Add rust glow to featured video border.
-- **EpisodeBingeReel.tsx**: Switch to `bg-stone-950` with grain. Update text to light colors.
-- **EpisodeStorySteps.tsx**: Switch to dark bg, thicker borders on step icons, rust fill on icons, connecting lines in rust.
-- **EpisodeCategoryFilter.tsx**: Ensure dark industrial styling with rust active state.
-
-### D. Footer + Mobile Menu Polish (2 files)
-- **SiteFooter.tsx**: Add film grain overlay and diagonal stripe texture to match nav bar energy.
-- **SiteNav.tsx**: Add `.bg-grunge` or grain texture to mobile menu dropdown. Improve mobile hero gradient strength.
-
-### E. Email Popup Consistency (1 file)
-- **EmailPopup.tsx**: Swap `font-heading` to `font-sans font-black` for brutalist V2 consistency. Add subtle grain to popup background.
-
-### F. Mobile-Specific Fixes (across files)
-- Hero: Strengthen gradient overlay on mobile (`from-[#F9F6F0]/100` on small screens)
-- MarqueeBrutalist: Bump text to `text-base` on mobile
-- AvailableNowGrid/EpisodeGrid: Ensure 1-col on mobile has adequate spacing
-- CTA buttons: Ensure full-width on mobile with adequate tap targets (min 48px height)
-
-### Files Modified (estimated 10-12 files)
-- `src/index.css` — new texture utility classes
-- `src/components/v2/BeforeAfterSlider.tsx`
-- `src/components/v2/LatestTransformationBrutalist.tsx`
-- `src/components/v2/AvailableNowGrid.tsx`
-- `src/components/v2/MarqueeBrutalist.tsx`
-- `src/components/episodes/EpisodeHero.tsx`
-- `src/components/episodes/EpisodeBingeReel.tsx`
-- `src/components/episodes/EpisodeStorySteps.tsx`
-- `src/components/SiteFooter.tsx`
-- `src/components/SiteNav.tsx`
-- `src/components/EmailPopup.tsx`
-- `src/components/v2/HeroBrutalist.tsx` — mobile gradient fix
+Total: ~14 files, all color/class swaps with no logic changes.
 
