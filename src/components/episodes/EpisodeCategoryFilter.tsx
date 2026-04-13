@@ -20,8 +20,8 @@ const EpisodeCategoryFilter = ({ filter, onFilterChange }: EpisodeCategoryFilter
           onClick={() => onFilterChange(cat.key)}
           className={`px-5 py-2.5 text-xs font-sans font-black uppercase tracking-widest border-2 rounded-none transition-colors min-h-[44px] ${
             filter === cat.key
-              ? "bg-orange-800 text-stone-50 border-orange-800"
-              : "bg-transparent text-stone-200 border-stone-600 hover:bg-stone-800 hover:text-stone-50 hover:border-stone-50"
+              ? "bg-orange-800 text-[#F9F6F0] border-orange-800"
+              : "bg-transparent text-stone-700 border-stone-400 hover:bg-stone-200 hover:text-stone-950 hover:border-stone-500"
           }`}
         >
           {cat.label}

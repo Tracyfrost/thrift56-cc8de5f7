@@ -23,9 +23,9 @@ const EmailCaptureBrutalist = () => {
   };
 
   return (
-    <section className="bg-stone-950 py-24 md:py-36">
+    <section className="bg-[#F9F6F0] py-24 md:py-36">
       <div className="container max-w-2xl text-center">
-        <h2 className="font-sans font-black text-3xl sm:text-4xl md:text-6xl tracking-tighter text-[#F9F6F0] leading-[0.9] mb-5">
+        <h2 className="font-sans font-black text-3xl sm:text-4xl md:text-6xl tracking-tighter text-stone-950 leading-[0.9] mb-5">
           DON'T MISS THE<br />NEXT RESURRECTION
         </h2>
         <p className="text-stone-500 font-serif text-sm mb-12">
@@ -39,12 +39,12 @@ const EmailCaptureBrutalist = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="flex-1 bg-transparent text-stone-50 font-serif text-base px-1 py-3 border-b-2 border-stone-500 placeholder:text-stone-600 outline-none focus:ring-0 focus:border-stone-300 transition-colors rounded-none"
+            className="flex-1 bg-transparent text-stone-950 font-serif text-base px-1 py-3 border-b-2 border-stone-400 placeholder:text-stone-400 outline-none focus:ring-0 focus:border-orange-800 transition-colors rounded-none"
           />
           <button
             type="submit"
             disabled={subscribe.isPending}
-            className="bg-[#F9F6F0] text-stone-950 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-200 transition-colors disabled:opacity-50 shrink-0"
+            className="bg-stone-950 text-[#F9F6F0] font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-800 transition-colors disabled:opacity-50 shrink-0"
           >
             {subscribe.isPending ? "Joining..." : "Get Drop Alerts"}
           </button>

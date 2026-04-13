@@ -37,10 +37,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <Link
       to={`/product/${node.handle}`}
-      className="group block border border-stone-800 bg-stone-950 hover:border-rust/50 transition-colors"
+      className="group block border border-stone-300 bg-white hover:border-orange-800/50 transition-colors"
     >
       {/* Image */}
-      <div className="aspect-square bg-stone-900 overflow-hidden relative">
+      <div className="aspect-square bg-stone-100 overflow-hidden relative">
         {image ? (
           <img
             src={image.url}
@@ -49,7 +49,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="font-heading text-stone-700 text-xs uppercase tracking-wider">
+            <span className="font-heading text-stone-400 text-xs uppercase tracking-wider">
               No Image
             </span>
           </div>
@@ -57,8 +57,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Badge */}
         {(isOneOfOne || isLimited) && (
-          <div className="absolute top-2 left-2 bg-stone-950/90 border border-rust/50 px-2 py-1">
-            <span className="font-heading text-[10px] uppercase tracking-wider text-rust">
+          <div className="absolute top-2 left-2 bg-[#F9F6F0]/90 border border-orange-800/50 px-2 py-1">
+            <span className="font-heading text-[10px] uppercase tracking-wider text-orange-800">
               {isOneOfOne ? "1 of 1" : "Limited /50"}
             </span>
           </div>
@@ -68,10 +68,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* Info */}
       <div className="p-3 space-y-2">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-heading text-xs uppercase tracking-wider text-stone-200 leading-tight line-clamp-2">
+          <h3 className="font-heading text-xs uppercase tracking-wider text-stone-950 leading-tight line-clamp-2">
             {node.title}
           </h3>
-          <span className="font-heading text-sm text-rust flex-shrink-0">
+          <span className="font-heading text-sm text-orange-800 flex-shrink-0">
             ${parseFloat(price.amount).toFixed(0)}
           </span>
         </div>
@@ -83,7 +83,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <button
           onClick={handleAddToCart}
           disabled={isLoading || !firstVariant?.availableForSale}
-          className="w-full mt-2 bg-stone-800 text-stone-300 font-heading text-[10px] uppercase tracking-[0.15em] py-2 hover:bg-rust hover:text-cream transition-colors disabled:opacity-40"
+          className="w-full mt-2 bg-stone-200 text-stone-800 font-heading text-[10px] uppercase tracking-[0.15em] py-2 hover:bg-orange-800 hover:text-white transition-colors disabled:opacity-40"
         >
           {isLoading ? (
             <Loader2 className="w-3 h-3 animate-spin mx-auto" />
