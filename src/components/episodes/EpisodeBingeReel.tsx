@@ -31,10 +31,10 @@ const EpisodeBingeReel = () => {
   };
 
   return (
-    <section className="section-dark texture-grain py-16 md:py-24">
+    <section className="bg-[#F9F6F0] texture-grain py-16 md:py-24 relative overflow-hidden">
       <div className="container mb-8 relative z-10">
         <p className="font-serif italic text-stone-500 text-sm mb-2">Keep watching</p>
-        <h2 className="text-3xl md:text-5xl font-sans font-black tracking-tighter text-stone-50">
+        <h2 className="text-3xl md:text-5xl font-sans font-black tracking-tighter text-stone-950">
           WATCH WHAT HAPPENS NEXT
         </h2>
       </div>
@@ -49,7 +49,7 @@ const EpisodeBingeReel = () => {
             key={item.id}
             className="min-w-[260px] max-w-[260px] flex-shrink-0 snap-start group cursor-pointer"
           >
-            <div className="relative aspect-video overflow-hidden border-2 border-stone-700 bg-stone-900 group-hover:border-orange-800 transition-colors">
+            <div className="relative aspect-video overflow-hidden border-2 border-stone-300 bg-stone-200 group-hover:border-orange-800 transition-colors">
               <img
                 src={item.thumbnail}
                 alt={item.title}
@@ -68,7 +68,7 @@ const EpisodeBingeReel = () => {
                 </div>
               </div>
             </div>
-            <p className="font-sans font-black text-stone-200 text-sm tracking-tight mt-2">
+            <p className="font-sans font-black text-stone-950 text-sm tracking-tight mt-2">
               {item.title}
             </p>
           </div>
@@ -77,7 +77,7 @@ const EpisodeBingeReel = () => {
 
       {/* Progress bar */}
       <div className="container mt-4 relative z-10">
-        <div className="h-1 bg-stone-800 rounded-none max-w-md mx-auto">
+        <div className="h-1 bg-stone-300 rounded-none max-w-md mx-auto">
           <div
             className="h-full bg-orange-800 rounded-none transition-all duration-150"
             style={{ width: `${Math.max(progress, 5)}%` }}

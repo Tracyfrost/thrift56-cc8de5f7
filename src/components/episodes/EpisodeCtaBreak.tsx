@@ -1,9 +1,9 @@
 const EpisodeCtaBreak = () => {
   return (
     <>
-      <section className="bg-stone-950 py-20 md:py-28">
+      <section className="bg-[#F9F6F0] py-20 md:py-28">
         <div className="container text-center">
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-sans font-black tracking-tighter text-stone-50 mb-8 leading-[0.95]">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-sans font-black tracking-tighter text-stone-950 mb-8 leading-[0.95]">
             DON'T MISS THE NEXT
             <br />
             TRANSFORMATION
@@ -12,7 +12,7 @@ const EpisodeCtaBreak = () => {
             href="https://youtube.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-10 py-4 bg-stone-50 text-stone-950 font-sans font-black uppercase tracking-widest text-sm rounded-none hover:bg-stone-200 transition-colors"
+            className="inline-flex items-center justify-center px-10 py-4 bg-stone-950 text-[#F9F6F0] font-sans font-black uppercase tracking-widest text-sm rounded-none hover:bg-stone-800 transition-colors"
           >
             SUBSCRIBE ON YOUTUBE
           </a>

@@ -18,37 +18,37 @@ const Shop = () => {
   const { data: products, isLoading } = useShopifyProducts(20, FILTERS[activeFilter].query);
 
   return (
-    <div className="min-h-screen bg-stone-950">
+    <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
 
       {/* Hero */}
-      <section className="relative py-20 md:py-28 bg-stone-950 film-grain overflow-hidden">
+      <section className="relative py-20 md:py-28 bg-[#F9F6F0] film-grain overflow-hidden">
         <div className="container text-center relative z-10">
           <p className="font-serif italic text-stone-500 text-sm mb-3">
             This was $3. It deserved better.
           </p>
-          <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl uppercase tracking-tighter text-stone-100 leading-[0.9]">
+          <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl uppercase tracking-tighter text-stone-950 leading-[0.9]">
             From Forgotten
             <br />
-            <span className="text-rust">to Featured.</span>
+            <span className="text-orange-800">to Featured.</span>
           </h1>
-          <p className="mt-4 text-stone-500 font-heading text-xs uppercase tracking-[0.2em]">
+          <p className="mt-4 text-stone-600 font-heading text-xs uppercase tracking-[0.2em]">
             Originals · Prints · Merch · Digital
           </p>
         </div>
       </section>
 
       {/* Filters */}
-      <div className="border-y border-stone-800">
+      <div className="border-y border-stone-300">
         <div className="container flex items-center gap-0 overflow-x-auto">
           {FILTERS.map((f, i) => (
             <button
               key={f.label}
               onClick={() => setActiveFilter(i)}
-              className={`font-heading text-[10px] uppercase tracking-[0.2em] px-5 py-3 border-r border-stone-800 transition-colors whitespace-nowrap ${
+              className={`font-heading text-[10px] uppercase tracking-[0.2em] px-5 py-3 border-r border-stone-300 transition-colors whitespace-nowrap ${
                 activeFilter === i
-                  ? "bg-rust text-cream"
-                  : "text-stone-500 hover:text-stone-200"
+                  ? "bg-orange-800 text-[#F9F6F0]"
+                  : "text-stone-600 hover:text-stone-950"
               }`}
             >
               {f.label}
@@ -61,11 +61,11 @@ const Shop = () => {
       <section className="container py-10 md:py-16">
         {isLoading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-rust" />
+            <Loader2 className="w-6 h-6 animate-spin text-orange-800" />
           </div>
         ) : !products || products.length === 0 ? (
           <div className="text-center py-20">
-            <p className="font-heading text-xs uppercase tracking-wider text-stone-600">
+            <p className="font-heading text-xs uppercase tracking-wider text-stone-500">
               No products found
             </p>
           </div>

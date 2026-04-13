@@ -12,7 +12,7 @@ const EpisodesPage = () => {
   const [filter, setFilter] = useState("all");
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
       <EpisodeHero />
       <div className="container">
