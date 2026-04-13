@@ -23,10 +23,10 @@ const ShopifyProductDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-stone-950">
+      <div className="min-h-screen bg-[#F9F6F0]">
         <SiteNav />
         <div className="flex items-center justify-center py-40">
-          <Loader2 className="w-6 h-6 animate-spin text-rust" />
+          <Loader2 className="w-6 h-6 animate-spin text-orange-800" />
         </div>
       </div>
     );
@@ -34,13 +34,13 @@ const ShopifyProductDetail = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-stone-950">
+      <div className="min-h-screen bg-[#F9F6F0]">
         <SiteNav />
         <div className="container py-20 text-center">
           <p className="font-heading text-sm uppercase tracking-wider text-stone-500">
             Product not found
           </p>
-          <Link to="/shop" className="text-rust text-xs uppercase tracking-wider mt-4 inline-block hover:underline">
+          <Link to="/shop" className="text-orange-800 text-xs uppercase tracking-wider mt-4 inline-block hover:underline">
             ← Back to Shop
           </Link>
         </div>
@@ -81,13 +81,13 @@ const ShopifyProductDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950">
+    <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
 
       <div className="container py-6">
         <Link
           to="/shop"
-          className="inline-flex items-center gap-1 text-stone-500 hover:text-rust text-xs font-heading uppercase tracking-wider transition-colors"
+          className="inline-flex items-center gap-1 text-stone-500 hover:text-orange-800 text-xs font-heading uppercase tracking-wider transition-colors"
         >
           <ChevronLeft size={14} /> Back to Shop
         </Link>
@@ -99,7 +99,7 @@ const ShopifyProductDetail = () => {
           <div className="space-y-4">
             {images.length > 0 ? (
               images.map((img: { node: { url: string; altText: string | null } }, i: number) => (
-                <div key={i} className="aspect-[4/5] bg-stone-900 overflow-hidden border border-stone-800">
+                <div key={i} className="aspect-[4/5] bg-stone-100 overflow-hidden border border-stone-300">
                   <img
                     src={img.node.url}
                     alt={img.node.altText || product.title}
@@ -108,8 +108,8 @@ const ShopifyProductDetail = () => {
                 </div>
               ))
             ) : (
-              <div className="aspect-[4/5] bg-stone-900 border border-stone-800 flex items-center justify-center">
-                <span className="font-heading text-stone-700 text-xs uppercase tracking-wider">
+              <div className="aspect-[4/5] bg-stone-100 border border-stone-300 flex items-center justify-center">
+                <span className="font-heading text-stone-400 text-xs uppercase tracking-wider">
                   No Image
                 </span>
               </div>
@@ -120,8 +120,8 @@ const ShopifyProductDetail = () => {
           <div className="lg:sticky lg:top-24 lg:self-start space-y-8">
             {/* Exclusivity badge */}
             {isOneOfOne && (
-              <div className="inline-block border border-rust/50 bg-rust/10 px-4 py-1.5">
-                <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-rust">
+              <div className="inline-block border border-orange-800/50 bg-orange-800/10 px-4 py-1.5">
+                <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-orange-800">
                   1 of 1 Worldwide
                 </span>
               </div>
@@ -132,13 +132,13 @@ const ShopifyProductDetail = () => {
               <p className="text-[10px] text-stone-600 uppercase tracking-[0.2em] font-heading mb-2">
                 {product.productType}
               </p>
-              <h1 className="font-heading text-3xl md:text-4xl uppercase tracking-tighter text-stone-100 leading-none">
+              <h1 className="font-heading text-3xl md:text-4xl uppercase tracking-tighter text-stone-950 leading-none">
                 {product.title}
               </h1>
             </div>
 
             {/* Price */}
-            <div className="font-heading text-3xl text-rust">
+            <div className="font-heading text-3xl text-orange-800">
               ${parseFloat(selectedVariant?.price.amount || "0").toFixed(2)}
             </div>
 
@@ -146,8 +146,8 @@ const ShopifyProductDetail = () => {
             <FourPillars />
 
             {/* Origin Line + Description */}
-            <div className="space-y-3 border-l-2 border-rust/30 pl-5">
-              <p className="font-body italic text-stone-400 text-sm leading-relaxed">
+            <div className="space-y-3 border-l-2 border-orange-800/30 pl-5">
+              <p className="font-body italic text-stone-600 text-sm leading-relaxed">
                 {product.description?.split('.')[0]}.
               </p>
               <p className="text-stone-500 text-sm leading-relaxed">
@@ -180,8 +180,8 @@ const ShopifyProductDetail = () => {
                               onClick={() => setSelectedVariantIdx(variantIdx >= 0 ? variantIdx : 0)}
                               className={`px-4 py-2 border font-heading text-[10px] uppercase tracking-wider transition-colors ${
                                 isSelected
-                                  ? "border-rust bg-rust/10 text-rust"
-                                  : "border-stone-700 text-stone-400 hover:border-stone-500"
+                                  ? "border-orange-800 bg-orange-800/10 text-orange-800"
+                                  : "border-stone-300 text-stone-600 hover:border-stone-500"
                               }`}
                             >
                               {value}
@@ -198,7 +198,7 @@ const ShopifyProductDetail = () => {
             <button
               onClick={handleAddToCart}
               disabled={cartLoading || !selectedVariant?.availableForSale}
-              className="w-full bg-rust text-cream font-heading text-sm uppercase tracking-[0.15em] py-5 hover:bg-rust/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-orange-800 text-[#F9F6F0] font-heading text-sm uppercase tracking-[0.15em] py-5 hover:bg-orange-800/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {cartLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -210,20 +210,20 @@ const ShopifyProductDetail = () => {
             </button>
 
             {/* Accordions */}
-            <Accordion type="multiple" className="border-t border-stone-800">
-              <AccordionItem value="journey" className="border-b border-stone-800">
-                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-4 hover:no-underline">
+            <Accordion type="multiple" className="border-t border-stone-300">
+              <AccordionItem value="journey" className="border-b border-stone-300">
+                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-600 hover:text-stone-950 py-4 hover:no-underline">
                   The Journey
                 </AccordionTrigger>
                 <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4 space-y-2">
-                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Discovery</span> — Pulled from a place most people ignore.</p>
-                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Transformation</span> — Restored, reimagined, and finished by hand.</p>
-                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Story</span> — The entire process documented on film.</p>
-                  <p><span className="text-stone-300 font-heading uppercase text-[9px] tracking-wider">Release</span> — Limited. Once it's gone, it stays gone.</p>
+                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Discovery</span> — Pulled from a place most people ignore.</p>
+                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Transformation</span> — Restored, reimagined, and finished by hand.</p>
+                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Story</span> — The entire process documented on film.</p>
+                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Release</span> — Limited. Once it's gone, it stays gone.</p>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="shipping" className="border-b border-stone-800">
-                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-4 hover:no-underline">
+              <AccordionItem value="shipping" className="border-b border-stone-300">
+                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-600 hover:text-stone-950 py-4 hover:no-underline">
                   Shipping & Returns
                 </AccordionTrigger>
                 <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4">
@@ -232,8 +232,8 @@ const ShopifyProductDetail = () => {
                   Digital products are non-refundable after download.
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="safety" className="border-b border-stone-800">
-                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-400 hover:text-stone-200 py-4 hover:no-underline">
+              <AccordionItem value="safety" className="border-b border-stone-300">
+                <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-600 hover:text-stone-950 py-4 hover:no-underline">
                   Product Safety
                 </AccordionTrigger>
                 <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4">

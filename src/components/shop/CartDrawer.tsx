@@ -33,18 +33,18 @@ export const CartDrawer = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <button className="relative p-2 text-stone-300 hover:text-rust transition-colors">
+        <button className="relative p-2 text-stone-300 hover:text-orange-800 transition-colors">
           <ShoppingCart size={18} />
           {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-none bg-rust text-cream text-[10px] font-heading flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-none bg-orange-800 text-[#F9F6F0] text-[10px] font-heading flex items-center justify-center">
               {totalItems}
             </span>
           )}
         </button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md flex flex-col h-full bg-stone-950 border-l border-stone-800 rounded-none text-stone-200">
-        <SheetHeader className="flex-shrink-0 border-b border-stone-800 pb-4">
-          <SheetTitle className="font-heading text-sm uppercase tracking-[0.2em] text-stone-200">
+      <SheetContent className="w-full sm:max-w-md flex flex-col h-full bg-[#F9F6F0] border-l border-stone-300 rounded-none text-stone-950">
+        <SheetHeader className="flex-shrink-0 border-b border-stone-300 pb-4">
+          <SheetTitle className="font-heading text-sm uppercase tracking-[0.2em] text-stone-950">
             Your Cart
           </SheetTitle>
           <SheetDescription className="text-stone-500 text-xs uppercase tracking-wider">
@@ -56,7 +56,7 @@ export const CartDrawer = () => {
           {items.length === 0 ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <ShoppingCart className="h-10 w-10 text-stone-700 mx-auto mb-3" />
+                <ShoppingCart className="h-10 w-10 text-stone-400 mx-auto mb-3" />
                 <p className="text-stone-500 font-heading text-xs uppercase tracking-wider">
                   Cart is empty
                 </p>
@@ -68,9 +68,9 @@ export const CartDrawer = () => {
                 {items.map((item) => (
                   <div
                     key={item.variantId}
-                    className="flex gap-3 p-3 border border-stone-800 bg-stone-900"
+                    className="flex gap-3 p-3 border border-stone-300 bg-white"
                   >
-                    <div className="w-14 h-14 bg-stone-800 flex-shrink-0 overflow-hidden">
+                    <div className="w-14 h-14 bg-stone-100 flex-shrink-0 overflow-hidden">
                       {item.product.node.images?.edges?.[0]?.node && (
                         <img
                           src={item.product.node.images.edges[0].node.url}
@@ -80,34 +80,34 @@ export const CartDrawer = () => {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-heading text-xs uppercase tracking-wider truncate text-stone-200">
+                      <h4 className="font-heading text-xs uppercase tracking-wider truncate text-stone-950">
                         {item.product.node.title}
                       </h4>
                       {item.variantTitle !== "Default Title" && (
                         <p className="text-[10px] text-stone-500 uppercase">{item.variantTitle}</p>
                       )}
-                      <p className="text-rust font-heading text-sm mt-1">
+                      <p className="text-orange-800 font-heading text-sm mt-1">
                         ${parseFloat(item.price.amount).toFixed(2)}
                       </p>
                     </div>
                     <div className="flex flex-col items-end gap-2 flex-shrink-0">
                       <button
                         onClick={() => removeItem(item.variantId)}
-                        className="text-stone-600 hover:text-rust transition-colors"
+                        className="text-stone-400 hover:text-orange-800 transition-colors"
                       >
                         <Trash2 size={12} />
                       </button>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                          className="w-5 h-5 border border-stone-700 flex items-center justify-center text-stone-400 hover:text-stone-200 hover:border-stone-500"
+                          className="w-5 h-5 border border-stone-300 flex items-center justify-center text-stone-600 hover:text-stone-950 hover:border-stone-500"
                         >
                           <Minus size={10} />
                         </button>
                         <span className="w-6 text-center text-xs font-heading">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                          className="w-5 h-5 border border-stone-700 flex items-center justify-center text-stone-400 hover:text-stone-200 hover:border-stone-500"
+                          className="w-5 h-5 border border-stone-300 flex items-center justify-center text-stone-600 hover:text-stone-950 hover:border-stone-500"
                         >
                           <Plus size={10} />
                         </button>
@@ -117,17 +117,17 @@ export const CartDrawer = () => {
                 ))}
               </div>
 
-              <div className="flex-shrink-0 space-y-3 pt-4 border-t border-stone-800">
+              <div className="flex-shrink-0 space-y-3 pt-4 border-t border-stone-300">
                 <div className="flex justify-between items-center">
-                  <span className="font-heading text-xs uppercase tracking-wider text-stone-400">Total</span>
-                  <span className="font-heading text-lg text-rust">
+                  <span className="font-heading text-xs uppercase tracking-wider text-stone-600">Total</span>
+                  <span className="font-heading text-lg text-orange-800">
                     ${totalPrice.toFixed(2)}
                   </span>
                 </div>
                 <button
                   onClick={handleCheckout}
                   disabled={items.length === 0 || isLoading || isSyncing}
-                  className="w-full bg-rust text-cream font-heading text-xs uppercase tracking-[0.15em] py-3 hover:bg-rust/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full bg-orange-800 text-[#F9F6F0] font-heading text-xs uppercase tracking-[0.15em] py-3 hover:bg-orange-800/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isLoading || isSyncing ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
