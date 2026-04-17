@@ -33,7 +33,7 @@ const Shop = () => {
             <span className="text-orange-800">to Featured.</span>
           </h1>
           <p className="mt-4 text-stone-600 font-heading text-xs uppercase tracking-[0.2em]">
-            Originals · Prints · Merch · Digital
+            Originals · Prints · Curated · Digital
           </p>
         </div>
       </section>
