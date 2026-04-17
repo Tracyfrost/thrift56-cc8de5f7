@@ -9,7 +9,7 @@ const FILTERS = [
   { label: "All", query: undefined },
   { label: "Originals", query: "product_type:Original" },
   { label: "Prints", query: "product_type:Print" },
-  { label: "Merch", query: "product_type:Merch" },
+  { label: "Curated", query: "product_type:Merch" },
   { label: "Digital", query: "product_type:Digital" },
 ];
 
