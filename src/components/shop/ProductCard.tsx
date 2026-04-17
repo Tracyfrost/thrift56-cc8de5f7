@@ -85,12 +85,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         <button
           onClick={handleAddToCart}
-          disabled={isLoading || !firstVariant?.availableForSale}
+          disabled={isLoading || !isPurchasable}
           className="w-full mt-2 bg-stone-200 text-stone-800 font-heading text-[10px] uppercase tracking-[0.15em] py-2 hover:bg-orange-800 hover:text-white transition-colors disabled:opacity-40"
         >
           {isLoading ? (
             <Loader2 className="w-3 h-3 animate-spin mx-auto" />
-          ) : !firstVariant?.availableForSale ? (
+          ) : !isPurchasable ? (
             "Sold Out"
           ) : (
             "Add to Cart"
