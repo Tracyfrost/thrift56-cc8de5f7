@@ -200,12 +200,12 @@ const ShopifyProductDetail = () => {
             {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              disabled={cartLoading || !selectedVariant?.availableForSale}
+              disabled={cartLoading || !isPurchasable}
               className="w-full bg-orange-800 text-[#F9F6F0] font-heading text-sm uppercase tracking-[0.15em] py-5 hover:bg-orange-800/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {cartLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
-              ) : !selectedVariant?.availableForSale ? (
+              ) : !isPurchasable ? (
                 "Sold Out"
               ) : (
                 "Add to Cart"
