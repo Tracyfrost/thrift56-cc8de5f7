@@ -1,42 +1,18 @@
 
+The user is asking how to upload, change, and update product photos for their Shop. This is a "how-to" question, not an implementation request — so I should answer directly without proposing code changes.
 
-# Unify Shop/Product Pages to Light Retro Palette
+Key context:
+- The project uses Shopify as the single source of truth for products (per memory: "architecture/shopify-storefront")
+- Products are fetched via Storefront API in `src/lib/shopify.ts` and `src/hooks/useShopifyProducts.ts`
+- The `ProductCard.tsx` displays `node.images.edges[0]?.node.url` directly from Shopify
+- There is NO admin UI in the Lovable app for uploading product photos — that lives in Shopify Admin
+- The AI agent has access to `shopify--update_product` which can replace product images via `file_path` (supports `user-uploads://` or `src/` paths)
 
-## Files to Modify (3 files)
+So there are 3 real ways to update product photos:
+1. **Shopify Admin dashboard** (recommended for ongoing use — visual, drag-drop, reorder, alt text)
+2. **Through chat with me** (upload a photo to chat + tell me which product to update)
+3. **Bulk via CSV import in Shopify Admin** (for many products at once)
 
-### 1. `src/pages/ShopifyProductDetail.tsx`
-- Loading/error states: `bg-stone-950` → `bg-[#F9F6F0]`
-- Main wrapper: `bg-stone-950` → `bg-[#F9F6F0]`
-- Back link: `text-stone-500 hover:text-rust` → `text-stone-500 hover:text-orange-800`
-- Image containers: `bg-stone-900 border border-stone-800` → `bg-stone-100 border border-stone-300`
-- No-image fallback: `bg-stone-900 border-stone-800 text-stone-700` → `bg-stone-100 border-stone-300 text-stone-400`
-- Product type text: keep `text-stone-600`
-- Title: `text-stone-100` → `text-stone-950`
-- Price: keep `text-rust` (already correct)
-- Description border: `border-rust/30` → `border-orange-800/30`, text `text-stone-400` → `text-stone-600`, `text-stone-500` → `text-stone-500` (ok)
-- Variant selector: inactive `border-stone-700 text-stone-400 hover:border-stone-500` → `border-stone-300 text-stone-600 hover:border-stone-500`
-- Accordion borders: `border-stone-800` → `border-stone-300`
-- Accordion trigger text: `text-stone-400 hover:text-stone-200` → `text-stone-600 hover:text-stone-950`
-- Accordion content: `text-stone-500` stays, label spans `text-stone-300` → `text-stone-700`
+I should NOT suggest building an in-app uploader — that would duplicate Shopify's admin and break the single-source-of-truth architecture.
 
-### 2. `src/components/shop/FourPillars.tsx`
-- Grid border: `border-stone-800` → `border-stone-300`
-- Divider borders: `border-r border-stone-800` → `border-r border-stone-300`
-- Label text: `text-stone-200` → `text-stone-950`
-- Keep rust icons and stone-500 detail text
-
-### 3. `src/components/shop/CartDrawer.tsx`
-- Cart trigger icon: `text-stone-300` → `text-stone-600` (for visibility on light nav — but nav is dark/grunge, so this stays)
-- Sheet panel: `bg-stone-950 border-l border-stone-800` → `bg-[#F9F6F0] border-l border-stone-300`
-- Title: `text-stone-200` → `text-stone-950`
-- Description: `text-stone-500` stays
-- Empty cart icon: `text-stone-700` → `text-stone-400`
-- Cart items: `border-stone-800 bg-stone-900` → `border-stone-300 bg-white`
-- Item thumbnail bg: `bg-stone-800` → `bg-stone-100`
-- Item title: `text-stone-200` → `text-stone-950`
-- Quantity buttons: `border-stone-700 text-stone-400 hover:text-stone-200 hover:border-stone-500` → `border-stone-300 text-stone-600 hover:text-stone-950 hover:border-stone-500`
-- Footer border: `border-stone-800` → `border-stone-300`
-- Total label: `text-stone-400` → `text-stone-600`
-
-All logic stays the same — pure color/class swaps.
-
+This is a Q&A response, no plan/code changes needed. Keep it short and actionable.
