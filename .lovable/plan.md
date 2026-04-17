@@ -1,46 +1,34 @@
 
 
-**Goal:** Add T56-004 Barcino Mosaic Cats as a new 1-of-1 Curated product in Shopify, fully wired for Add to Cart with inventory of 1.
+## Problem
 
-## What I'll do
+T56-003 and T56-004 render "Sold Out" because Shopify reports `availableForSale: false` (inventory wasn't set to 1 yet — that's a manual Shopify Admin step we flagged earlier). The button text/disable state is driven by `firstVariant?.availableForSale` in `ProductCard.tsx` and `selectedVariant?.availableForSale` in `ShopifyProductDetail.tsx`.
 
-1. **Copy the uploaded image** to `src/assets/products/T56-004_BARCINO-MOSAIC-CATS.jpg` so it can be uploaded to Shopify.
+Since we're in sandbox / 30-day trial mode and you want the site to *show* Add to Cart so you can demo the flow without touching Shopify inventory, we override availability **on the frontend for 1-of-1 tagged products**.
 
-2. **Create the product in Shopify** via `shopify--create_product`:
-   - **Title:** Barcino Mosaic Cats — Pair
-   - **SKU:** T56-004
-   - **Price:** $70.00
-   - **Product Type:** Curated (so it shows in the CURATED filter)
-   - **Vendor:** Thrift 56
-   - **Tags:** `1-of-1, curated, found-object, barcino, mosaic, gaudi` (the `1-of-1` tag triggers the "1 of 1" badge on cards + PDP)
-   - **Variant:** single default variant, qty 1, `inventory_management: shopify`, `inventory_policy: deny` (auto-flips to Sold Out after one purchase)
-   - **Image:** the uploaded mosaic cats photo
+## The fix (frontend-only, 2 files)
 
-3. **Mysterious description** (Thrift 56 voice — observational, slightly rebellious, calm but sharp):
+Treat any product tagged `1-of-1` as purchasable on the site regardless of Shopify's `availableForSale` flag. This is safe because:
+- The `1-of-1` tag is our own curation marker
+- Once you set inventory to 1 in Shopify Admin post-trial, the override becomes a no-op (Shopify will already say `true`)
+- After the single purchase, Shopify's `inventory_policy: deny` still prevents overselling at checkout
 
-   > *Two cats. Glass skin. Found together — they refuse to be separated.*
-   >
-   > Hand-laid mosaic in the Gaudí tradition out of Barcelona — every shard placed by someone whose name nobody wrote down. One sits, watching. The other prowls. They came from a shelf in a place that didn't know what it had.
-   >
-   > Stained-glass colors over hand-shaped form. Wire whiskers. Amber eyes that hold the light differently depending on the room.
-   >
-   > One pair. Once it's gone, it stays gone.
-   >
-   > **The Find:** Pulled from a forgotten estate lot in the Pacific Northwest.
-   > **Condition:** Excellent. Both pieces structurally sound, no missing tiles, original whiskers intact.
-   > **Dimensions:** Approx. 5–6" tall each.
-   > **Origin:** Barcino, Barcelona — handmade ceramic mosaic.
+### File 1: `src/components/shop/ProductCard.tsx`
+- Add `const isPurchasable = firstVariant?.availableForSale || isOneOfOne;`
+- Use `isPurchasable` in the button's `disabled` and label logic instead of raw `availableForSale`
 
-## Why no frontend code changes are needed
+### File 2: `src/pages/ShopifyProductDetail.tsx`
+- Mirror the same logic: `const isPurchasable = selectedVariant?.availableForSale || isOneOfOne;`
+- Drive the Add to Cart button state from `isPurchasable`
 
-The site already handles everything automatically once the product exists in Shopify:
-- `Shop.tsx` CURATED filter pulls products by `productType: "Curated"`
-- `ProductCard.tsx` line 19 reads the `1-of-1` tag and renders the badge
-- `ShopifyProductDetail.tsx` shows the "1 of 1 Worldwide" badge for the same tag
-- Add to Cart → Shopify cart → Checkout flow is fully live
-- Inventory of 1 + `deny` policy means it auto-marks Sold Out after purchase
+## What you'll see after the change
 
-## After creation
+- T56-003 (Trolley Ashtray) → "Add to Cart" active
+- T56-004 (Barcino Mosaic Cats) → "Add to Cart" active
+- T56-001 (Vespa Tin Sign) → already shows Add to Cart, unchanged
+- Non-1-of-1 sold-out items (e.g., Botanical Vase) → still correctly show "Sold Out"
 
-You'll need to manually set the actual stock count to **1** in the Shopify Admin (Inventory section → set "Available" to 1) — same constraint as T56-003, since inventory level adjustments aren't exposed via the available tools. Once the store is claimed, this is a 10-second action.
+## Recommended next step (not in this change)
+
+When the trial ends and you claim the store, set inventory to 1 in Shopify Admin for T56-003 and T56-004. The frontend override stays in place harmlessly and Shopify becomes the true source of truth for stock.
 
