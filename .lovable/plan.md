@@ -1,24 +1,37 @@
 
-The current description on T56-002 has a JSON image-array string accidentally appended to it, plus the existing copy could lean harder into the throwback car-culture voice. The screenshot confirms the bug — the raw `[{"file_path":...}]` blob is rendering inside the description block.
+User wants to create a new 1-of-1 product in their Shopify store: a vintage San Francisco trolley/cable car ceramic ashtray, "T56-003_TROLLY-ASHTRAY" listed at $24.99, with two attached photos. Needs an era-appropriate description that highlights the unusual cigarette rests on the corners (not center).
 
 ## Plan
 
-Use `shopify--update_product` on product `7774491181133` to overwrite the `body` (description) field only. No other fields touched. No code changes — the PDP pulls live from Shopify.
+Create new Shopify product via `shopify--create_product`:
 
-### New description (throwback cool, brand voice intact)
+- **Title:** "Powell & Mason St. Cable Car Ashtray — Vintage SNCO Japan"
+- **Product type:** Decor / Ashtray
+- **Tags:** `1-of-1, vintage, ceramic, ashtray, mid-century, japan, san-francisco, smokeware`
+- **Vendor:** Thrift 56
+- **Price:** $24.99
+- **Variant:** single, inventory tracked, qty 1, deny when sold out (1-of-1)
+- **Images:** 
+  1. `user-uploads://T56-003_TROLLY-ASHTRAY_EDT_001.jpg` — front (relief sculpt, hero)
+  2. `user-uploads://T56-003_TROLLY-ASHTRAY_EDT_002.jpg` — reverse with SNCO Japan stamp
 
-> Two cars. One box. Frozen in time.
+### Description (throwback voice, brand tone, integrating the corner-rest detail)
+
+> Powell & Mason St. Pulled from the back of a curio cabinet where it sat through six decades of cocktail hours.
 >
-> A 1/32 scale die-cast set pairing the Pontiac Firebird with the Shelby Cobra 427 S/C #99 — sealed in the original collector packaging since the day it hit the shelf. Worn edges. Sun-faded blacks. Shrink-wrap creases that prove it sat untouched for two decades before we found it.
+> A glazed ceramic ashtray cast in the shape of a San Francisco cable car — passengers molded into the sides, "POWELL & MASON ST" stamped above the windows, "SAN FRANCISCO" running along the deck. Stamped SNCO Japan on the underside. Mid-century era, 1950s–60s souvenir-ware, back when bringing home a small ceramic something from a trip felt like proof you went.
 >
-> Opening doors. Die-cast metal. Original box. As-found, as-photographed.
+> Here's the kicker most folks miss: the cigarette rests are tucked into the four corners — not notched into the center like every other tray of its time. A small rebellion in tableware design. Whoever sculpted this wanted the trolley to stay the star of the show, undisturbed, while the smoke happened around the edges.
 >
-> Built when muscle meant something and chrome wasn't ironic. The Firebird's screaming chicken on the hood. The Cobra's racing stripes still loud after all these years. A pocket-sized garage from an era that doesn't make 'em like this anymore.
+> Vintage glaze. Honest patina. Some original lacquer-orange brilliance still intact on the back. A working ashtray, a coin dish, a desk catch-all — or just a piece of someone else's holiday left out where you can see it.
 >
 > 1 of 1. When it's gone, it stays gone.
 
-### What this fixes
-- Strips the JSON image-array junk that's currently rendering as text
-- Adds a throwback hook ("Frozen in time") and an era-defining middle paragraph (muscle, chrome, screaming chicken, racing stripes)
-- Keeps the closing brand stamp ("1 of 1. When it's gone, it stays gone.")
-- Preserves all existing product setup — title, $50 price, tags, images, variant, inventory policy
+### What this delivers
+- Era-fitting voice (cocktail hours, souvenir-ware, "small rebellion in tableware design")
+- The unusual corner-rest detail framed as the hidden differentiator — exactly as the user asked
+- Brand-consistent closer ("1 of 1. When it's gone, it stays gone.")
+- Both images attached with descriptive alt text
+- Inventory locked at 1 with `deny` policy so it can't oversell
+
+No code changes — Shop page pulls live from Shopify and the new product appears on next refresh.
