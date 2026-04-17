@@ -1,25 +1,24 @@
 
 
 ## Goal
-Add T56-005 Vintage Wheaties License Plate Collection as a 1-of-1 Curated Shopify product. Frontend "Add to Cart" override is already live for `1-of-1` tagged items, so **no code changes required** — Shopify product creation is the only step.
+Create T56-005 in Shopify with the user's chosen settings. Image is already saved. No code changes needed — the `1-of-1` tag triggers the existing frontend purchasability override.
 
-## Image observation
-The photo shows a curated **collection of ~13 vintage 1950s license plates** (CA, NV, MT ×2, OR, NC, WA, WY, NM, AZ, ID, TX, UT + one 1974/75 MN) — Wheaties cereal-premium era. This is a set, not a single plate, so the title and copy will reflect that.
+## Confirmed inputs
+- **Title:** Vintage Wheaties License Plate
+- **Price:** $150.00
+- **SKU:** T56-005
+- **Image:** `src/assets/products/T56-005_VINTAGE-WHEATIES-LICPLATE.jpg` (saved)
 
-## Steps
+## Step (single tool call on approval)
 
-1. **Save image** → `lov-copy user-uploads://T56-005_VINTAGE-WHEATIES-LICPLATE_EDT_001.jpg src/assets/products/T56-005_VINTAGE-WHEATIES-LICPLATE.jpg`
-
-2. **Create Shopify product** via `shopify--create_product`:
-   - **Title:** Vintage Wheaties License Plate Collection
-   - **Vendor:** Thrift 56
-   - **Product Type:** `Curated`
-   - **Tags:** `1-of-1, curated, found-object, wheaties, vintage, americana, license-plate, 1950s, collection`
-   - **Variant:** SKU `T56-005`, single, `inventory_management: shopify`, `inventory_policy: deny`
-   - **Image:** the saved asset
-   - **Price:** TBD — see questions below
-
-3. **Description (Thrift 56 voice — exclusive, retro, mysterious):**
+Run product creation with:
+- **Title:** Vintage Wheaties License Plate
+- **Vendor:** Thrift 56
+- **Product Type:** `Curated`
+- **Tags:** `1-of-1, curated, found-object, wheaties, vintage, americana, license-plate, 1950s, collection`
+- **Variant:** SKU `T56-005`, price `150.00`, `inventory_management: shopify`, `inventory_policy: deny`
+- **Image:** the saved asset (alt: "Vintage 1953 Wheaties cereal premium license plate collection")
+- **Description:**
 
 > *Breakfast of Champions. Thirteen states. One impossible set.*
 >
@@ -34,18 +33,13 @@ The photo shows a curated **collection of ~13 vintage 1950s license plates** (CA
 > **Condition:** Original paint, honest age-appropriate wear, all plates structurally sound.
 > **Quantity:** One complete-ish set. Worldwide.
 
-4. **Frontend verification (no code changes):** the override that shipped earlier — `isPurchasable = firstVariant?.availableForSale || isOneOfOne` — fires automatically for the `1-of-1` tag on both ProductCard and PDP. T56-005 will show "Add to Cart" the moment it's live in Shopify, sandbox flag notwithstanding.
+## Frontend behavior (no changes)
+The existing override in `ProductCard.tsx` and `ShopifyProductDetail.tsx`:
+```ts
+const isPurchasable = firstVariant?.availableForSale || isOneOfOne;
+```
+fires automatically because of the `1-of-1` tag. Both card and PDP will render "Add to Cart" the moment the product is live, sandbox availability flag bypassed.
 
-## Two things I need from you before I run the tool
-
-**Price** — pick one:
-- $85 — mid tier, between trolley ashtray ($45) and mosaic cats ($70)
-- $120 — premium, reflects rare 13-plate complete-ish set
-- $150 — collector pricing for full Wheaties premium series
-- Other (tell me)
-
-**Title framing** — pick one:
-- *Vintage Wheaties License Plate Collection* (recommended — matches the photo)
-- *1953 Wheaties Premium License Plate Set* (leads with the year and cereal story)
-- *Vintage Wheaties License Plate* (your original singular phrasing)
+## Note on title vs. image
+You picked the singular title "Vintage Wheaties License Plate" but the photo shows ~13 plates. I'm honoring your title choice — the description still acknowledges the set so the listing reads honestly. If you want me to switch the title to "Vintage Wheaties License Plate Collection" before creating, say the word; otherwise approve and I create as specified.
 
