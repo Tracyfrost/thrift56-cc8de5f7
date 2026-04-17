@@ -1,47 +1,24 @@
 
-The user wants to add a new 1-of-1 Merch item to the Shopify store: a 1/32 die-cast car set (Pontiac Firebird + Shelby Cobra 427 S/C) with the two uploaded photos.
+User wants to replace/add the two new uploaded images to the existing T56-002 product (Pontiac Firebird × Shelby Cobra die-cast set). The previous images were the original ones; these new ones (`-2.jpg` versions) appear to be better/edited shots.
 
-This follows the established pattern from the Vespa Tin Sign:
-- Merch product type
-- 1-of-1 tag
-- Single variant, no size options
-- `inventory_policy: "continue"` so it never shows "Sold Out"
-- Brand voice on copy ("This was $X. It deserved better.")
-- Two photos uploaded (front 3/4 view + top-down view) — use both as product images
+Per the `shopify--update_product` tool description: "Providing new images will replace all existing images on the product." So passing both new images will cleanly replace the old set.
 
-Need a price from the user before creating. Everything else I can draft.
+Looking at the two new images:
+- `T56-002_PONTIAC-FIREBIRD_EDT_001-2.jpg` — front-facing 3/4 view of the box, both cars visible through window (hero shot)
+- `T56-002_PONTIAC-FIREBIRD_EDT_002-2.jpg` — top-down view showing both cars from above
+
+Image 001 is the stronger hero (front-facing, both cars clearly visible) → primary. Image 002 → secondary.
 
 ## Plan
 
-**Create new Shopify product** via `shopify--create_product`:
+**Update existing Shopify product** T56-002 (product ID `8430943338573` from prior context) via `shopify--update_product`:
 
-- **Title:** Pontiac Firebird × Shelby Cobra 427 S/C — 1/32 Die-Cast Set
-- **SKU:** T56-002
-- **Product type:** Merch
-- **Tags:** `1-of-1, die-cast, vintage-toy, collectible, pontiac, shelby-cobra, merch`
-- **Vendor:** Thrift 56
-- **Images:** both uploaded photos (front view as primary, top-down as secondary)
-- **Variant:**
-  - Single default variant (no options)
-  - Price: **TBD — need from user**
-  - `inventory_policy: "continue"` (so it never reads Sold Out — matches the Vespa pattern)
-  - `inventory_management: ""` (don't track stock, since 1-of-1)
-- **Description (brand voice):**
-  > Found in a thrift bin. Two cars. One box. Untouched.
-  >
-  > A 1/32 scale die-cast set pairing the Pontiac Firebird with the Shelby Cobra 427 S/C #99 — sealed in original collector packaging with the worn edges, sun-faded blacks, and shrink-wrap creases that prove it sat on a shelf for two decades before it found us.
-  >
-  > Opening doors. Die-cast metal. Original box. As-found, as-photographed.
-  >
-  > 1 of 1. When it's gone, it's gone.
+- **product_id:** `8430943338573`
+- **images:** (replaces all existing)
+  1. `user-uploads://T56-002_PONTIAC-FIREBIRD_EDT_001-2.jpg` — alt: "Pontiac Firebird and Shelby Cobra 427 S/C 1/32 die-cast set in original box, front view"
+  2. `user-uploads://T56-002_PONTIAC-FIREBIRD_EDT_002-2.jpg` — alt: "Pontiac Firebird and Shelby Cobra 427 S/C 1/32 die-cast set, top-down view"
 
-## What I need from you
+No other fields changed — title, price ($50), tags, description, variant config all stay as-is.
 
-Just one thing: **the price**. Suggested anchor based on the Vespa Sign ($40) and the fact this is a 2-car sealed set:
-
-- $35 (entry collector)
-- $45 (matches Vespa tier)
-- $55 (premium / sealed-set bump)
-
-Reply with a number (or one of the above) and I'll create it. No code changes needed in the repo — the Shop page pulls live from Shopify and the new product will appear under the **Merch** filter automatically.
+No repo code changes — Shop page pulls live from Shopify and the new images will appear on refresh.
 
