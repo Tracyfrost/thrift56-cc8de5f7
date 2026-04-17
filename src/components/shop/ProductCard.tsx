@@ -18,6 +18,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   const isOneOfOne = node.tags?.includes("1-of-1");
   const isLimited = node.productType === "Print";
+  // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
+  // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
+  const isPurchasable = firstVariant?.availableForSale || isOneOfOne;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -82,12 +85,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         <button
           onClick={handleAddToCart}
-          disabled={isLoading || !firstVariant?.availableForSale}
+          disabled={isLoading || !isPurchasable}
           className="w-full mt-2 bg-stone-200 text-stone-800 font-heading text-[10px] uppercase tracking-[0.15em] py-2 hover:bg-orange-800 hover:text-white transition-colors disabled:opacity-40"
         >
           {isLoading ? (
             <Loader2 className="w-3 h-3 animate-spin mx-auto" />
-          ) : !firstVariant?.availableForSale ? (
+          ) : !isPurchasable ? (
             "Sold Out"
           ) : (
             "Add to Cart"

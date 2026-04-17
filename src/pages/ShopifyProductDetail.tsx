@@ -53,6 +53,9 @@ const ShopifyProductDetail = () => {
   const selectedVariant = variants[selectedVariantIdx]?.node;
   const hasMultipleVariants = variants.length > 1 && !(variants.length === 1 && variants[0].node.title === "Default Title");
   const isOneOfOne = product.tags?.includes("1-of-1");
+  // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
+  // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
+  const isPurchasable = selectedVariant?.availableForSale || isOneOfOne;
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
@@ -197,12 +200,12 @@ const ShopifyProductDetail = () => {
             {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              disabled={cartLoading || !selectedVariant?.availableForSale}
+              disabled={cartLoading || !isPurchasable}
               className="w-full bg-orange-800 text-[#F9F6F0] font-heading text-sm uppercase tracking-[0.15em] py-5 hover:bg-orange-800/85 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {cartLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
-              ) : !selectedVariant?.availableForSale ? (
+              ) : !isPurchasable ? (
                 "Sold Out"
               ) : (
                 "Add to Cart"
