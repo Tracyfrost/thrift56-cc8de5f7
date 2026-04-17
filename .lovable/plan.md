@@ -1,24 +1,24 @@
 
-User wants to replace/add the two new uploaded images to the existing T56-002 product (Pontiac Firebird × Shelby Cobra die-cast set). The previous images were the original ones; these new ones (`-2.jpg` versions) appear to be better/edited shots.
-
-Per the `shopify--update_product` tool description: "Providing new images will replace all existing images on the product." So passing both new images will cleanly replace the old set.
-
-Looking at the two new images:
-- `T56-002_PONTIAC-FIREBIRD_EDT_001-2.jpg` — front-facing 3/4 view of the box, both cars visible through window (hero shot)
-- `T56-002_PONTIAC-FIREBIRD_EDT_002-2.jpg` — top-down view showing both cars from above
-
-Image 001 is the stronger hero (front-facing, both cars clearly visible) → primary. Image 002 → secondary.
+The current description on T56-002 has a JSON image-array string accidentally appended to it, plus the existing copy could lean harder into the throwback car-culture voice. The screenshot confirms the bug — the raw `[{"file_path":...}]` blob is rendering inside the description block.
 
 ## Plan
 
-**Update existing Shopify product** T56-002 (product ID `8430943338573` from prior context) via `shopify--update_product`:
+Use `shopify--update_product` on product `7774491181133` to overwrite the `body` (description) field only. No other fields touched. No code changes — the PDP pulls live from Shopify.
 
-- **product_id:** `8430943338573`
-- **images:** (replaces all existing)
-  1. `user-uploads://T56-002_PONTIAC-FIREBIRD_EDT_001-2.jpg` — alt: "Pontiac Firebird and Shelby Cobra 427 S/C 1/32 die-cast set in original box, front view"
-  2. `user-uploads://T56-002_PONTIAC-FIREBIRD_EDT_002-2.jpg` — alt: "Pontiac Firebird and Shelby Cobra 427 S/C 1/32 die-cast set, top-down view"
+### New description (throwback cool, brand voice intact)
 
-No other fields changed — title, price ($50), tags, description, variant config all stay as-is.
+> Two cars. One box. Frozen in time.
+>
+> A 1/32 scale die-cast set pairing the Pontiac Firebird with the Shelby Cobra 427 S/C #99 — sealed in the original collector packaging since the day it hit the shelf. Worn edges. Sun-faded blacks. Shrink-wrap creases that prove it sat untouched for two decades before we found it.
+>
+> Opening doors. Die-cast metal. Original box. As-found, as-photographed.
+>
+> Built when muscle meant something and chrome wasn't ironic. The Firebird's screaming chicken on the hood. The Cobra's racing stripes still loud after all these years. A pocket-sized garage from an era that doesn't make 'em like this anymore.
+>
+> 1 of 1. When it's gone, it stays gone.
 
-No repo code changes — Shop page pulls live from Shopify and the new images will appear on refresh.
-
+### What this fixes
+- Strips the JSON image-array junk that's currently rendering as text
+- Adds a throwback hook ("Frozen in time") and an era-defining middle paragraph (muscle, chrome, screaming chicken, racing stripes)
+- Keeps the closing brand stamp ("1 of 1. When it's gone, it stays gone.")
+- Preserves all existing product setup — title, $50 price, tags, images, variant, inventory policy
