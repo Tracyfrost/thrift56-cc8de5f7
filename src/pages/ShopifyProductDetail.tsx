@@ -53,6 +53,9 @@ const ShopifyProductDetail = () => {
   const selectedVariant = variants[selectedVariantIdx]?.node;
   const hasMultipleVariants = variants.length > 1 && !(variants.length === 1 && variants[0].node.title === "Default Title");
   const isOneOfOne = product.tags?.includes("1-of-1");
+  // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
+  // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
+  const isPurchasable = selectedVariant?.availableForSale || isOneOfOne;
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
