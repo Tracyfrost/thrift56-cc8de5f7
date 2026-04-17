@@ -99,11 +99,11 @@ const ShopifyProductDetail = () => {
           <div className="space-y-4">
             {images.length > 0 ? (
               images.map((img: { node: { url: string; altText: string | null } }, i: number) => (
-                <div key={i} className="aspect-[4/5] bg-stone-100 overflow-hidden border border-stone-300">
+                <div key={i} className="bg-stone-100 border border-stone-300 flex items-center justify-center p-4">
                   <img
                     src={img.node.url}
                     alt={img.node.altText || product.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-auto max-h-[80vh] object-contain"
                   />
                 </div>
               ))
