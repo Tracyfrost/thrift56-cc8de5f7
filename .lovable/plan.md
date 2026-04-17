@@ -1,34 +1,51 @@
 
 
-## Problem
+## Goal
+Add T56-005 Vintage Wheaties License Plate Collection as a 1-of-1 Curated Shopify product. Frontend "Add to Cart" override is already live for `1-of-1` tagged items, so **no code changes required** — Shopify product creation is the only step.
 
-T56-003 and T56-004 render "Sold Out" because Shopify reports `availableForSale: false` (inventory wasn't set to 1 yet — that's a manual Shopify Admin step we flagged earlier). The button text/disable state is driven by `firstVariant?.availableForSale` in `ProductCard.tsx` and `selectedVariant?.availableForSale` in `ShopifyProductDetail.tsx`.
+## Image observation
+The photo shows a curated **collection of ~13 vintage 1950s license plates** (CA, NV, MT ×2, OR, NC, WA, WY, NM, AZ, ID, TX, UT + one 1974/75 MN) — Wheaties cereal-premium era. This is a set, not a single plate, so the title and copy will reflect that.
 
-Since we're in sandbox / 30-day trial mode and you want the site to *show* Add to Cart so you can demo the flow without touching Shopify inventory, we override availability **on the frontend for 1-of-1 tagged products**.
+## Steps
 
-## The fix (frontend-only, 2 files)
+1. **Save image** → `lov-copy user-uploads://T56-005_VINTAGE-WHEATIES-LICPLATE_EDT_001.jpg src/assets/products/T56-005_VINTAGE-WHEATIES-LICPLATE.jpg`
 
-Treat any product tagged `1-of-1` as purchasable on the site regardless of Shopify's `availableForSale` flag. This is safe because:
-- The `1-of-1` tag is our own curation marker
-- Once you set inventory to 1 in Shopify Admin post-trial, the override becomes a no-op (Shopify will already say `true`)
-- After the single purchase, Shopify's `inventory_policy: deny` still prevents overselling at checkout
+2. **Create Shopify product** via `shopify--create_product`:
+   - **Title:** Vintage Wheaties License Plate Collection
+   - **Vendor:** Thrift 56
+   - **Product Type:** `Curated`
+   - **Tags:** `1-of-1, curated, found-object, wheaties, vintage, americana, license-plate, 1950s, collection`
+   - **Variant:** SKU `T56-005`, single, `inventory_management: shopify`, `inventory_policy: deny`
+   - **Image:** the saved asset
+   - **Price:** TBD — see questions below
 
-### File 1: `src/components/shop/ProductCard.tsx`
-- Add `const isPurchasable = firstVariant?.availableForSale || isOneOfOne;`
-- Use `isPurchasable` in the button's `disabled` and label logic instead of raw `availableForSale`
+3. **Description (Thrift 56 voice — exclusive, retro, mysterious):**
 
-### File 2: `src/pages/ShopifyProductDetail.tsx`
-- Mirror the same logic: `const isPurchasable = selectedVariant?.availableForSale || isOneOfOne;`
-- Drive the Add to Cart button state from `isPurchasable`
+> *Breakfast of Champions. Thirteen states. One impossible set.*
+>
+> The 1953 Wheaties Premium License Plate Collection — a cereal-box giveaway that turned a generation of kids into amateur cartographers. Six box tops, a mail-in coupon, a few weeks of patience. Out came a miniature plate from a state most kids would never visit.
+>
+> Survived seventy years of attic boxes and one estate auction nobody else showed up to. California gold. Nevada green. Montana's outline twice (someone really wanted that one). Wyoming's bucking bronco still mid-air. New Mexico bleeding *Land of Enchantment* red. Idaho's *World Famous Potato* deadpan honesty.
+>
+> Most kids lost half theirs by '55. Almost nobody kept the full run. This one did.
+>
+> **The Find:** Pacific Northwest estate, original mailing envelope long gone.
+> **Era:** 1953 Wheaties cereal-premium series (plus one wandering 1974 Minnesota that snuck in).
+> **Condition:** Original paint, honest age-appropriate wear, all plates structurally sound.
+> **Quantity:** One complete-ish set. Worldwide.
 
-## What you'll see after the change
+4. **Frontend verification (no code changes):** the override that shipped earlier — `isPurchasable = firstVariant?.availableForSale || isOneOfOne` — fires automatically for the `1-of-1` tag on both ProductCard and PDP. T56-005 will show "Add to Cart" the moment it's live in Shopify, sandbox flag notwithstanding.
 
-- T56-003 (Trolley Ashtray) → "Add to Cart" active
-- T56-004 (Barcino Mosaic Cats) → "Add to Cart" active
-- T56-001 (Vespa Tin Sign) → already shows Add to Cart, unchanged
-- Non-1-of-1 sold-out items (e.g., Botanical Vase) → still correctly show "Sold Out"
+## Two things I need from you before I run the tool
 
-## Recommended next step (not in this change)
+**Price** — pick one:
+- $85 — mid tier, between trolley ashtray ($45) and mosaic cats ($70)
+- $120 — premium, reflects rare 13-plate complete-ish set
+- $150 — collector pricing for full Wheaties premium series
+- Other (tell me)
 
-When the trial ends and you claim the store, set inventory to 1 in Shopify Admin for T56-003 and T56-004. The frontend override stays in place harmlessly and Shopify becomes the true source of truth for stock.
+**Title framing** — pick one:
+- *Vintage Wheaties License Plate Collection* (recommended — matches the photo)
+- *1953 Wheaties Premium License Plate Set* (leads with the year and cereal story)
+- *Vintage Wheaties License Plate* (your original singular phrasing)
 
