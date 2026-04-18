@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { useThriftItems } from "@/hooks/useSupabaseData";
+import { useShopifyProducts } from "@/hooks/useShopifyProducts";
 
 const AvailableNowGrid = () => {
-  const { data: items, isLoading } = useThriftItems();
-  const products = (items || []).slice(0, 6);
+  const { data: edges, isLoading } = useShopifyProducts(6);
+  const products = (edges || []).slice(0, 6);
 
   return (
     <section id="available-now" className="bg-[#F9F6F0] texture-grain py-20 md:py-28 relative overflow-hidden">
@@ -24,59 +24,59 @@ const AvailableNowGrid = () => {
           <p className="text-center font-serif italic text-stone-500 py-12">No pieces yet — check back soon.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
-            {products.map((product: any) => (
-              <Link key={product.id} to={`/shop/${product.slug}`} className="group block">
-                <div className="relative aspect-square overflow-hidden bg-stone-200 border-2 border-stone-300 group-hover:border-orange-800 transition-colors">
-                  {product.before_image_url && (
-                    <img
-                      src={product.before_image_url}
-                      alt={`${product.title} before`}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  )}
-                  {product.after_image_url && (
-                    <img
-                      src={product.after_image_url}
-                      alt={`${product.title} after`}
-                      className={`absolute inset-0 w-full h-full object-cover ${product.before_image_url ? "opacity-0 group-hover:opacity-100 transition-opacity duration-500" : ""}`}
-                    />
-                  )}
-                  {!product.before_image_url && !product.after_image_url && (
-                    <div className="absolute inset-0 flex items-center justify-center text-stone-500 font-sans text-sm">No Image</div>
-                  )}
-                  <span className="absolute top-3 right-3 bg-[#F9F6F0] text-stone-950 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10 border border-stone-300">
-                    1 of 1
-                  </span>
-                  {product.is_sold ? (
-                    <span className="absolute top-3 left-3 bg-stone-400 text-white font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 line-through z-10">
-                      Sold
+            {products.map((edge: any) => {
+              const node = edge.node;
+              const imageUrl = node?.images?.edges?.[0]?.node?.url;
+              const imageAlt = node?.images?.edges?.[0]?.node?.altText || node?.title;
+              const price = node?.priceRange?.minVariantPrice?.amount;
+              const available = node?.variants?.edges?.[0]?.node?.availableForSale;
+
+              return (
+                <Link key={node.id} to={`/product/${node.handle}`} className="group block">
+                  <div className="relative aspect-square overflow-hidden border-2 border-stone-300 group-hover:border-orange-800 transition-colors">
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={imageAlt}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-stone-950 flex items-center justify-center p-6">
+                        <span className="font-sans font-black text-orange-800 text-center uppercase tracking-tight text-lg leading-tight">
+                          {node.title}
+                        </span>
+                      </div>
+                    )}
+                    <span className="absolute top-3 right-3 bg-[#F9F6F0] text-stone-950 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10 border border-stone-300">
+                      1 of 1
                     </span>
-                  ) : product.square_inventory_count === 1 ? (
-                    <span className="absolute top-3 left-3 bg-orange-800 text-[#F9F6F0] font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10 animate-pulse">
-                      ONLY 1 LEFT
-                    </span>
-                  ) : (
-                    <span className="absolute top-3 left-3 bg-orange-800 text-[#F9F6F0] font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10">
-                      Available
-                    </span>
-                  )}
-                </div>
-                <div className="mt-3">
-                  <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950 group-hover:text-orange-800 transition-colors">
-                    {product.title}
-                  </p>
-                  <p className={`font-serif text-sm mt-1 ${product.is_sold ? "text-stone-400 line-through" : "text-orange-800"}`}>
-                    {product.price ? `$${product.price}` : ""}
-                  </p>
-                </div>
-              </Link>
-            ))}
+                    {available === false ? (
+                      <span className="absolute top-3 left-3 bg-stone-400 text-white font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 line-through z-10">
+                        Sold
+                      </span>
+                    ) : (
+                      <span className="absolute top-3 left-3 bg-orange-800 text-[#F9F6F0] font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10">
+                        Available
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-3">
+                    <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950 group-hover:text-orange-800 transition-colors">
+                      {node.title}
+                    </p>
+                    <p className={`font-serif text-sm mt-1 ${available === false ? "text-stone-400 line-through" : "text-orange-800"}`}>
+                      {price ? `$${parseFloat(price).toFixed(2)}` : ""}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
 
         <div className="text-center">
           <Link
-            to="/drops"
+            to="/shop"
             className="inline-flex items-center justify-center border-2 border-stone-950 text-stone-950 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-stone-950 hover:text-[#F9F6F0] transition-colors"
           >
             View All Drops
