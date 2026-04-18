@@ -23,7 +23,7 @@ const LatestTransformationBrutalist = ({ youtubeId }: LatestTransformationBrutal
     : null;
 
   return (
-    <section id="latest-transformation" className="section-bone texture-grain py-20 md:py-28 border-l-4 border-l-orange-800">
+    <section id="latest-transformation" className="section-bone texture-grain py-20 md:py-28">
       <div className="container relative z-10">
         <p className="font-serif italic text-stone-500 text-sm mb-2">The latest</p>
         <h2 className="font-sans font-black text-3xl md:text-5xl tracking-tighter text-stone-950 mb-10">
