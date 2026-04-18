@@ -36,7 +36,7 @@ const BeforeAfterSlider = () => {
           FROM FORGOTTEN TO FEATURED
         </h2>
 
-        <div className="max-w-3xl mx-auto">
+        <div className="w-full max-w-[700px] mx-auto">
           <div
             ref={containerRef}
             className="relative aspect-[4/3] overflow-hidden rounded-none cursor-ew-resize select-none touch-none border-4 border-stone-950"
@@ -64,7 +64,7 @@ const BeforeAfterSlider = () => {
               className="absolute top-0 bottom-0 w-1 bg-orange-800 z-10 pointer-events-none"
               style={{ left: `${position}%`, transform: "translateX(-50%)" }}
             >
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-stone-950 border-2 border-orange-800 flex items-center justify-center shadow-lg pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-orange-800 border-2 border-stone-950 flex items-center justify-center shadow-lg pointer-events-none">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-stone-50">
                   <path d="M5 3L1 8L5 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M11 3L15 8L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

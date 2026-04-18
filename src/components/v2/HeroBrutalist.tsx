@@ -66,7 +66,7 @@ const HeroBrutalist = () => {
           <div className="flex flex-col sm:flex-row gap-3 mb-10">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
+              className="inline-flex items-center justify-center bg-orange-800 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-900 transition-colors"
             >
               Shop the Resurrection
             </Link>
