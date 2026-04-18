@@ -5,11 +5,12 @@ const AvailableNowGrid = () => {
   const { data: edges, isLoading } = useShopifyProducts(6);
   const products = (edges || []).slice(0, 6);
 
+  if (typeof window !== "undefined" && products.length > 0) {
+    console.log("[Shopify products]", products);
+  }
+
   return (
     <section id="available-now" className="bg-[#F9F6F0] texture-grain py-20 md:py-28 relative overflow-hidden">
-      {/* Asymmetric rust accent line */}
-      <div className="absolute top-0 left-0 w-1/3 h-1 bg-orange-800 z-10" />
-
       <div className="container relative z-10">
         <p className="font-serif italic text-stone-500 text-sm mb-2">One of one</p>
         <h2 className="font-sans font-black text-3xl md:text-5xl tracking-tighter text-stone-950 text-center mb-12">
