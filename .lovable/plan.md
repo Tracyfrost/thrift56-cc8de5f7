@@ -1,43 +1,58 @@
 
 
-## Plan: 3 Targeted Homepage Fixes
+## Plan: Retro Cinema Marquee "Coming Soon" Placeholder
 
-### Issue 1 — Available Now product images
-**File:** `src/components/v2/AvailableNowGrid.tsx`
+### Approach
+Replace the iframe inside `LatestTransformationBrutalist.tsx` (the "no embed" branch) with a new `ComingSoonMarquee` component. Keep the section heading, episode title slot, and "Watch Full Episode" button untouched. Use the already-uploaded `src/assets/tracie-coming-soon.jpg`.
 
-Verified via network inspection: the Shopify Storefront API IS returning valid image URLs (e.g. `https://cdn.shopify.com/s/files/1/0703/1449/1981/files/T56-001_VESPA-TIN-SIGN_EDT_001.jpg`) for all 5 products. The query already requests `images { edges { node { url altText } } }` correctly. So images should already render — the "grey No Image" the user is seeing is most likely the existing fallback when images render slowly or a card without image data.
+### File 1 (NEW): `src/components/v2/ComingSoonMarquee.tsx`
 
-Changes:
-- Add a one-time `console.log("[Shopify products]", products)` after fetch (dev-aid the user explicitly asked for) so they can verify in console.
-- Improve the fallback to spec: dark `#1a1a1a` background, product title centered in **white 13px** (`text-white text-[13px]`) — currently it's rust orange large text which can read as broken.
-- Add `loading="eager"` to the first 3 images and `loading="lazy"` after to ensure above-the-fold images appear immediately.
-- Add `onError` handler that swaps to the dark fallback so a broken URL never shows a grey browser default.
+A self-contained 16:9 marquee card. Uses inline `<style>` tag for the keyframes (flicker, dash-pulse, bulb-flash) since they're component-specific and not reused elsewhere — keeps tailwind config clean.
 
-### Issue 2 — Nav overlapping email capture section
-**File:** `src/components/v2/EmailCaptureBrutalist.tsx`
+Structure:
+```text
+<div class="relative w-full aspect-video"> [outer 3px solid #c8501a, radius 4px]
+  <img src={tracieImg} class="absolute inset-0 w-full h-full object-cover" />
+  <div class="absolute inset-0" style={bg: rgba(20,10,0,0.72)} />
+  <div class="absolute inset-2 border-2 border-dashed" [animated color] />
+  <div class="absolute" [4 L-shaped corner accents at inset 18px]
+  <div class="absolute top-3 left-0 right-0 flex justify-around"> [12 bulbs]
+  <div class="absolute bottom-3 left-0 right-0 flex justify-around"> [12 bulbs]
+  <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6">
+    <p>★ Thrift 56 Presents ★</p>          [11px, flicker 2.5s]
+    <hr class="w-32 border-t border-[#c8501a]" />
+    <h2>COMING SOON</h2>                    [28px black, flicker 3s]
+    <p>MY THRIFTY THRIFTERS</p>             [13px, flicker 4s]
+    <hr class="w-32 border-t border-[#c8501a]" />
+    <p>EPISODE 001 — IN PRODUCTION</p>      [11px, 55% opacity, no flicker]
+  </div>
+</div>
+```
 
-The nav is `sticky top-0 z-50`. Sticky shouldn't overlap content but the user reports visual overlap (likely the form input visually crashing into the sticky bar when scrolled). Fixes:
-- Add `relative z-0 scroll-mt-24` to the `<section>` so its stacking context is explicit and anchor-scrolls clear the nav.
-- Bump top padding from `py-24 md:py-36` to `pt-28 md:pt-40 pb-24 md:pb-36` so headline never crowds nav.
-- No nav changes (sticky stays as-is — used across all pages).
+Inline `<style>`:
+- `@keyframes flicker` per spec (opacity 1 ↔ 0.4 at jitter steps).
+- `@keyframes dashPulse` — border-color `#c8501a` ↔ `#e8a050`, 1.5s infinite.
+- `@keyframes bulbFlash` — opacity 1 ↔ 0.25, 0.8s steps. Odd children get `animation-delay: 0.4s`, every 3rd child gets `animation-delay: 0.2s` via `:nth-child` selectors scoped to a `.t56-bulbs` class.
+- Three flicker variants: `.flicker-a {animation: flicker 2.5s infinite}`, `.flicker-b {3s}`, `.flicker-c {4s}`.
 
-### Issue 3 — Red divider lines (truncated rust strips)
-The "short red lines" are three intentional decorative accents that read as broken/truncated:
-1. `<div className="absolute top-0 left-0 w-1/3 h-1 bg-orange-800">` at top of AvailableNow
-2. `<div className="absolute bottom-0 right-0 w-1/4 h-1 bg-orange-800">` at bottom of AvailableNow
-3. `border-l-4 border-l-orange-800` on left edge of LatestTransformation section (a 4px rust stripe down the left side)
+Bulbs: 12 `<span class="t56-bulb">` elements per row, 8px circles, `background:#f5e050`, `box-shadow:0 0 8px #f5e050`.
 
-**Decision:** Remove all three. They are leftover asymmetric accents that read as artifacts, not deliberate dividers. The section backgrounds and typography already provide enough rhythm.
+Corner accents: 4 absolutely-positioned `<div>`s at `inset:18px` corners — each is a 12×12 box with two adjacent borders (e.g. top-left = `border-t-2 border-l-2 border-[#c8501a]`).
 
-**Files:**
-- `src/components/v2/AvailableNowGrid.tsx` — delete the two `<div>` accent strips (lines 11 and 88).
-- `src/components/v2/LatestTransformationBrutalist.tsx` — remove `border-l-4 border-l-orange-800` from section className (line 26).
+Image import: `import tracieImg from "@/assets/tracie-coming-soon.jpg"` (Vite-friendly, hashed asset).
+
+### File 2 (EDIT): `src/components/v2/LatestTransformationBrutalist.tsx`
+
+In the existing branch where `embedSrc` is falsy, replace the current "EPISODE COMING SOON" placeholder `<div>` with `<ComingSoonMarquee />`. Keep:
+- The outer `aspect-video border-4 border-stone-950 ...` wrapper? — No: the marquee provides its own border. So when `embedSrc` is falsy, render `<ComingSoonMarquee />` directly inside the `max-w-4xl` column instead of the bordered wrapper. When `embedSrc` IS present, keep the existing iframe wrapper unchanged.
+- `latestDrop?.title` paragraph: only renders when `embedSrc` exists (already conditional) — leave as-is.
+- "Watch Full Episode" button: untouched.
+- Section heading "LATEST TRANSFORMATION": untouched.
 
 ### Out of scope
-No changes to layout, copy, typography, hero, slider, or any other section.
+No changes to hero, slider, available-now, email capture, nav, or any other section. No tailwind config changes.
 
-### Files touched (3)
-- `src/components/v2/AvailableNowGrid.tsx`
-- `src/components/v2/EmailCaptureBrutalist.tsx`
-- `src/components/v2/LatestTransformationBrutalist.tsx`
+### Files touched (2)
+- `src/components/v2/ComingSoonMarquee.tsx` (new)
+- `src/components/v2/LatestTransformationBrutalist.tsx` (swap placeholder for new component)
 
