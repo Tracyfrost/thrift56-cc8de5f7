@@ -16,7 +16,7 @@ const EpisodeHero = () => {
         <div className="max-w-4xl mx-auto mb-8">
           <div className="aspect-video border-4 border-orange-800 bg-stone-200 relative overflow-hidden shadow-[0_0_30px_rgba(180,80,20,0.15)]">
             <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              src="https://www.youtube.com/embed/3iDnecn4E60"
               title="Featured Episode"
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
