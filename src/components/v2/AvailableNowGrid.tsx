@@ -25,7 +25,7 @@ const AvailableNowGrid = () => {
           <p className="text-center font-serif italic text-stone-500 py-12">No pieces yet — check back soon.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
-            {products.map((edge: any) => {
+            {products.map((edge: any, idx: number) => {
               const node = edge.node;
               const imageUrl = node?.images?.edges?.[0]?.node?.url;
               const imageAlt = node?.images?.edges?.[0]?.node?.altText || node?.title;
@@ -34,16 +34,21 @@ const AvailableNowGrid = () => {
 
               return (
                 <Link key={node.id} to={`/product/${node.handle}`} className="group block">
-                  <div className="relative aspect-square overflow-hidden border-2 border-stone-300 group-hover:border-orange-800 transition-colors">
+                  <div className="relative aspect-square overflow-hidden border-2 border-stone-300 group-hover:border-orange-800 transition-colors bg-[#1a1a1a]">
                     {imageUrl ? (
                       <img
                         src={imageUrl}
                         alt={imageAlt}
+                        loading={idx < 3 ? "eager" : "lazy"}
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                        }}
                         className="absolute inset-0 w-full h-full object-cover"
                       />
-                    ) : (
-                      <div className="absolute inset-0 bg-stone-950 flex items-center justify-center p-6">
-                        <span className="font-sans font-black text-orange-800 text-center uppercase tracking-tight text-lg leading-tight">
+                    ) : null}
+                    {!imageUrl && (
+                      <div className="absolute inset-0 flex items-center justify-center p-6">
+                        <span className="font-sans text-white text-[13px] text-center uppercase tracking-tight leading-tight">
                           {node.title}
                         </span>
                       </div>
