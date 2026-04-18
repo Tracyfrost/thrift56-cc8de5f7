@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEpisodeDrops } from "@/hooks/useSupabaseData";
+import ComingSoonMarquee from "./ComingSoonMarquee";
 
 interface LatestTransformationBrutalistProps {
   youtubeId?: string;
