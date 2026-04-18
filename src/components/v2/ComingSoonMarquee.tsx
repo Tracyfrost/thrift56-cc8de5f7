@@ -47,7 +47,7 @@ const ComingSoonMarquee = () => {
       <img
         src={tracieImg}
         alt="Tracie — Thrift 56 host"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover object-[center_20%]"
       />
 
       {/* Dark overlay */}
