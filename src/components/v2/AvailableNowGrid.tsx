@@ -90,8 +90,6 @@ const AvailableNowGrid = () => {
         </div>
       </div>
 
-      {/* Bottom asymmetric rust accent */}
-      <div className="absolute bottom-0 right-0 w-1/4 h-1 bg-orange-800 z-10" />
     </section>
   );
 };
