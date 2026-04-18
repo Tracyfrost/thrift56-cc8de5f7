@@ -23,7 +23,7 @@ const EmailCaptureBrutalist = () => {
   };
 
   return (
-    <section className="bg-[#F9F6F0] py-24 md:py-36">
+    <section className="relative z-0 scroll-mt-24 bg-[#F9F6F0] pt-28 md:pt-40 pb-24 md:pb-36">
       <div className="container max-w-2xl text-center">
         <h2 className="font-sans font-black text-3xl sm:text-4xl md:text-6xl tracking-tighter text-stone-950 leading-[0.9] mb-5">
           DON'T MISS THE<br />NEXT RESURRECTION
