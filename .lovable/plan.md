@@ -1,45 +1,36 @@
 
 
 ## Goal
-Create T56-005 in Shopify with the user's chosen settings. Image is already saved. No code changes needed — the `1-of-1` tag triggers the existing frontend purchasability override.
+Delete the 6 placeholder seed products from Shopify so they stop appearing in the storefront grid (`/shop` and any product type filters).
 
-## Confirmed inputs
-- **Title:** Vintage Wheaties License Plate
-- **Price:** $150.00
-- **SKU:** T56-005
-- **Image:** `src/assets/products/T56-005_VINTAGE-WHEATIES-LICPLATE.jpg` (saved)
+## Products to delete (from screenshots)
 
-## Step (single tool call on approval)
+| # | Title | Type | Shopify ID |
+|---|-------|------|------------|
+| 1 | The Botanical Vase | Original | 7765514780749 |
+| 2 | The Gallery Frame | Original | 7765515894861 |
+| 3 | The Treasure Chest | Original | 7765516746829 |
+| 4 | The Sunset Serving Tray | Original | 7765517303885 |
+| 5 | From Forgotten to Featured — Limited Print /50 | Print | 7765525626957 |
+| 6 | Studio 56 Snapback | Curated | 7765523497037 |
+| 7 | Digital Transformation Toolkit | Digital | 7765527265357 |
 
-Run product creation with:
-- **Title:** Vintage Wheaties License Plate
-- **Vendor:** Thrift 56
-- **Product Type:** `Curated`
-- **Tags:** `1-of-1, curated, found-object, wheaties, vintage, americana, license-plate, 1950s, collection`
-- **Variant:** SKU `T56-005`, price `150.00`, `inventory_management: shopify`, `inventory_policy: deny`
-- **Image:** the saved asset (alt: "Vintage 1953 Wheaties cereal premium license plate collection")
-- **Description:**
+That's 7 products total — your screenshots showed all four placeholder Originals, the placeholder Print, the Snapback, and the Digital Toolkit. All are early seed listings with "NO IMAGE" placeholders.
 
-> *Breakfast of Champions. Thirteen states. One impossible set.*
->
-> The 1953 Wheaties Premium License Plate Collection — a cereal-box giveaway that turned a generation of kids into amateur cartographers. Six box tops, a mail-in coupon, a few weeks of patience. Out came a miniature plate from a state most kids would never visit.
->
-> Survived seventy years of attic boxes and one estate auction nobody else showed up to. California gold. Nevada green. Montana's outline twice (someone really wanted that one). Wyoming's bucking bronco still mid-air. New Mexico bleeding *Land of Enchantment* red. Idaho's *World Famous Potato* deadpan honesty.
->
-> Most kids lost half theirs by '55. Almost nobody kept the full run. This one did.
->
-> **The Find:** Pacific Northwest estate, original mailing envelope long gone.
-> **Era:** 1953 Wheaties cereal-premium series (plus one wandering 1974 Minnesota that snuck in).
-> **Condition:** Original paint, honest age-appropriate wear, all plates structurally sound.
-> **Quantity:** One complete-ish set. Worldwide.
+## What survives (real curated inventory — untouched)
+- Barcino Mosaic Cats — Pair
+- Pontiac Firebird × Shelby Cobra Die-Cast Set
+- Powell & Mason Cable Car Ashtray
+- Vespa Parking Only Tin Sign
+- Vintage Wheaties License Plate (T56-005)
 
-## Frontend behavior (no changes)
-The existing override in `ProductCard.tsx` and `ShopifyProductDetail.tsx`:
-```ts
-const isPurchasable = firstVariant?.availableForSale || isOneOfOne;
-```
-fires automatically because of the `1-of-1` tag. Both card and PDP will render "Add to Cart" the moment the product is live, sandbox availability flag bypassed.
+## Action
+Call `shopify--delete_product` 7 times (one per ID above). Each requires your approval. Deletion removes them from the live Shopify store permanently — the storefront `/shop` grid will refresh on next load and show only the 5 real products.
 
-## Note on title vs. image
-You picked the singular title "Vintage Wheaties License Plate" but the photo shows ~13 plates. I'm honoring your title choice — the description still acknowledges the set so the listing reads honestly. If you want me to switch the title to "Vintage Wheaties License Plate Collection" before creating, say the word; otherwise approve and I create as specified.
+## No code changes
+The shop is fully driven by `useShopifyProducts` → Storefront API. Once Shopify no longer returns these products, they vanish from `/shop`, the product type filters, and any other surface that pulls from the API. Nothing in `src/` references them by handle.
+
+## Confirm before I proceed
+- Hold any of the 7? (e.g., keep "From Forgotten to Featured — Limited Print /50" as a real product to flesh out later instead of deleting?)
+- Or delete all 7 as listed?
 
