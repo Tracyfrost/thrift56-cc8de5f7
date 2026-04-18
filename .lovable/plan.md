@@ -1,18 +1,18 @@
 
 
-## Plan: Adjust Background Image Position in ComingSoonMarquee
+## Plan: Replace Rick Roll Video ID
 
-### Change
-Update the background image position in `src/components/v2/ComingSoonMarquee.tsx` from `object-center` to `object-[center_20%]` so the subject's face is more visible.
+Replace the hardcoded Rick Astley placeholder video ID (`dQw4w9WgXcQ`) in `EpisodeHero.tsx` with the real video ID `3iDnecn4E60` from your YouTube URL.
 
 ### File
-- `src/components/v2/ComingSoonMarquee.tsx`
+- `src/components/episodes/EpisodeHero.tsx`
 
-Line 50 change:
+### Change
+Line 19:
 ```diff
-- className="absolute inset-0 w-full h-full object-cover"
-+ className="absolute inset-0 w-full h-full object-cover object-[center_20%]"
+- src="https://www.youtube.com/embed/dQw4w9WgXcQ"
++ src="https://www.youtube.com/embed/3iDnecn4E60"
 ```
 
-This shifts the image vertically to 20% from the top (moving the crop point down) while keeping horizontal centering, revealing more of the subject's face in the frame.
+This updates the featured episode iframe to display your actual video content instead of the placeholder.
 
