@@ -32,8 +32,8 @@ const LatestTransformationBrutalist = ({ youtubeId }: LatestTransformationBrutal
         </h2>
 
         <div className="max-w-4xl">
-          <div className="aspect-video border-4 border-stone-950 bg-stone-950 shadow-[4px_4px_0_0_hsl(var(--rust))]">
-            {embedSrc ? (
+          {embedSrc ? (
+            <div className="aspect-video border-4 border-stone-950 bg-stone-950 shadow-[4px_4px_0_0_hsl(var(--rust))]">
               <iframe
                 src={embedSrc}
                 title={latestDrop?.title || "Latest Thrift 56 Transformation"}
@@ -41,17 +41,10 @@ const LatestTransformationBrutalist = ({ youtubeId }: LatestTransformationBrutal
                 allowFullScreen
                 className="w-full h-full"
               />
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center px-6 text-center">
-                <p className="font-sans font-black text-3xl md:text-5xl tracking-tighter text-stone-50 uppercase">
-                  Episode Coming Soon
-                </p>
-                <p className="font-serif italic text-stone-500 text-sm md:text-base mt-4">
-                  New transformation dropping shortly.
-                </p>
-              </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <ComingSoonMarquee />
+          )}
 
           {latestDrop?.title && embedSrc && (
             <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950 mt-6">
