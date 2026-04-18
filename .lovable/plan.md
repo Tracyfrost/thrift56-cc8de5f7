@@ -1,58 +1,44 @@
 
 
-## Plan: Kill the Rick Roll on the Published Site
+## Plan: Add "Dolly Tray" to Curated
 
-### What I found
-The "Rick Roll" video (`dQw4w9WgXcQ`) is appearing in two completely different places, and each has its own root cause. The episodes page already had a separate hardcoded fix in code, but it can't reach the public site until you publish.
+### What gets added
+A new row in `art_pieces` with `category='curated'`, `status='available'`, price $20, plus both uploaded photos hosted in the existing public `art-images` Supabase bucket.
 
-**1. Home page → "LATEST TRANSFORMATION" section**
-This component (`LatestTransformationBrutalist.tsx`) reads its video from the **backend `episode_drops` table** — not from code. I queried the database. The only row currently in that table is:
-- title: "The Oxidized Vessel — Full Transformation"
-- status: `live`
-- youtube_url: `https://www.youtube.com/embed/dQw4w9WgXcQ` ← Rick Roll
+### Steps
 
-So even after we publish, the homepage will keep showing Rick because the URL is stored in the database. **This must be fixed via a database update, not a code change.**
+**1. Upload images to Supabase Storage (`art-images` bucket)**
+- Front (Dolly art side) → `curated/t56-006-dolly-tray-front.jpg` → becomes `after_image_url`
+- Back (Camtray maker mark) → `curated/t56-006-dolly-tray-back.jpg` → becomes `before_image_url` (used as the secondary "detail" photo on the PDP)
 
-**2. Episodes page → featured video at the top**
-`EpisodeHero.tsx` is hardcoded. It was already updated to `3iDnecn4E60` last turn, but the published site (`thrift56.com`) is still serving the old build. **This needs a Publish/Update from the green Publish button.**
+Both end up at public URLs like:
+`https://vlohlenmlrzeumwankms.supabase.co/storage/v1/object/public/art-images/curated/t56-006-dolly-tray-front.jpg`
 
-There are also a few other pages that read `youtube_id` from the `episodes` table (e.g. `LatestEpisodeSection` on `/v1`, `EpisodeDetail`, drop cards). Multiple `episodes` rows still have `youtube_id = 'dQw4w9WgXcQ'`. These aren't on the two pages you mentioned, but I'm calling them out so you know they exist.
+**2. Insert the row via SQL migration**
 
-### The fix (3 parts)
+| Field | Value |
+|---|---|
+| title | Dolly Tray — "Cup of Ambition" |
+| slug | dolly-tray-cup-of-ambition |
+| category | curated |
+| status | available |
+| price | 20 |
+| materials | `["Cambro Camtray", "Hand-illustrated", "Made in USA"]` |
+| after_image_url | front photo URL |
+| before_image_url | back photo URL |
+| description | (see below) |
 
-**Part A — Update the database (kills Rick on the home page)**
-Run a migration that updates the live `episode_drops` row to point at the real video. I'll set `youtube_url` to `https://www.youtube.com/embed/3iDnecn4E60` (the same video you put in the episodes hero) so something real plays there.
+**3. Description copy (retro / brand voice)**
 
-```sql
-UPDATE public.episode_drops
-SET youtube_url = 'https://www.youtube.com/embed/3iDnecn4E60'
-WHERE id = '774f5e69-1a1f-434a-9bcb-50967376771b';
-```
+> Pulled straight from a Tennessee thrift shelf — a vintage Cambro Camtray (Huntington Beach, CA, NSF-stamped, made in the U.S.A.) reborn with a hand-drawn portrait of hometown queen Dolly. "Pour Yourself a Cup of Ambition" hits exactly the way it should: equal parts diner-counter nostalgia and Saturday-morning anthem. Cream plastic, soft rounded corners, just the right amount of patina. A 1-of-1 piece of working art — set it under a coffee pot, hang it on the wall, or tip your hat to 9 to 5 every time you walk by. Backstamped, signed by time, ready for its second life.
 
-This takes effect on the published site **immediately** (backend changes deploy automatically — no Publish needed for this part).
-
-**Part B — Clean up the seed `episodes` rows (optional but recommended)**
-Update every `episodes` row whose `youtube_id` is still the Rick Roll placeholder to either blank or the real video, so detail pages and the `/v1` legacy home don't surface it either.
-
-```sql
-UPDATE public.episodes
-SET youtube_id = NULL
-WHERE youtube_id = 'dQw4w9WgXcQ';
-```
-
-(Setting to `NULL` makes those components fall back to placeholder UI rather than embedding a fake video. If you'd rather they all play the real one, I can set them to `3iDnecn4E60` instead — your call.)
-
-**Part C — Publish the frontend (kills Rick on /episodes)**
-After the database fix, you click the **Publish → Update** button at the top right of the editor. That ships the already-committed `EpisodeHero.tsx` change (`3iDnecn4E60`) to `thrift56.com`. I cannot do this for you — only you can press Publish.
-
-### Out of scope
-- No changes to `src/data/episodes.ts` or `src/data/artPieces.ts`. Those mock files aren't rendered by the home or episodes pages — they're legacy fallbacks.
-- No structural changes to any component.
-
-### Tiny clarification needed
-For Part B, do you want the unset episodes to show a placeholder (set to `NULL`) or all play the new featured video (set to `3iDnecn4E60`)? Defaulting to `NULL` if you don't specify.
+### Why this approach
+- Reuses the existing `art-images` bucket and `art_pieces` schema — no new tables, components, or routes needed.
+- The piece will automatically appear on `/drops` under "CURATED FINDS" via the existing `DropsCurated` component (it queries `category='curated'` + `status!='archived'`).
+- PDP at `/drops/dolly-tray-cup-of-ambition` will work via `ArtPieceDetail` automatically.
 
 ### Files touched
-- 1 SQL migration (database only) — for Parts A and B
-- No frontend file edits needed in this round
+- 0 frontend files
+- 1 SQL migration (1 INSERT)
+- 2 image uploads to Supabase Storage
 
