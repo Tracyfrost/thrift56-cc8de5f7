@@ -1,45 +1,50 @@
 
 
-## Plan: Add Omega Watchbox to Shop Curated (1-of-1)
+## Plan: Add Omega Watchbox TWO to Shop Curated (1-of-1)
 
-### What gets created
-A new Shopify product in the **Curated** collection — `T56-007_OMEGA-WATCHBOX-ONE` — tagged as `1-of-1` so the existing `ProductCard` / `ShopifyProductDetail` override flips it from "Sold Out" to "Add to Cart" automatically (no code changes needed).
+A second Omega watchbox in the **Curated** collection — `T56-008_OMEGA-WATCHBOX-TWO` — the "Ribboned Sister" to T56-007. Same 1-of-1 sandbox bypass via the `1-of-1` tag (existing `ProductCard` / `ShopifyProductDetail` overrides flip "Sold Out" → "Add to Cart" automatically). Zero code changes.
 
 ### Product spec
 
 | Field | Value |
 |---|---|
-| Title | Omega Watchbox — "The Empty Vault" |
+| Title | Omega Watchbox — "The Gifted Vault" |
 | Product Type | Curated |
 | Vendor | Thrift 56 |
-| SKU | T56-007-OMEGA-WATCHBOX-ONE |
-| Price | $45 (confirm or override below) |
-| Tags | `curated, 1-of-1, omega, watchbox, vintage, luxury-thrift, tennessee` |
-| Inventory policy | `continue` (allow oversell — sandbox bypass) |
-| Inventory tracking | none (so `availableForSale` resolves true) |
-| Images | All 3 uploaded photos, in this order: closed red box → open red box w/ pillow → operating instructions booklet |
+| SKU | T56-008-OMEGA-WATCHBOX-TWO |
+| Price | $85 (slightly higher than T56-007 — has the ribbon, manual, and outer slipcase fully intact) |
+| Tags | `curated, 1-of-1, omega, watchbox, vintage, luxury-thrift, tennessee, gift-ready` |
+| Inventory policy | `continue` (sandbox bypass) |
+| Inventory tracking | none |
+| Images (4, in order) | 1) ribboned closed box → 2) open box w/ red velvet + watch holder → 3) red Operating Instructions manual → 4) full set: outer sleeve + ribboned box + manual + suede platform |
 
-### Description copy (elegant / brand voice)
+### Description copy (brand voice — elegant, cool, slightly rebellious)
 
-> Found empty. Sold full of story. An authentic Omega presentation watchbox — lacquered crimson shell, cream suede interior, embossed Ω crown, paired with the original red "Operating Instructions" manual and outer slipcase. The watch is long gone. What remains is the ritual: the weight of the lid, the snap of the hinge, the soft pillow waiting for whatever you decide deserves it.
+> Tied. Untouched. Waiting.
 >
-> A 1-of-1 collector's vessel — pulled from a Tennessee estate lot, untouched, never reboxed. Wear-honest patina on the outer sleeve. Interior: pristine. For the watch you already own, the one you're saving for, or the empty altar on your shelf that finally deserves its frame.
+> An authentic Omega presentation watchbox — pulled from a Tennessee estate with the original satin crimson ribbon still knotted in a perfect bow, never untied. Textured cream lacquer shell, embossed Ω crown in gold, deep red velvet interior with the original arched watch holder, paired with the red "Operating Instructions" manual and pristine outer slipcase.
 >
-> **Includes:** Omega lacquer presentation box, cream suede pillow, original operating instructions booklet, outer protective sleeve. Watch not included.
+> The watch is gone. The ceremony stayed.
+>
+> A 1-of-1 collector's set — the rarer twin to "The Empty Vault." This one came gift-ready and stayed that way. Pull the ribbon yourself, or leave the bow intact and let it sit on the shelf as proof that some objects deserve to be opened slowly. Light wear on the outer sleeve. Interior: untouched. Ribbon: original.
+>
+> **Includes:** Omega lacquer presentation box with original red satin ribbon, cream watch holder, original Operating Instructions booklet, outer protective sleeve. Watch not included.
 
-### Why this approach works
-- **`ProductCard.tsx` line 23** already has the override: `isPurchasable = firstVariant?.availableForSale || isOneOfOne`. Same pattern in `ShopifyProductDetail.tsx`. Tagging `1-of-1` flips the "Sold Out" button to "Add to Cart" on **both** card and PDP — no code edits needed.
-- **`Shop.tsx` Curated filter** uses `product_type:Curated` — setting product_type correctly auto-files it under the Curated tab.
-- The "1 of 1" badge already renders on the card via the same tag check.
+### Why this works (technical)
+- `ProductCard.tsx` line 23: `isPurchasable = firstVariant?.availableForSale || isOneOfOne` — the `1-of-1` tag flips Sold Out → Add to Cart on both card and PDP.
+- `Shop.tsx` Curated filter uses `product_type:Curated` — auto-files under Curated tab.
+- "1 of 1" badge renders automatically from the same tag check.
 
 ### Steps
-1. `shopify--create_product` with the spec above (3 images, single variant, `1-of-1` tag, inventory_policy `continue`).
-2. Confirm it appears in `/shop` → Curated filter with the "1 of 1" badge and "Add to Cart" button.
+1. Copy 4 uploaded images from `user-uploads://` to `src/assets/omega/`.
+2. `shopify--create_product` with the spec above (4 images, single variant, `1-of-1` tag, `inventory_policy: continue`, `inventory_management: null`).
+3. Confirm at `/shop` → Curated: shows "1 of 1" badge + active "Add to Cart" button next to T56-007.
 
-### One clarification
-Price — I defaulted to **$45** (consistent with rare 1-of-1 curated branded packaging). Override now if you want a different number (e.g., $35, $55, $75). If you don't reply, $45 ships.
+### Price clarification
+Defaulted to **$85** (vs. T56-007's $75) — this set is more complete: ribbon intact, all 4 components present, gift-ready. Override now if you want $75 (match T56-007), $95, or another number. No reply = $85 ships.
 
 ### Files touched
-- 0 frontend files
-- 1 Shopify product created (3 image uploads handled by the create tool)
+- 4 image copies into `src/assets/omega/`
+- 1 Shopify product created
+- 0 frontend code changes
 
