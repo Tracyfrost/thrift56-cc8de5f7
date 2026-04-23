@@ -1,63 +1,55 @@
 
 
-## Plan: Add Versace Uomo F/W 1995-96 Catalog (Prince + Bruce Weber) to Curated
+## Plan: Add Escada Fashion Book to Curated — T56-013
 
-A second 1990s Versace lookbook joins Curated — `T56-012_VERSACE-1995_96-AUTUMN-CATALOG` — the **Gianni Versace Collezione Uomo Autunno Inverno 1995/96** menswear edition (Issue N. 29), photographed by **Bruce Weber** and starring **Prince**. Companion volume to T56-011 (the Donna / Avedon edition) — same season, same issue number, opposite genre. Same `1-of-1` sandbox bypass, zero code changes.
+A hardcover Escada lookbook joins Curated alongside the Versace catalogues. **Gold metallic linen hardcover**, embossed `ESCADA` mark on cover, signature double-E logo foil-stamped on back. Inside: editorial spread of a model in a violet bouclé cardigan + ivory silk pussy-bow blouse against a Manhattan skyline backdrop — luxe late-2000s/early-2010s campaign aesthetic. A library object, not a magazine.
 
 ### Product spec
 
 | Field | Value |
 |---|---|
-| Title | Gianni Versace Uomo F/W 1995-96 Catalogue — Prince × Bruce Weber (N. 29) |
+| Title | Escada Fashion Book — Gold Hardcover Lookbook |
 | Product Type | Curated |
 | Vendor | Thrift 56 |
-| SKU | T56-012-VERSACE-UOMO-FW-1995-96-PRINCE |
-| Price | $150.00 |
-| Tags | `curated, 1-of-1, versace, gianni-versace, prince, bruce-weber, fashion-catalog, archive, 1990s, vintage-fashion, collectible, milan, menswear, lookbook, music-icon` |
+| SKU | T56-013-ESCADA-FASHIONBOOK |
+| Price | $80.00 |
+| Tags | `curated, 1-of-1, escada, fashion-book, lookbook, hardcover, archive, vintage-fashion, collectible, luxury, womenswear, coffee-table-book, gold` |
 | Inventory policy | `continue` (sandbox bypass via `1-of-1` tag) |
 | Inventory tracking | none |
-| Weight | 3 lb (heavy glossy stock — flag in shipping) |
-| Variants | Single — $150 (default, only) |
-| Images (4, in order) | 1) Prince spread (gold mesh tank + leather jacket — the moneymaker) → 2) front cover (Bruce Weber jump shot, red VERSACE logo) → 3) back cover (B&W Weber editorial — antlers / fur) → 4) spine detail (red foil "GIANNI VERSACE COLLEZIONE UOMO AUTUNNO INVERNO 1995/96 N° 29") |
+| Weight | 4 lb (heavy hardcover, glossy stock) |
+| Variants | Single — $80 |
+| Images (3, in order) | 1) Gold hardcover front (ESCADA emboss) → 2) Editorial spread (violet cardigan, NYC skyline) → 3) Back cover (double-E foil mark) |
 
-### Description copy (in the spirit of Prince — terse, symbol-laden, regal, a little holy, a little filthy)
+### Description copy (cool, elegant, restrained — Escada voice)
 
-> 4 the ones who dress like the song sounds.
+> Quiet luxury, before that was a phrase.
 >
-> An original *Gianni Versace Collezione Uomo Autunno Inverno 1995/96* — Issue N° 29 — shot by Bruce Weber. Inside: His Royal Badness himself. Gold chainmail mesh tank. Black leather. Versace Medusa cuffs stacked like a sermon. The look on his face is the look. *U know the one.*
+> A hardcover *Escada* fashion book — gold metallic linen, debossed wordmark on the front, the house's twin-E monogram foil-stamped on the back. Heavy in the hand. The kind of object a private client got, not the kind that turned up on a newsstand.
 >
-> 1995. The slave era. The symbol era. The era when 1 man wore Versace like it was sacred armor and made the rest of menswear look underdressed. Bruce Weber shot it the way Bruce Weber shoots — bodies, bare feet, statues, a little danger, a lot of beauty. Gianni gave him the clothes and got out of the way.
+> Open it and the lights go down. A model in a violet bouclé cardigan and ivory silk pussy-bow blouse, patent boots crossed at the ankle, Manhattan glittering through the window behind her. Editorial photography printed on heavy matte stock — full-bleed spreads, generous margins, no captions, no prices. Just clothes, light, and confidence.
 >
-> Printed in Milan on heavy matte stock. Honest wear — the kind that says somebody actually opened it. Spine tight, red foil sharp, Prince spread crisp. Not a reprint. Not a museum copy. The book that lived through it.
+> Escada built an empire on color, tailoring, and the women who wore both well. This book is a record of that — restrained on the outside, theatrical inside. Stack it on a coffee table next to something equally certain of itself.
 >
-> One of one. Frame the Prince spread. Put it on the wall. Let the room get loud.
+> Vintage condition. Honest patina on the gold cover. Spine tight. Pages crisp.
 >
-> **Includes:** 1× original Gianni Versace Uomo F/W 1995-96 lookbook, Issue N° 29, photographed by Bruce Weber, featuring Prince. Vintage condition — honest wear consistent with 30 years of being beautiful. Ships rigid-mailer protected.
+> **Includes:** 1× original Escada hardcover fashion book. Vintage condition with light wear consistent with age. Ships rigid-mailer protected.
 
-### Why this works (technical & narrative)
+### Image rationale
 
-- **Companion piece to T56-011.** Same brand. Same season. Same issue number (N° 29). Donna by Avedon ($120) ↔ Uomo by Weber w/ Prince ($150). The $30 premium is earned by the Prince factor — collectors price these higher than the womenswear edition. Buyers who land on one will land on the other.
-- `ProductCard.tsx` line 23: `isPurchasable = firstVariant?.availableForSale || isOneOfOne` — the `1-of-1` tag flips Sold Out → Add to Cart on both card and PDP. Genuine 1-of-1, badge is honest.
-- `Shop.tsx` Curated filter pulls `product_type:Curated` — files alongside T56-007 through T56-011.
-- 3-lb weight set on the variant for accurate freight on heavy paper goods.
-
-### Image order rationale
-
-The **Prince spread leads** — not the cover. Reasoning: the cover is striking but generic-Versace; the Prince spread is the entire reason this catalogue is worth $150 and the only thing a buyer is searching for. Lead with the moneymaker, then provenance (cover → back → spine for authenticity).
+Lead with the **gold cover** — this is an object-first sale (the cover *is* the brand). Then the editorial spread (proof of what's inside). Back cover last (provenance / mark).
 
 ### Steps
 
-1. Copy 4 uploaded images to `src/assets/versace-uomo/`:
-   - `T56-012_001.jpg` ← `SEL_008.jpg` (Prince spread — main)
-   - `T56-012_002.jpg` ← `SEL_002.jpg` (front cover, Weber jump shot)
-   - `T56-012_003.jpg` ← `SEL_004.jpg` (back cover, B&W antlers)
-   - `T56-012_004.jpg` ← `SEL_005.jpg` (spine detail)
-2. `shopify--create_product` with the spec above (4 images in order, single variant priced $150, `1-of-1` tag, `inventory_policy: continue`, `inventory_management: null`, weight 3).
-3. Confirm at `/shop` → Curated: shows "Versace Uomo F/W 1995-96 — Prince × Bruce Weber" with 1-of-1 badge, $150, active Add to Cart. Click into PDP → confirm all four photos render in order with Prince spread leading.
+1. Copy 3 uploaded images to `src/assets/escada-book/`:
+   - `T56-013_001.jpg` ← `SEL_002.jpg` (front cover, gold)
+   - `T56-013_002.jpg` ← `SEL_003.jpg` (violet cardigan editorial spread)
+   - `T56-013_003.jpg` ← `SEL_006.jpg` (back cover, double-E mark)
+2. `shopify--create_product` with the spec above.
+3. Confirm at `/shop` → Curated: shows "Escada Fashion Book" with 1-of-1 badge, $80, active Add to Cart.
 
 ### Files touched
 
-- 4 image copies into `src/assets/versace-uomo/`
-- 1 Shopify product created (single variant)
+- 3 image copies into `src/assets/escada-book/`
+- 1 Shopify product created
 - 0 frontend code changes
 
