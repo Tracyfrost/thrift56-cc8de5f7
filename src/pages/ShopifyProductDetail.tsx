@@ -123,11 +123,22 @@ const ShopifyProductDetail = () => {
           {/* Right — Sticky Buy Box */}
           <div className="lg:sticky lg:top-24 lg:self-start space-y-8">
             {/* Exclusivity badge */}
-            {isOneOfOne && (
-              <div className="inline-block border border-orange-800/50 bg-orange-800/10 px-4 py-1.5">
-                <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-orange-800">
-                  Fantasy Find
-                </span>
+            {(isOneOfOne || isFantasyFind) && (
+              <div className="flex flex-wrap gap-2">
+                {isOneOfOne && (
+                  <div className="inline-block border border-orange-800/50 bg-orange-800/10 px-4 py-1.5">
+                    <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-orange-800">
+                      1 of 1 Worldwide
+                    </span>
+                  </div>
+                )}
+                {isFantasyFind && (
+                  <div className="inline-block border border-teal-800/70 bg-stone-950 px-4 py-1.5">
+                    <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-teal-300">
+                      Fantasy Find
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 
