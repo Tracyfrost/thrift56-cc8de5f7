@@ -62,7 +62,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {(isOneOfOne || isLimited) && (
           <div className="absolute top-2 left-2 bg-[#F9F6F0]/90 border border-orange-800/50 px-2 py-1">
             <span className="font-heading text-[10px] uppercase tracking-wider text-orange-800">
-              {isOneOfOne ? "1 of 1" : "Limited /50"}
+              {isOneOfOne ? "Fantasy Find" : "Limited /50"}
             </span>
           </div>
         )}
