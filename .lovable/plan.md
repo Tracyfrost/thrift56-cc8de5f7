@@ -1,43 +1,43 @@
-## Add new Curated product — Frank Frazetta "ICON" Retrospective Book (T56-014)
+## Add new Curated product — "The Art of Rowena" Book (T56-015)
 
-A new 1-of-1 curated Shopify product using the two uploaded photos. Follows the same pattern as the other curated drops (Versace, Avedon, Wheaties, Omega).
+A new 1-of-1 curated Shopify product using the two uploaded photos. Same pattern as T56-014 Frazetta ICON.
 
 ### Photos
 | Local file | Source upload | Subject |
 |---|---|---|
-| `src/assets/frazetta/T56-014_001.jpg` | `T56-014_FRANK-FRAZETTA-ICON-BOOK_EDT_001-2.jpg` | Front cover — "ICON: A Retrospective by the Grand Master of Fantastic Art / Frank Frazetta" |
-| `src/assets/frazetta/T56-014_002.jpg` | `T56-014_FRANK-FRAZETTA-ICON-BOOK_EDT_002-2.jpg` | Back cover — "Night They Raided Minsky's" poster art + critic blurbs (Bradbury, Kurtzman, Maitz, Blackshear, Punchatz) |
+| `src/assets/rowena/T56-015_001.jpg` | `T56-015_ART-OF-ROWENA-BOOK_EDT_001.jpg` | Front cover — Rowena Morrill painting, redhead figure draped over a temple deity |
+| `src/assets/rowena/T56-015_002.jpg` | `T56-015_ART-OF-ROWENA-BOOK_EDT_002.jpg` | Back cover — sage-green panel, "Text by Doris Vallejo", two interior plates, Paper Tiger imprint, ISBN 1-85585-778-2 |
 
 ### Shopify product
 
-- **Title**: Frank Frazetta — "ICON" Retrospective
+- **Title**: The Art of Rowena — Morrill Retrospective
 - **Vendor**: Thrift 56
 - **Type**: Curated
-- **Tags**: `1-of-1, curated, frazetta, fantasy-art, vintage-book, retrospective, found-object, hardcover`
-- **Price**: $85
-- **SKU**: `T56-014`
+- **Tags**: `1-of-1, curated, rowena-morrill, fantasy-art, vintage-book, paper-tiger, found-object, hardcover`
+- **Price**: $75
+- **SKU**: `T56-015`
 - **Inventory**: 1, tracked via Shopify
 - **Images**: front cover (lead), back cover
 
 ### Description (in brand voice)
 
-> *The Grand Master, hardcover, hand-found.*
+> *The first lady of fantasy paperback covers — hardcover, hand-found.*
 >
-> ICON — the definitive Frank Frazetta retrospective, edited by Arnie & Cathy Fenner. The book that put every barbarian, every spacefaring queen, every snarling beast Frazetta ever painted between two covers and called it what it always was: the canon.
+> The Art of Rowena. A full retrospective of Rowena Morrill, the painter who put oil-glazed witches, sea queens, and impossible monsters on the front of every fantasy paperback worth reading from the late seventies through the nineties. Stephen King covers. Anne McCaffrey covers. Piers Anthony. Asimov. If you grew up in a used bookstore, you grew up inside a Rowena.
 >
-> Death Dealer. Conan. The Princess of Mars. The covers that taught three generations of illustrators what "epic" actually means. Bradbury called it mythological. Kurtzman said it was impossible to explain. Don Maitz called the draftsmanship unequaled. They were all right.
+> Text by Doris Vallejo — yes, that Vallejo — pulling apart the technique behind the polish: the layered glazes, the sculptural figure work, the way she made fantasy feel like Renaissance portraiture instead of pulp.
 >
-> Pulled from a Pacific Northwest estate lot — original dust jacket intact, protective mylar sleeve still on, spine tight, plates crisp. The kind of book that lived on a shelf, not a coffee table.
+> Pulled from a Pacific Northwest estate lot. Original Paper Tiger dust jacket intact, sage-green back panel still vivid, spine tight, full-color plates clean throughout.
 >
 > **The Find:** Estate lot, Pacific Northwest.
-> **Condition:** Excellent. Original dust jacket with mylar protector, no tears, binding tight, interior plates clean.
+> **Condition:** Excellent. Original dust jacket, no tears, binding tight, interior plates crisp.
 > **Format:** Hardcover, full-color plates throughout.
-> **Original cover price:** $35 US / $50.95 CAN.
+> **Publisher:** Paper Tiger (UK) — ISBN 1-85585-778-2.
 > **Quantity:** One. Once it's gone, it stays gone.
 
 ### Implementation steps
 
-1. Copy both uploads into `src/assets/frazetta/` as `T56-014_001.jpg` and `T56-014_002.jpg`.
-2. Single `shopify--create_product` call with the title, body, vendor, type, tags, one variant (price 85, SKU T56-014, inventory_management `shopify`), and `images: [001, 002]` in that order.
+1. Copy both uploads into `src/assets/rowena/` as `T56-015_001.jpg` and `T56-015_002.jpg`.
+2. Single `shopify--create_product` call: title, body, vendor, type, tags, one variant (price 75, SKU T56-015, inventory_management `shopify`), images `[001, 002]`.
 
-No code, route, or component edits — `/shop` and `/product/<handle>` already render any Shopify product with `tag:1-of-1` as a purchasable curated piece.
+No code or component edits — `/shop` and `/product/<handle>` already render any Shopify product with `tag:1-of-1` as a purchasable curated piece.
