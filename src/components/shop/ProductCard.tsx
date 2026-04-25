@@ -17,6 +17,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const price = node.priceRange.minVariantPrice;
 
   const isOneOfOne = node.tags?.includes("1-of-1");
+  const isFantasyFind = node.tags?.includes("fantasy-find");
   const isLimited = node.productType === "Print";
   // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
   // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
@@ -62,7 +63,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {(isOneOfOne || isLimited) && (
           <div className="absolute top-2 left-2 bg-[#F9F6F0]/90 border border-orange-800/50 px-2 py-1">
             <span className="font-heading text-[10px] uppercase tracking-wider text-orange-800">
-              {isOneOfOne ? "Fantasy Find" : "Limited /50"}
+              {isOneOfOne ? "1 of 1" : "Limited /50"}
+            </span>
+          </div>
+        )}
+
+        {/* Fantasy Find badge — distinct teal accent, stacks below primary badge */}
+        {isFantasyFind && (
+          <div className="absolute top-2 right-2 bg-stone-950/90 border border-teal-800/70 px-2 py-1">
+            <span className="font-heading text-[10px] uppercase tracking-wider text-teal-300">
+              Fantasy Find
             </span>
           </div>
         )}
