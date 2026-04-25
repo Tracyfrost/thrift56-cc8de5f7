@@ -1,21 +1,22 @@
-# Make the Prince Spread the Main Image — Versace Uomo F/W 1995-96 Catalogue
+# Replace Photos — Versace F/W 1995-96 Avedon Catalogue (T56-011)
 
-The user clicked the second image in the gallery on `/product/gianni-versace-uomo-f-w-1995-96-catalogue-prince-bruce-weber-n-29` (the **Prince spread**, currently `T56-012_002.jpg`) and wants it to lead the listing.
+Swap the three product images on the Gianni Versace F/W 1995-96 catalogue (Avedon, N. 29) with the three uploaded photos.
 
 ## What changes
 
-Reorder the product's images on Shopify so the Prince spread loads first. The local `src/assets/versace-uomo/` files stay where they are — only the order sent to Shopify changes.
+**Local assets** — overwrite the existing files in `src/assets/versace/` so any code that imports them keeps working:
 
-**New image order:**
-1. `T56-012_002.jpg` — Prince spread *(was #2, now main / cover slot)*
-2. `T56-012_001.jpg` — Front cover *(was #1)*
-3. `T56-012_003.jpg` — Bruce Weber antlers editorial
-4. `T56-012_004.jpg` — Spine detail
+| Local file | New source | Subject |
+|---|---|---|
+| `T56-011_001.jpg` | `user-uploads://T56-011_VERSACE-1995_96-FALL-WINTER-CATALOG_EDT_007.jpg` | Front cover — McMenamy, cream suit, white boots |
+| `T56-011_002.jpg` | `user-uploads://T56-011_VERSACE-1995_96-FALL-WINTER-CATALOG_EDT_006.jpg` | Back cover — red trouser suit, wide stance |
+| `T56-011_003.jpg` | `user-uploads://T56-011_VERSACE-1995_96-FALL-WINTER-CATALOG_EDT_005.jpg` | Spine — "GIANNI VERSACE COLLEZIONE DONNA AUTUNNO INVERNO 1995-96 / N. 29" |
 
-## Implementation
+**Shopify product** (`gid://shopify/Product/7781116051533`) — replace all images with the three above, in that order. The front cover stays the lead image.
 
-Single tool call:
+## Implementation steps
 
-- `shopify--update_product` on Product ID `7781118246989` with the four images in the order above. Shopify replaces all images on update, and the storefront product page (which iterates `product.images.edges` in order) will render the Prince spread first immediately after cache refresh.
+1. Copy the three uploaded images to `src/assets/versace/T56-011_001.jpg`, `_002.jpg`, `_003.jpg` (overwriting).
+2. Single `shopify--update_product` call on product ID `7781116051533` with `images: [001, 002, 003]` — Shopify replaces all images on update, so the storefront `/product/...avedon-n-29` page reflects the new gallery after cache refresh.
 
-No code, route, or asset edits required.
+No code, route, or component edits — the product detail page already iterates `product.images.edges` in order.
