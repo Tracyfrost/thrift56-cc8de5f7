@@ -17,6 +17,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const price = node.priceRange.minVariantPrice;
 
   const isOneOfOne = node.tags?.includes("1-of-1");
+  const isFantasyFind = node.tags?.includes("fantasy-find");
   const isLimited = node.productType === "Print";
   // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
   // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
