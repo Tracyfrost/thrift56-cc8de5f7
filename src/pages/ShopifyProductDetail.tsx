@@ -125,7 +125,7 @@ const ShopifyProductDetail = () => {
             {isOneOfOne && (
               <div className="inline-block border border-orange-800/50 bg-orange-800/10 px-4 py-1.5">
                 <span className="font-heading text-[10px] uppercase tracking-[0.25em] text-orange-800">
-                  1 of 1 Worldwide
+                  Fantasy Find
                 </span>
               </div>
             )}
