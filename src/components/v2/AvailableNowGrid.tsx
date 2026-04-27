@@ -31,6 +31,8 @@ const AvailableNowGrid = () => {
               const imageAlt = node?.images?.edges?.[0]?.node?.altText || node?.title;
               const price = node?.priceRange?.minVariantPrice?.amount;
               const available = node?.variants?.edges?.[0]?.node?.availableForSale;
+              const isOneOfOne = (node?.tags || []).includes("1-of-1");
+              const isAvailable = available !== false || isOneOfOne;
 
               return (
                 <Link key={node.id} to={`/product/${node.handle}`} className="group block">
