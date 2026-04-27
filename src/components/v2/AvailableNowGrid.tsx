@@ -58,7 +58,7 @@ const AvailableNowGrid = () => {
                     <span className="absolute top-3 right-3 bg-[#F9F6F0] text-stone-950 font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 z-10 border border-stone-300">
                       1 of 1
                     </span>
-                    {available === false ? (
+                    {!isAvailable ? (
                       <span className="absolute top-3 left-3 bg-stone-400 text-white font-sans text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 line-through z-10">
                         Sold
                       </span>
@@ -72,7 +72,7 @@ const AvailableNowGrid = () => {
                     <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950 group-hover:text-orange-800 transition-colors">
                       {node.title}
                     </p>
-                    <p className={`font-serif text-sm mt-1 ${available === false ? "text-stone-400 line-through" : "text-orange-800"}`}>
+                    <p className={`font-serif text-sm mt-1 ${!isAvailable ? "text-stone-400 line-through" : "text-orange-800"}`}>
                       {price ? `$${parseFloat(price).toFixed(2)}` : ""}
                     </p>
                   </div>
