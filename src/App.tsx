@@ -25,6 +25,7 @@ import Shop from "./pages/Shop.tsx";
 import ShopifyProductDetail from "./pages/ShopifyProductDetail.tsx";
 import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
+import Unsubscribe from "./pages/Unsubscribe.tsx";
 import Policies from "./pages/Policies.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ReturnVisitBanner from "./components/ReturnVisitBanner.tsx";
@@ -49,6 +50,7 @@ const AppContent = () => {
         <Route path="/community" element={<Community />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/unsubscribe" element={<Unsubscribe />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
