@@ -70,30 +70,40 @@ const ShopifyProductDetail = () => {
   // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
   const isPurchasable = selectedVariant?.availableForSale || isOneOfOne;
 
+  // Determine the active product+variant based on egg package mode
+  const activeProduct = showEggPackageSelector && packageMode === "set" && bundleProduct
+    ? bundleProduct
+    : product;
+  const activeVariants = activeProduct.variants?.edges || [];
+  const activeVariant = showEggPackageSelector && packageMode === "set" && bundleProduct
+    ? activeVariants[0]?.node
+    : selectedVariant;
+  const activePrice = activeVariant?.price.amount || "0";
+
   const handleAddToCart = async () => {
-    if (!selectedVariant) return;
+    if (!activeVariant || !activeProduct) return;
     await addItem({
       product: {
         node: {
-          id: product.id,
-          title: product.title,
-          description: product.description,
-          handle: product.handle,
-          productType: product.productType,
-          tags: product.tags,
-          priceRange: product.priceRange,
-          images: product.images,
-          variants: product.variants,
-          options: product.options,
+          id: activeProduct.id,
+          title: activeProduct.title,
+          description: activeProduct.description,
+          handle: activeProduct.handle,
+          productType: activeProduct.productType,
+          tags: activeProduct.tags,
+          priceRange: activeProduct.priceRange,
+          images: activeProduct.images,
+          variants: activeProduct.variants,
+          options: activeProduct.options,
         },
       },
-      variantId: selectedVariant.id,
-      variantTitle: selectedVariant.title,
-      price: selectedVariant.price,
+      variantId: activeVariant.id,
+      variantTitle: activeVariant.title,
+      price: activeVariant.price,
       quantity: 1,
-      selectedOptions: selectedVariant.selectedOptions || [],
+      selectedOptions: activeVariant.selectedOptions || [],
     });
-    toast.success("Added to cart", { description: product.title });
+    toast.success("Added to cart", { description: activeProduct.title });
   };
 
   return (
