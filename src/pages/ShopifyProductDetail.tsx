@@ -14,12 +14,24 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const EGG_BUNDLE_HANDLE = "porcelain-egg-reliquary-the-full-set-of-six";
+
 const ShopifyProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
   const { data: product, isLoading } = useShopifyProduct(handle || "");
   const addItem = useCartStore((s) => s.addItem);
   const cartLoading = useCartStore((s) => s.isLoading);
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
+  const [packageMode, setPackageMode] = useState<"single" | "set">("single");
+
+  const isEggBox = product?.tags?.includes("egg-box");
+  const isEggBundle = isEggBox && product?.tags?.includes("bundle");
+  // Show package selector on individual eggs (not the bundle itself)
+  const showEggPackageSelector = isEggBox && !isEggBundle;
+  // Fetch bundle product when on an individual egg PDP
+  const { data: bundleProduct } = useShopifyProduct(
+    showEggPackageSelector ? EGG_BUNDLE_HANDLE : ""
+  );
 
   if (isLoading) {
     return (
@@ -56,32 +68,42 @@ const ShopifyProductDetail = () => {
   const isFantasyFind = product.tags?.includes("fantasy-find");
   // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
   // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
-  const isPurchasable = selectedVariant?.availableForSale || isOneOfOne;
+  const isPurchasable = selectedVariant?.availableForSale || isOneOfOne || product.tags?.includes("egg-box");
+
+  // Determine the active product+variant based on egg package mode
+  const activeProduct = showEggPackageSelector && packageMode === "set" && bundleProduct
+    ? bundleProduct
+    : product;
+  const activeVariants = activeProduct.variants?.edges || [];
+  const activeVariant = showEggPackageSelector && packageMode === "set" && bundleProduct
+    ? activeVariants[0]?.node
+    : selectedVariant;
+  const activePrice = activeVariant?.price.amount || "0";
 
   const handleAddToCart = async () => {
-    if (!selectedVariant) return;
+    if (!activeVariant || !activeProduct) return;
     await addItem({
       product: {
         node: {
-          id: product.id,
-          title: product.title,
-          description: product.description,
-          handle: product.handle,
-          productType: product.productType,
-          tags: product.tags,
-          priceRange: product.priceRange,
-          images: product.images,
-          variants: product.variants,
-          options: product.options,
+          id: activeProduct.id,
+          title: activeProduct.title,
+          description: activeProduct.description,
+          handle: activeProduct.handle,
+          productType: activeProduct.productType,
+          tags: activeProduct.tags,
+          priceRange: activeProduct.priceRange,
+          images: activeProduct.images,
+          variants: activeProduct.variants,
+          options: activeProduct.options,
         },
       },
-      variantId: selectedVariant.id,
-      variantTitle: selectedVariant.title,
-      price: selectedVariant.price,
+      variantId: activeVariant.id,
+      variantTitle: activeVariant.title,
+      price: activeVariant.price,
       quantity: 1,
-      selectedOptions: selectedVariant.selectedOptions || [],
+      selectedOptions: activeVariant.selectedOptions || [],
     });
-    toast.success("Added to cart", { description: product.title });
+    toast.success("Added to cart", { description: activeProduct.title });
   };
 
   return (
@@ -154,7 +176,7 @@ const ShopifyProductDetail = () => {
 
             {/* Price */}
             <div className="font-heading text-3xl text-orange-800">
-              ${parseFloat(selectedVariant?.price.amount || "0").toFixed(2)}
+              ${parseFloat(activePrice).toFixed(2)}
             </div>
 
             {/* Four Pillars */}
@@ -169,6 +191,48 @@ const ShopifyProductDetail = () => {
                 {product.description?.split('.').slice(1).join('.').trim()}
               </p>
             </div>
+
+            {/* Egg Package selector — Single vs Full Set of Six */}
+            {showEggPackageSelector && (
+              <div className="space-y-3">
+                <label className="font-heading text-[10px] uppercase tracking-wider text-stone-500 block">
+                  Package
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setPackageMode("single")}
+                    className={`p-4 border text-left transition-colors ${
+                      packageMode === "single"
+                        ? "border-orange-800 bg-orange-800/10"
+                        : "border-stone-300 hover:border-stone-500"
+                    }`}
+                  >
+                    <div className={`font-heading text-[11px] uppercase tracking-wider ${packageMode === "single" ? "text-orange-800" : "text-stone-700"}`}>
+                      Single Egg
+                    </div>
+                    <div className="font-heading text-lg text-stone-950 mt-1">$25</div>
+                    <div className="text-[10px] text-stone-500 mt-1">This egg only · 1 of 1</div>
+                  </button>
+                  <button
+                    onClick={() => setPackageMode("set")}
+                    disabled={!bundleProduct}
+                    className={`p-4 border text-left transition-colors disabled:opacity-50 ${
+                      packageMode === "set"
+                        ? "border-orange-800 bg-orange-800/10"
+                        : "border-stone-300 hover:border-stone-500"
+                    }`}
+                  >
+                    <div className={`font-heading text-[11px] uppercase tracking-wider ${packageMode === "set" ? "text-orange-800" : "text-stone-700"}`}>
+                      Full Set of Six
+                    </div>
+                    <div className="font-heading text-lg text-stone-950 mt-1">
+                      $120 <span className="text-xs text-stone-400 line-through ml-1">$150</span>
+                    </div>
+                    <div className="text-[10px] text-stone-500 mt-1">All 6 eggs · Save $30</div>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Variant selector */}
             {hasMultipleVariants && product.options && (

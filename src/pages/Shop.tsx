@@ -15,7 +15,7 @@ const FILTERS = [
 
 const Shop = () => {
   const [activeFilter, setActiveFilter] = useState(0);
-  const { data: products, isLoading } = useShopifyProducts(20, FILTERS[activeFilter].query);
+  const { data: products, isLoading } = useShopifyProducts(100, FILTERS[activeFilter].query);
 
   return (
     <div className="min-h-screen bg-[#F9F6F0]">
