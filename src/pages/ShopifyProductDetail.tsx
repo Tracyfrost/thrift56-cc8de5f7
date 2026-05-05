@@ -176,7 +176,7 @@ const ShopifyProductDetail = () => {
 
             {/* Price */}
             <div className="font-heading text-3xl text-orange-800">
-              ${parseFloat(selectedVariant?.price.amount || "0").toFixed(2)}
+              ${parseFloat(activePrice).toFixed(2)}
             </div>
 
             {/* Four Pillars */}
