@@ -1,37 +1,26 @@
-## Add "Retro-Style Cocktail Set" to Curated
+## Problem
 
-Create a new Shopify product in the Curated tier using the uploaded photo, priced at $60, with brand-voiced retro copy.
+All 7 egg products exist in Shopify Admin (6 individual eggs + 1 "Reliquary — Full Set of Six" bundle), but only 2 appear on `/shop`. The Storefront API only returns products that are **published to the Online Store / Headless sales channel**. The 5 missing eggs were created without that publication, so the storefront can't see them.
 
-### Product details
-- **Title:** Retro-Style Cosmopolitan Cocktail Set
-- **Handle/SKU:** T56-017_RETRO-STYLE-COCKTAIL-SET
-- **Price:** $60.00 USD
-- **Vendor:** Thrift 56
-- **Product Type:** Curated
-- **Tags:** `curated`, `1-of-1`, `barware`, `retro`, `cocktail`, `vintage`, `t56-017`
-- **Inventory:** Tracked, qty 1, deny when out of stock (true 1-of-1)
-- **Image:** uploaded `T56-017_RETRO-STYLE-COCKTAIL-SET_EDT_002.jpg`
+The two uploaded group photos are also not yet attached to the bundle product.
 
-### Description (brand voice — Found. Transformed. Released.)
+## Plan
 
-> **The Cosmopolitan Hour — Pulled From Another Era.**
->
-> A complete three-piece cocktail set built for the kind of evening that doesn't happen by accident. One stainless-capped glass shaker and two pink-stemmed martini glasses, each wearing the same hand-illustrated Cosmopolitan label — a 1940s-style portrait that reads like a forgotten supper-club poster. The recipe is printed right on the glass. No guesswork. Just pour.
->
-> Found in the wild. Cleaned, inspected, and released as-is — patina intact, character louder than any new piece on a shelf.
->
-> **The Set**
-> - 1× Glass cocktail shaker with stainless steel cap & strainer
-> - 2× Martini glasses with pink-bubble stems
-> - Matching vintage Cosmopolitan illustration on every piece
->
-> **Condition:** Excellent vintage. No chips, no cracks. Light shelf wear consistent with age.
->
-> **1 of 1.** Once it's gone, it's gone.
+### 1. Republish all 7 egg products to make them visible on `/shop`
+Re-run `shopify--update_product` on each of the 7 egg products (IDs 7801900859469, 7801901023309, 7801901547597, 7801903185997, 7801911738445, 7801920159821, 7801931530317). Updating through our tool publishes them to all sales channels Lovable manages, which restores Storefront API visibility.
 
-### Technical execution
-1. Call `shopify--create_product` with the fields above, image from `user-uploads://T56-017_RETRO-STYLE-COCKTAIL-SET_EDT_002.jpg`, single variant @ $60, inventory tracked at qty 1.
-2. Verify it appears in Shopify and on `/shop` (Curated filter) via the existing Storefront API hook — no frontend code changes needed; `ProductCard` already handles the `1-of-1` and Curated `productType` badges.
+### 2. Attach the two group photos to the "Reliquary — Full Set of Six" bundle (ID 7801931530317)
+- `T56-021_PORCELAIN-EGG-BOX_EDT_004-2.jpg` — front lineup of all six eggs (primary image)
+- `T56-021_PORCELAIN-EGG-BOX_EDT_003-2.jpg` — top-down open view of all six interiors (secondary)
 
-### Open question
-Confirm the SKU `T56-017_RETRO-STYLE-COCKTAIL-SET` should be used verbatim (it's unusual to have it in caps with underscores — Shopify accepts it, just confirming).
+Copy them to `src/assets/eggs/` and pass via `images` on `update_product`. Note: Shopify update_product replaces all existing images on the product, so any current bundle images would be replaced by these two group shots — confirm that's desired (it should be, since the bundle should *only* show group photos, not single eggs).
+
+### 3. No frontend code change needed
+`/shop` already pulls live from Shopify and the "Curated" filter (`product_type:Curated`) already matches all 7 eggs. Once they're published they'll appear. The bundle will naturally render alongside the singles in the grid (priced $120 vs. $25 for singles), serving as the "Group purchase option."
+
+### 4. Verify
+After publish, reload `/shop` → "Curated" tab should show all 7 cards (6 numbered eggs + 1 Reliquary set).
+
+## Open question
+
+The bundle product currently sits in the same grid as the singles. Do you want it visually distinguished (e.g., a "COMPLETE SET — SAVE $30" ribbon on the card, or pinned to the top of the Curated tab), or is showing it as a regular card (with its $120 price tag making it obvious) sufficient for v1?
