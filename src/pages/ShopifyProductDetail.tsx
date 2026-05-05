@@ -68,7 +68,7 @@ const ShopifyProductDetail = () => {
   const isFantasyFind = product.tags?.includes("fantasy-find");
   // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
   // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
-  const isPurchasable = selectedVariant?.availableForSale || isOneOfOne;
+  const isPurchasable = selectedVariant?.availableForSale || isOneOfOne || product.tags?.includes("egg-box");
 
   // Determine the active product+variant based on egg package mode
   const activeProduct = showEggPackageSelector && packageMode === "set" && bundleProduct
