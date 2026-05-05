@@ -192,6 +192,48 @@ const ShopifyProductDetail = () => {
               </p>
             </div>
 
+            {/* Egg Package selector — Single vs Full Set of Six */}
+            {showEggPackageSelector && (
+              <div className="space-y-3">
+                <label className="font-heading text-[10px] uppercase tracking-wider text-stone-500 block">
+                  Package
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setPackageMode("single")}
+                    className={`p-4 border text-left transition-colors ${
+                      packageMode === "single"
+                        ? "border-orange-800 bg-orange-800/10"
+                        : "border-stone-300 hover:border-stone-500"
+                    }`}
+                  >
+                    <div className={`font-heading text-[11px] uppercase tracking-wider ${packageMode === "single" ? "text-orange-800" : "text-stone-700"}`}>
+                      Single Egg
+                    </div>
+                    <div className="font-heading text-lg text-stone-950 mt-1">$25</div>
+                    <div className="text-[10px] text-stone-500 mt-1">This egg only · 1 of 1</div>
+                  </button>
+                  <button
+                    onClick={() => setPackageMode("set")}
+                    disabled={!bundleProduct}
+                    className={`p-4 border text-left transition-colors disabled:opacity-50 ${
+                      packageMode === "set"
+                        ? "border-orange-800 bg-orange-800/10"
+                        : "border-stone-300 hover:border-stone-500"
+                    }`}
+                  >
+                    <div className={`font-heading text-[11px] uppercase tracking-wider ${packageMode === "set" ? "text-orange-800" : "text-stone-700"}`}>
+                      Full Set of Six
+                    </div>
+                    <div className="font-heading text-lg text-stone-950 mt-1">
+                      $120 <span className="text-xs text-stone-400 line-through ml-1">$150</span>
+                    </div>
+                    <div className="text-[10px] text-stone-500 mt-1">All 6 eggs · Save $30</div>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Variant selector */}
             {hasMultipleVariants && product.options && (
               <div className="space-y-3">
