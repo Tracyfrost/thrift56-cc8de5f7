@@ -14,12 +14,24 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+const EGG_BUNDLE_HANDLE = "porcelain-egg-reliquary-the-full-set-of-six";
+
 const ShopifyProductDetail = () => {
   const { handle } = useParams<{ handle: string }>();
   const { data: product, isLoading } = useShopifyProduct(handle || "");
   const addItem = useCartStore((s) => s.addItem);
   const cartLoading = useCartStore((s) => s.isLoading);
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
+  const [packageMode, setPackageMode] = useState<"single" | "set">("single");
+
+  const isEggBox = product?.tags?.includes("egg-box");
+  const isEggBundle = isEggBox && product?.tags?.includes("bundle");
+  // Show package selector on individual eggs (not the bundle itself)
+  const showEggPackageSelector = isEggBox && !isEggBundle;
+  // Fetch bundle product when on an individual egg PDP
+  const { data: bundleProduct } = useShopifyProduct(
+    showEggPackageSelector ? EGG_BUNDLE_HANDLE : ""
+  );
 
   if (isLoading) {
     return (
