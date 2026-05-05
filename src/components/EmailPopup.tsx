@@ -37,11 +37,20 @@ const EmailPopup = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const { error } = await supabase.from("subscribers").insert({ name, email });
+      const { data, error } = await supabase.functions.invoke("subscribe-drop-alerts", {
+        body: { name, email },
+      });
       if (error) throw error;
-      toast.success("You're in!", { description: "You'll be first to know about the next drop." });
+      if (data?.status === "duplicate") {
+        toast.success("Already on the list", { description: "You're good — we've got you." });
+      } else if (data?.status === "success") {
+        toast.success("You're in!", { description: "You'll be first to know about the next drop." });
+      } else {
+        throw new Error(data?.message || "Failed");
+      }
       dismiss();
-    } catch {
+    } catch (err) {
+      console.error("Email popup error:", err);
       toast.error("Something went wrong. Try again.");
     } finally {
       setSubmitting(false);
