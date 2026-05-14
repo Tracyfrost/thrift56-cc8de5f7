@@ -25,30 +25,30 @@ const SiteFooter = () => {
             <Link to="/" className="inline-block mb-5 hover:opacity-80 transition-opacity">
               <img src={logo} alt="Thrift 56" className="h-20 w-auto" />
             </Link>
-            <p className="text-sm text-stone-500 font-serif leading-relaxed">
+            <p className="text-sm text-stone-600 font-serif leading-relaxed">
               Found objects, transformed art.<br />Every piece tells a story.
             </p>
           </div>
           <div>
             <p className="font-sans font-bold text-xs uppercase tracking-[0.2em] text-stone-600 mb-3">Explore</p>
             <div className="space-y-2">
-              <Link to="/episodes" className="block text-sm text-stone-500 hover:text-orange-800 transition-colors font-serif">Episodes</Link>
-              <Link to="/drops" className="block text-sm text-stone-500 hover:text-orange-800 transition-colors font-serif">Art Drops</Link>
-              <Link to="/community" className="block text-sm text-stone-500 hover:text-orange-800 transition-colors font-serif">Community</Link>
-              <Link to="/livestream" className="block text-sm text-stone-500 hover:text-orange-800 transition-colors font-serif">Livestream</Link>
+              <Link to="/episodes" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Episodes</Link>
+              <Link to="/drops" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Art Drops</Link>
+              <Link to="/community" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Community</Link>
+              <Link to="/livestream" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Livestream</Link>
             </div>
           </div>
           <div>
             <p className="font-sans font-bold text-xs uppercase tracking-[0.2em] text-stone-600 mb-3">Connect</p>
             <div className="space-y-2">
-              <a href="https://www.youtube.com/@thrift56" target="_blank" rel="noopener noreferrer" className="block text-sm text-stone-500 hover:text-orange-800 transition-colors font-serif">YouTube</a>
-              <a href="#" className="block text-sm text-stone-500 hover:text-orange-800 transition-colors font-serif">Instagram</a>
-              <a href="#" className="block text-sm text-stone-500 hover:text-orange-800 transition-colors font-serif">TikTok</a>
+              <a href="https://www.youtube.com/@thrift56" target="_blank" rel="noopener noreferrer" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">YouTube</a>
+              <a href="#" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Instagram</a>
+              <a href="#" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">TikTok</a>
             </div>
           </div>
         </div>
         <div className="border-t border-stone-300 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-stone-500 font-serif">
+          <p className="text-xs text-stone-600 font-serif">
             © {new Date().getFullYear()} Thrift 56. All rights reserved.
           </p>
           <img src={logo} alt="" className="h-6 w-auto opacity-30" aria-hidden="true" />

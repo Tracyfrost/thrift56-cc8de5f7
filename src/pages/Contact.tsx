@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -53,6 +54,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
+      <Seo title="Contact — Thrift 56 Studio" description="Get in touch with the Thrift 56 studio. Questions about a piece, a custom commission, or press inquiries." path="/contact" />
 
       <section className="container py-16 md:py-24 max-w-xl">
         <p className="font-serif italic text-stone-500 text-sm mb-3">Get in touch</p>

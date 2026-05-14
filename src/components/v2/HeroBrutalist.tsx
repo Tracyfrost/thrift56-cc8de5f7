@@ -31,6 +31,10 @@ const HeroBrutalist = () => {
         <img
           src={heroTracie}
           alt="Tracie working on a thrift store transformation"
+          fetchPriority="high"
+          decoding="async"
+          width={1920}
+          height={1080}
           className="w-full h-full object-cover contrast-125 saturate-50 sepia-[.25] animate-ken-burns"
         />
         {/* Film grain overlay */}

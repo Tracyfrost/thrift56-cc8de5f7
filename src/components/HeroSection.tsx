@@ -12,6 +12,10 @@ const HeroSection = () => {
         <img
           src={heroImage}
           alt="Tracie in her art studio"
+          fetchPriority="high"
+          decoding="async"
+          width={1920}
+          height={1080}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/98 via-background/85 to-background/30 md:from-background/95 md:via-background/75 md:to-transparent" />

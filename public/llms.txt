@@ -1,0 +1,20 @@
+# Thrift 56
+
+> Tracie hunts thrift stores for forgotten objects, transforms them into one-of-a-kind art, and films every step. Found. Transformed. Released.
+
+Thrift 56 is a creator-led art brand. Every piece is discovered at a thrift store, hand-restored in the studio, documented on YouTube, and released to the community. Hook: "This was $3. It deserved better."
+
+## Pages
+
+- [Home](/): Latest transformation, drop list signup, featured pieces.
+- [Episodes](/episodes): Every transformation episode, before/after, studio process.
+- [Art Drops](/drops): Tiered narrative releases — current, resurrected, curated, vault, archive.
+- [Shop](/shop): One-of-a-kind transformed pieces and curated thrift finds.
+- [Community](/community): Vote on what gets transformed, submit your own finds.
+- [Livestream](/livestream): Live thrift hunts and studio sessions.
+- [About](/about): The story behind Thrift 56 and Tracie's process.
+- [Contact](/contact): Get in touch with the studio.
+
+## Optional
+
+- [Policies](/policies): Shipping, returns, product safety.

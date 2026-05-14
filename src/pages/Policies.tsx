@@ -1,9 +1,11 @@
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 
 const Policies = () => (
   <div className="min-h-screen bg-stone-950">
     <SiteNav />
+      <Seo title="Policies — Shipping, Returns, Safety | Thrift 56" description="Thrift 56 shipping, return, refund, and product safety policies for original art, prints, curated finds, and merch." path="/policies" />
 
     <section className="container py-16 md:py-24 max-w-3xl space-y-12">
       <div>

@@ -1,9 +1,11 @@
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 
 const About = () => (
   <div className="min-h-screen bg-[#F9F6F0]">
     <SiteNav />
+      <Seo title="About Thrift 56 — From Forgotten to Featured" description="The story behind Thrift 56. Tracie hunts thrift stores across the South and turns the discarded into one-of-a-kind art." path="/about" />
 
     <section className="container py-16 md:py-24 max-w-3xl">
       <p className="font-serif italic text-stone-500 text-sm mb-3">The story behind the studio</p>
