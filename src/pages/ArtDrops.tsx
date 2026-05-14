@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 import DropsHero from "@/components/drops/DropsHero";
 import DropsStatusFilter from "@/components/drops/DropsStatusFilter";
@@ -28,6 +29,7 @@ const ArtDrops = () => {
   return (
     <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
+      <Seo title="Art Drops — One-of-a-kind Releases | Thrift 56" description="Tiered art drops from the Thrift 56 studio. Current releases, resurrected pieces, curated finds, vault, and archive." path="/drops" />
       <DropsHero />
       <div ref={filterRef}>
         <DropsStatusFilter active={statusFilter} onChange={handleFilterChange} />

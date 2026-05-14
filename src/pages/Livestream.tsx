@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { livestreamEvents } from "@/data/episodes";
 import SubscribePrompt from "@/components/SubscribePrompt";
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 
 function useCountdown(targetDate: string) {
@@ -40,6 +41,7 @@ const LivestreamPage = () => {
   return (
     <div className="min-h-screen">
       <SiteNav />
+      <Seo title="Livestream — Live Thrift Hunts & Studio Sessions | Thrift 56" description="Watch Thrift 56 live: thrift hunts, studio sessions, and real-time transformations with Tracie." path="/livestream" />
 
       {/* Hero / Next Livestream */}
       <section className="py-12 md:py-20 texture-paper">

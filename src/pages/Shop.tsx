@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 import ProductCard from "@/components/shop/ProductCard";
 import { useShopifyProducts } from "@/hooks/useShopifyProducts";
@@ -20,6 +21,7 @@ const Shop = () => {
   return (
     <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
+      <Seo title="Shop — Originals, Prints & Curated Finds | Thrift 56" description="Shop one-of-a-kind original art, prints, and hand-picked curated thrift finds. Every piece transformed and documented on camera." path="/shop" />
 
       {/* Hero */}
       <section className="relative py-20 md:py-28 bg-[#F9F6F0] film-grain overflow-hidden">

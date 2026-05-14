@@ -1,4 +1,5 @@
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 import DiscoverHunt from "@/components/DiscoverHunt";
 import YouDecide from "@/components/YouDecide";
@@ -11,6 +12,7 @@ const Community = () => {
   return (
     <div className="min-h-screen">
       <SiteNav />
+      <Seo title="Community — Vote, Submit, Shape the Studio | Thrift 56" description="Vote on what gets transformed next, submit your own thrift finds, and shape the next Thrift 56 episode." path="/community" />
 
       {/* Header */}
       <section className="py-16 md:py-20 texture-paper text-center">
