@@ -22,6 +22,7 @@ const SocialSection = () => {
               href={s.url}
               target="_blank"
               rel="noopener noreferrer"
+              referrerPolicy="no-referrer"
               aria-label={s.name}
               className="w-14 h-14 rounded-sm bg-primary flex items-center justify-center hover:bg-rust transition-colors duration-300"
             >
