@@ -41,9 +41,9 @@ const SiteFooter = () => {
           <div>
             <p className="font-sans font-bold text-xs uppercase tracking-[0.2em] text-stone-600 mb-3">Connect</p>
             <div className="space-y-2">
-              <a href="https://www.youtube.com/@thrift56" target="_blank" rel="noopener noreferrer" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">YouTube</a>
-              <a href="https://www.facebook.com/thrift56/" target="_blank" rel="noopener noreferrer" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Facebook</a>
-              <a href="https://www.instagram.com/thriftfiftysix/" target="_blank" rel="noopener noreferrer" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Instagram</a>
+              <a href="https://www.youtube.com/@thrift56" target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">YouTube</a>
+              <a href="https://www.facebook.com/thrift56/" target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Facebook</a>
+              <a href="https://www.instagram.com/thriftfiftysix/" target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">Instagram</a>
               <a href="#" className="block text-sm text-stone-600 hover:text-orange-800 transition-colors font-serif">TikTok</a>
             </div>
           </div>
