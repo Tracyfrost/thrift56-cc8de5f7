@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSubmitEntry } from "@/hooks/useSupabaseData";
+import { toast } from "@/hooks/use-toast";
+import { validateEmail } from "@/lib/validateEmail";
 
 interface EntryFormProps {
   pieceId: string;
@@ -14,14 +16,39 @@ const EntryForm = ({ pieceId, pieceTitle, mode }: EntryFormProps) => {
   const [email, setEmail] = useState("");
   const submitEntry = useSubmitEntry();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const send = (em: string) => {
     submitEntry.mutate({
       art_piece_id: pieceId,
       first_name: firstName,
-      email,
+      email: em,
       entry_type: mode,
     });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = validateEmail(email);
+    if (result.valid === false) {
+      if (result.suggestion) {
+        const fixed = result.suggestion;
+        toast({
+          title: "Check your email",
+          description: result.reason,
+          action: (
+            <button
+              onClick={() => { setEmail(fixed); send(fixed); }}
+              className="text-xs font-bold uppercase tracking-wider text-orange-800 hover:text-orange-900"
+            >
+              Use it
+            </button>
+          ) as any,
+        });
+      } else {
+        toast({ title: "Invalid email", description: result.reason, variant: "destructive" });
+      }
+      return;
+    }
+    send(result.normalized);
   };
 
   if (submitEntry.isSuccess) {
