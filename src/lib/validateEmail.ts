@@ -65,12 +65,16 @@ export type EmailValidationResult =
   | { valid: true; normalized: string }
   | { valid: false; reason: string; suggestion?: string };
 
+export type EmailValidationResult =
+  | { valid: true; normalized: string }
+  | { valid: false; reason: string; suggestion?: string };
+
 export function validateEmail(raw: string): EmailValidationResult {
   const email = (raw || "").trim().toLowerCase();
 
-  if (!email) return { valid: false, reason: "Email is required." };
-  if (email.length > 254) return { valid: false, reason: "Email is too long." };
-  if (!EMAIL_REGEX.test(email)) return { valid: false, reason: "That doesn't look like a valid email." };
+  if (!email) return { valid: false, reason: "Email is required." } as const;
+  if (email.length > 254) return { valid: false, reason: "Email is too long." } as const;
+  if (!EMAIL_REGEX.test(email)) return { valid: false, reason: "That doesn't look like a valid email." } as const;
 
   const [, domain] = email.split("@");
   if (!domain || domain.length < 3) return { valid: false, reason: "Email domain looks incomplete." };
