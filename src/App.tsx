@@ -22,6 +22,7 @@ import SearchPage from "./pages/SearchPage.tsx";
 import Community from "./pages/Community.tsx";
 import ShopItemDetail from "./pages/ShopItemDetail.tsx";
 import Shop from "./pages/Shop.tsx";
+import TraciesPicks from "./pages/TraciesPicks.tsx";
 import ShopifyProductDetail from "./pages/ShopifyProductDetail.tsx";
 import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
