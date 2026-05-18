@@ -295,10 +295,21 @@ const ShopifyProductDetail = () => {
                   The Journey
                 </AccordionTrigger>
                 <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4 space-y-2">
-                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Discovery</span> — Pulled from a place most people ignore.</p>
-                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Transformation</span> — Restored, reimagined, and finished by hand.</p>
-                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Story</span> — The entire process documented on film.</p>
-                  <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Release</span> — Limited. Once it's gone, it stays gone.</p>
+                  {product.productType === "Original" ? (
+                    <>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Created</span> — Original art by Tiffany Diamond.</p>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Hand-Made</span> — Painted by hand in the Thrift 56 studio.</p>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Story</span> — The entire process documented on film.</p>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Release</span> — One-of-one. Once it's gone, it stays gone.</p>
+                    </>
+                  ) : (
+                    <>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Discovery</span> — Pulled from a place most people ignore.</p>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Transformation</span> — Restored, reimagined, and finished by hand.</p>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Story</span> — The entire process documented on film.</p>
+                      <p><span className="text-stone-700 font-heading uppercase text-[9px] tracking-wider">Release</span> — Limited. Once it's gone, it stays gone.</p>
+                    </>
+                  )}
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="shipping" className="border-b border-stone-300">
