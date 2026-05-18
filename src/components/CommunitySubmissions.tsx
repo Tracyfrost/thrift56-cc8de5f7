@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApprovedSubmissions, useSubmitFind } from "@/hooks/useSupabaseData";
 import ImageUpload from "@/components/ImageUpload";
+import SubmissionImage from "@/components/SubmissionImage";
 
 const CommunitySubmissions = () => {
   const [name, setName] = useState("");
