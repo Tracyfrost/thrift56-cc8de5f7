@@ -1,47 +1,34 @@
-## Rename
-Tab: **Subscribers** → **Email List (Site Signups)** with a small subtitle: *"Names + emails captured from thrift56.com forms. Not YouTube subscribers."* That sentence kills the YT confusion at a glance.
+## Add stricter email validation to signup forms
 
-## New functionality on the tab
+**Problem:** `coxrocket25@gmail.comc` got into the subscribers table because the only check is the browser's native `type="email"` validation, which accepts any `.xx` TLD including typos like `.comc`, `.con`, `.cmo`, `.cmm`.
 
-### 1. Stat cards (top of tab)
-Four brutalist cards:
-- **Total Signups** — all-time
-- **This Week** — signups in last 7 days
-- **This Month** — signups in last 30 days
-- **Growth** — % change vs. prior 30-day window (▲ rust / ▼ muted)
+**Fix:** Add a shared client-side validator that runs on submit (and on blur for instant feedback), with a soft "Did you mean...?" confirm step for the most common typos.
 
-### 2. Search + filters bar
-- Search box (filters by name or email substring, instant)
-- Date range chips: *All / 7d / 30d / 90d / This Year*
-- Sort dropdown: *Newest, Oldest, Name A–Z*
+### Files to change
 
-### 3. Bulk selection + actions
-- Checkbox per row + "select all on page" master checkbox
-- Selected count + bar with actions:
-  - **Copy emails** (clipboard, comma-separated, ready to paste into Mailchimp/Klaviyo/etc.)
-  - **Export selected to CSV**
-  - **Delete selected** (admin-only, with confirm)
+1. **New `src/lib/validateEmail.ts`** — single source of truth:
+   - Regex check (RFC-ish: `^[^\s@]+@[^\s@]+\.[^\s@]+$`)
+   - Length cap (254 chars)
+   - TLD allowlist check against common TLDs (`com`, `net`, `org`, `io`, `co`, `app`, `dev`, `me`, `us`, `uk`, `ca`, `au`, `de`, `fr`, `es`, `it`, `nl`, `se`, `no`, `jp`, `kr`, `cn`, `in`, `br`, `mx`, `edu`, `gov`, `mil`, `info`, `biz`, `tv`, `xyz`, `online`, `store`, `shop`, `art`, `studio`, `email`, `live`, `news`, `media`, `agency`, `design`, `tech`, `ai`, `pro`, `blog`, `space`, `site`, `club`, `fun`, `world`, `today`, `ly`) — if TLD not in list AND length ≥ 4, flag as suspicious.
+   - Typo-correction map for common domain typos: `gmail.comc/gmial.com/gmail.con/gmail.cmo → gmail.com`, `yahoo.con/yaho.com → yahoo.com`, `hotmal.com/hotmail.con → hotmail.com`, `outlok.com → outlook.com`, `iclould.com/icloud.con → icloud.com`.
+   - Returns `{ valid: boolean, reason?: string, suggestion?: string }`.
 
-### 4. Full CSV export
-"Export All to CSV" button — downloads `thrift56-email-list-YYYY-MM-DD.csv` with columns: Name, Email, Signed Up At, Source (if/when added).
+2. **Apply to all 4 email-capture surfaces:**
+   - `src/components/drops/DropsEmailCapture.tsx`
+   - `src/components/v2/EmailCaptureBrutalist.tsx`
+   - `src/components/EmailCaptureSection.tsx`
+   - `src/components/EmailPopup.tsx` (and any signup spots inside `EntryForm.tsx`, `SubscribePrompt.tsx` — quick audit during implementation)
 
-### 5. Quick signup chart
-Small inline 30-day sparkline (signups per day) above the list so Tracie can see momentum without leaving the tab. Built with a tiny SVG — no chart library.
+   In each: on submit, run the validator. If `suggestion` exists, show a toast with "Did you mean `gmail.com`? [Use it] [Send anyway]" pattern (inline confirm — clicking the toast action swaps the email and re-submits). If invalid with no suggestion, block submit with an error toast.
 
-### 6. Duplicate detection badge
-If the same email appears more than once, show a rust `DUPLICATE` chip on the older row and dim it. Helps clean the list before exporting.
+3. **Edge function `supabase/functions/subscribe-drop-alerts/index.ts`** — add the same regex + TLD check server-side so bypasses (direct API calls, broken JS) are also caught. Mirrors `validateEmail.ts` logic in Deno.
 
-### 7. Per-row actions
-- Copy email (one click)
-- Open `mailto:` (drafts a personal note from her default mail client)
-- Delete row (admin-only, confirm)
+4. **Admin cleanup helper (optional, small):** In the Email List tab, add a tiny "Suspicious" filter chip that flags rows where the email's TLD isn't in the allowlist — gives a one-click way to spot and delete the existing `.comc` row and any others already in the table.
 
-## Out of scope (mention but don't build now)
-- Tagging signups by source page (Footer / Drop Entry / Popup) — requires adding a `source` column to the `subscribers` table. I can do that as a follow-up if you want — it would make the existing **Source** filter idea actually useful.
-- Sending broadcast emails from inside the admin — better handled by piping the CSV into Mailchimp/Klaviyo/Beehiiv. Lovable Cloud can do it, but you'd burn through email sending limits fast.
+### Out of scope
+- DNS MX-record verification (requires server lookup — overkill for this).
+- Third-party validation services (Kickbox, ZeroBounce) — would cost money and add a dependency.
 
-## Technical notes
-- All stats computed client-side from the already-fetched `subscribers` query (no extra round-trips).
-- Delete uses Supabase delete with admin RLS — will require adding a DELETE policy on `subscribers` (currently only INSERT + admin SELECT). I'll include that migration.
-- CSV export is in-browser (Blob + download anchor); no library needed.
-- Sparkline is a pure SVG component, ~30 lines.
+### Notes
+- Keeps UX friendly: typo-suggestion never hard-blocks legit-but-unusual addresses, just nudges.
+- Single shared validator means future signup forms automatically inherit the protection.
