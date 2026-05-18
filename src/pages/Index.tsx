@@ -39,6 +39,7 @@ const Index = () => {
       <DiscoverHunt />
       <YouDecide />
       <EmailCaptureSection />
+      <TraciesPicksStrip />
       <SocialSection />
       <FinalCtaSection />
       <SiteFooter />
