@@ -11,7 +11,7 @@ import {
   useUpsertCalendarEvent,
   useAllVotes, useUpsertVote, useDeleteVote,
   useAllSubmissions, useUpdateSubmission, useDeleteSubmission,
-  useSubscribers,
+  useSubscribers, useDeleteSubscribers,
   uploadFile,
 } from "@/hooks/useSupabaseData";
 import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Check, XCircle, RefreshCw } from "lucide-react";
