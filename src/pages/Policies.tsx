@@ -32,11 +32,53 @@ const Policies = () => (
         <h2 className="font-heading text-lg uppercase tracking-wider text-rust mb-3">
           Return & Refund Policy
         </h2>
-        <div className="text-stone-400 text-sm leading-relaxed space-y-3">
-          <p>We accept returns within 14 days of delivery for items in their original condition. Buyer is responsible for return shipping costs.</p>
-          <p>Original 1-of-1 pieces: Due to the unique nature of these items, we encourage you to contact us before initiating a return so we can ensure proper handling and packaging instructions.</p>
-          <p>Digital products are non-refundable once downloaded.</p>
-          <p>To initiate a return, email us with your order number and reason for return. Refunds are processed within 5–7 business days of receiving the returned item.</p>
+        <p className="text-stone-500 text-xs uppercase tracking-wider mb-4">Effective 5/17/2026</p>
+        <div className="text-stone-400 text-sm leading-relaxed space-y-4">
+          <p className="font-heading uppercase tracking-wider text-rust text-base">All Sales Final.</p>
+          <p>At Thrift 56, every piece has a story. Most items are vintage, thrifted, secondhand, artist-transformed, collectible, handmade, or one-of-one. Signs of age, wear, imperfections, patina, repair, texture variation, or irregularities are part of each item's character. Please review all photos, measurements, descriptions, and condition notes carefully before purchasing.</p>
+
+          <div>
+            <p className="font-heading uppercase tracking-wider text-stone-200 text-xs mb-2">No returns, exchanges, or cancellations for:</p>
+            <ul className="list-disc list-inside space-y-1 text-stone-400">
+              <li>Buyer's remorse or change of mind</li>
+              <li>Incorrect fit or sizing assumptions</li>
+              <li>Color variation due to screen/device settings</li>
+              <li>Vintage wear or imperfections disclosed in listing</li>
+              <li>Natural aging, patina, distressing, or character marks</li>
+              <li>Carrier delays</li>
+              <li>Discounted, clearance, mystery, raffle, custom, transformed, or limited-release items</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-heading uppercase tracking-wider text-stone-200 text-xs mb-2">Exceptions (case-by-case review):</p>
+            <ul className="list-disc list-inside space-y-1 text-stone-400">
+              <li>Item arrived damaged in shipping</li>
+              <li>Wrong item received</li>
+              <li>Major undisclosed defect significantly affecting usability</li>
+            </ul>
+            <p className="mt-2">Contact us within <span className="text-stone-200">48 hours of delivery</span> with clear photos of the item, packaging, shipping label, and the issue. Keep all original packaging until the review is completed. Requests outside the 48-hour window may not qualify.</p>
+          </div>
+
+          <div>
+            <p className="font-heading uppercase tracking-wider text-stone-200 text-xs mb-2">Shipping damage claims</p>
+            <p>If an item arrives damaged in transit, we work with the carrier and review case-by-case. Approved resolutions may include partial refund, store credit, replacement (if available), or full refund upon approved return. Thrift 56 reserves the right to determine the appropriate resolution.</p>
+          </div>
+
+          <div>
+            <p className="font-heading uppercase tracking-wider text-stone-200 text-xs mb-2">Lost or stolen packages</p>
+            <p>Thrift 56 is not responsible for packages marked as delivered by the carrier. Contact the carrier directly and check with neighbors or local delivery offices.</p>
+          </div>
+
+          <div>
+            <p className="font-heading uppercase tracking-wider text-stone-200 text-xs mb-2">Order cancellations</p>
+            <p>Orders cannot be canceled once payment has been processed.</p>
+          </div>
+
+          <div>
+            <p className="font-heading uppercase tracking-wider text-stone-200 text-xs mb-2">Contact</p>
+            <p>Email <a href="mailto:tracie@thrift56.com" className="text-rust underline">tracie@thrift56.com</a> with order number, full name, photos of the issue, and a brief description.</p>
+          </div>
         </div>
       </div>
 

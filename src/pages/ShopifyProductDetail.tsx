@@ -305,10 +305,11 @@ const ShopifyProductDetail = () => {
                 <AccordionTrigger className="font-heading text-[10px] uppercase tracking-wider text-stone-600 hover:text-stone-950 py-4 hover:no-underline">
                   Shipping & Returns
                 </AccordionTrigger>
-                <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4">
-                  All originals ship within 5–7 business days via insured carrier. Merch ships within 3–5 business days.
-                  Returns accepted within 14 days of delivery for items in original condition. Buyer pays return shipping.
-                  Digital products are non-refundable after download.
+                <AccordionContent className="text-stone-500 text-xs leading-relaxed pb-4 space-y-2">
+                  <p className="font-heading uppercase tracking-wider text-orange-800 text-[10px]">All sales final.</p>
+                  <p>Most pieces are vintage, thrifted, transformed, handmade, or one-of-one — wear, patina, and irregularities are part of the story. Please review photos and descriptions before purchasing.</p>
+                  <p>Damaged-in-transit or wrong-item issues only: contact <a href="mailto:tracie@thrift56.com" className="underline">tracie@thrift56.com</a> within 48 hours of delivery with photos of the item, packaging, and shipping label. Keep all packaging until reviewed.</p>
+                  <p>See full <a href="/policies" className="underline">Return & Refund Policy</a>.</p>
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="safety" className="border-b border-stone-300">
