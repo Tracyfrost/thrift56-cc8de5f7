@@ -239,7 +239,8 @@ export function useCastVote() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id }: { id: string }) => {
-      const { error } = await supabase.rpc("increment_vote", { vote_id: id });
+      const { getVoterFingerprint } = await import("@/lib/voterFingerprint");
+      const { error } = await supabase.rpc("increment_vote", { vote_id: id, voter_fp: getVoterFingerprint() });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["votes"] }),
@@ -453,6 +454,9 @@ export function useThriftItem(slug: string) {
       return data as any;
     },
     enabled: !!slug,
+    // Realtime removed for security — poll every 30s and on focus instead
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -467,24 +471,11 @@ export function useEpisodeDrops() {
   });
 }
 
+// Realtime removed for security — kept as a no-op so existing callers don't break.
 export function useThriftItemRealtime() {
-  const qc = useQueryClient();
-  useQuery({
-    queryKey: ["thrift-items-realtime-sub"],
-    queryFn: () => {
-      const channel = supabase
-        .channel("thrift-items-changes")
-        .on("postgres_changes" as any, { event: "UPDATE", schema: "public", table: "thrift_items" }, () => {
-          qc.invalidateQueries({ queryKey: ["thrift-items"] });
-          qc.invalidateQueries({ queryKey: ["thrift-item"] });
-        })
-        .subscribe();
-      return channel;
-    },
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-  });
+  // intentionally empty
 }
+
 
 // ─── STORAGE HELPERS ────────────────────────────────────
 

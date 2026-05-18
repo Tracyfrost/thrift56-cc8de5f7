@@ -656,6 +656,30 @@ export type Database = {
         }
         Relationships: []
       }
+      vote_fingerprints: {
+        Row: {
+          created_at: string
+          fingerprint: string
+          id: string
+          target_id: string
+          target_kind: string
+        }
+        Insert: {
+          created_at?: string
+          fingerprint: string
+          id?: string
+          target_id: string
+          target_kind: string
+        }
+        Update: {
+          created_at?: string
+          fingerprint?: string
+          id?: string
+          target_id?: string
+          target_kind?: string
+        }
+        Relationships: []
+      }
       votes: {
         Row: {
           created_at: string
@@ -729,7 +753,10 @@ export type Database = {
         }
         Returns: boolean
       }
-      increment_vote: { Args: { vote_id: string }; Returns: undefined }
+      increment_vote: {
+        Args: { vote_id: string; voter_fp: string }
+        Returns: boolean
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -748,8 +775,8 @@ export type Database = {
         }[]
       }
       vote_thrift_find: {
-        Args: { choice: string; find_id: string }
-        Returns: undefined
+        Args: { choice: string; find_id: string; voter_fp: string }
+        Returns: boolean
       }
     }
     Enums: {
