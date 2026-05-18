@@ -16,6 +16,7 @@ import {
 } from "@/hooks/useSupabaseData";
 import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Check, XCircle, RefreshCw, Search, Download, Copy, Mail } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload";
+import SubmissionImage from "@/components/SubmissionImage";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut } from "lucide-react";
 import adminLogo from "@/assets/thrift56-logo-clean.png";
