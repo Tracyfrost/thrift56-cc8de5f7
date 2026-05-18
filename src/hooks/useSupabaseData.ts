@@ -239,7 +239,8 @@ export function useCastVote() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id }: { id: string }) => {
-      const { error } = await supabase.rpc("increment_vote", { vote_id: id });
+      const { getVoterFingerprint } = await import("@/lib/voterFingerprint");
+      const { error } = await supabase.rpc("increment_vote", { vote_id: id, voter_fp: getVoterFingerprint() });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["votes"] }),

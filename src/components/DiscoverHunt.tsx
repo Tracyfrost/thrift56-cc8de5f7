@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getVoterFingerprint } from "@/lib/voterFingerprint";
 
 const DiscoverHunt = () => {
   const [voted, setVoted] = useState<Record<string, string>>({});
@@ -19,7 +20,7 @@ const DiscoverHunt = () => {
   const vote = async (id: string, choice: "transform" | "leave") => {
     if (voted[id]) return;
     setVoted({ ...voted, [id]: choice });
-    await supabase.rpc("vote_thrift_find", { find_id: id, choice });
+    await supabase.rpc("vote_thrift_find", { find_id: id, choice, voter_fp: getVoterFingerprint() });
   };
 
   return (
