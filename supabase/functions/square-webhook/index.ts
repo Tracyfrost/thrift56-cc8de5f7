@@ -14,8 +14,8 @@ async function verifySignature(
 ): Promise<boolean> {
   const sigKey = Deno.env.get("SQUARE_WEBHOOK_SIGNATURE_KEY");
   if (!sigKey) {
-    console.warn("[PLACEHOLDER] No SQUARE_WEBHOOK_SIGNATURE_KEY set — skipping verification");
-    return true;
+    console.error("SQUARE_WEBHOOK_SIGNATURE_KEY not configured — rejecting webhook");
+    return false;
   }
   if (!signature) return false;
 

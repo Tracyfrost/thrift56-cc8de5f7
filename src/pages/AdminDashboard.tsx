@@ -16,6 +16,7 @@ import {
 } from "@/hooks/useSupabaseData";
 import { Pencil, Plus, Trash2, X, Calendar, Film, Palette, Vote, Users, Send, Check, XCircle, RefreshCw, Search, Download, Copy, Mail } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload";
+import SubmissionImage from "@/components/SubmissionImage";
 import { useAuth } from "@/hooks/useAuth";
 import { LogOut } from "lucide-react";
 import adminLogo from "@/assets/thrift56-logo-clean.png";
@@ -401,7 +402,7 @@ function SubmissionsTab() {
         <div className="space-y-2">
           {submissions?.map((s) => (
             <div key={s.id} className="flex items-center gap-4 border border-border rounded-sm bg-card p-3">
-              {s.image_url && <img src={s.image_url} alt="" className="w-14 h-14 object-cover rounded-sm border border-border flex-shrink-0" />}
+              {s.image_url && <SubmissionImage submissionId={s.id} alt="" className="w-14 h-14 object-cover rounded-sm border border-border flex-shrink-0" />}
               <div className="flex-1 min-w-0">
                 <p className="font-heading font-bold text-sm truncate">{s.name} — {s.location}</p>
                 <p className="text-[10px] text-muted-foreground font-body truncate">{s.email}</p>

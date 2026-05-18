@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useApprovedSubmissions, useSubmitFind } from "@/hooks/useSupabaseData";
 import ImageUpload from "@/components/ImageUpload";
+import SubmissionImage from "@/components/SubmissionImage";
 
 const CommunitySubmissions = () => {
   const [name, setName] = useState("");
@@ -87,7 +88,7 @@ const CommunitySubmissions = () => {
                   <div key={s.id} className="border border-border rounded-sm overflow-hidden bg-card">
                     {s.image_url && (
                       <div className="aspect-square overflow-hidden">
-                        <img src={s.image_url} alt={`Find by ${s.name}`} className="w-full h-full object-cover" loading="lazy" />
+                        <SubmissionImage submissionId={s.id} alt={`Find by ${s.name}`} className="w-full h-full object-cover" />
                       </div>
                     )}
                     <div className="p-3">
