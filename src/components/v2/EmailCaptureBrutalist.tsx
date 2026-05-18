@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { useSubscribe } from "@/hooks/useSupabaseData";
 import { toast } from "@/hooks/use-toast";
+import { validateEmail } from "@/lib/validateEmail";
 
 const EmailCaptureBrutalist = () => {
   const [email, setEmail] = useState("");
   const subscribe = useSubscribe();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
+  const doSubmit = async (value: string) => {
     try {
-      await subscribe.mutateAsync({ name: "Drop List", email: email.trim() });
+      await subscribe.mutateAsync({ name: "Drop List", email: value });
       toast({ title: "You're on the list.", description: "We'll notify you before the next drop." });
       setEmail("");
     } catch (err: any) {
@@ -20,6 +19,32 @@ const EmailCaptureBrutalist = () => {
         toast({ title: "Error", description: "Something went wrong. Try again.", variant: "destructive" });
       }
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = validateEmail(email);
+    if (result.valid === false) {
+      if (result.suggestion) {
+        const fixed = result.suggestion;
+        toast({
+          title: "Check your email",
+          description: result.reason,
+          action: (
+            <button
+              onClick={() => { setEmail(fixed); doSubmit(fixed); }}
+              className="text-xs font-bold uppercase tracking-wider text-orange-800 hover:text-orange-900"
+            >
+              Use it
+            </button>
+          ) as any,
+        });
+      } else {
+        toast({ title: "Invalid email", description: result.reason, variant: "destructive" });
+      }
+      return;
+    }
+    await doSubmit(result.normalized);
   };
 
   return (
