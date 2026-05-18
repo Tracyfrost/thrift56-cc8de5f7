@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSubscribe } from "@/hooks/useSupabaseData";
 import { toast } from "@/hooks/use-toast";
+import { validateEmail } from "@/lib/validateEmail";
 import ShieldWatermark from "@/components/ShieldWatermark";
 
 const EmailCaptureSection = () => {
@@ -10,11 +11,9 @@ const EmailCaptureSection = () => {
   const [email, setEmail] = useState("");
   const subscribe = useSubscribe();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
+  const doSubmit = async (nm: string, em: string) => {
     try {
-      await subscribe.mutateAsync({ name: name.trim(), email: email.trim() });
+      await subscribe.mutateAsync({ name: nm, email: em });
       toast({ title: "You're in!", description: "You'll be the first to know about new drops." });
       setName("");
       setEmail("");
@@ -25,6 +24,33 @@ const EmailCaptureSection = () => {
         toast({ title: "Error", description: "Something went wrong. Try again.", variant: "destructive" });
       }
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    const result = validateEmail(email);
+    if (result.valid === false) {
+      if (result.suggestion) {
+        const fixed = result.suggestion;
+        toast({
+          title: "Check your email",
+          description: result.reason,
+          action: (
+            <button
+              onClick={() => { setEmail(fixed); doSubmit(name.trim(), fixed); }}
+              className="text-xs font-bold uppercase tracking-wider text-orange-800 hover:text-orange-900"
+            >
+              Use it
+            </button>
+          ) as any,
+        });
+      } else {
+        toast({ title: "Invalid email", description: result.reason, variant: "destructive" });
+      }
+      return;
+    }
+    await doSubmit(name.trim(), result.normalized);
   };
 
   return (
