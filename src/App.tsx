@@ -47,6 +47,7 @@ const AppContent = () => {
         <Route path="/drops/:slug" element={<ArtPieceDetail />} />
         <Route path="/product/:handle" element={<ShopifyProductDetail />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/shop/tracies-picks" element={<TraciesPicks />} />
         <Route path="/shop/:slug" element={<ShopItemDetail />} />
         <Route path="/community" element={<Community />} />
         <Route path="/about" element={<About />} />
