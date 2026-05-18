@@ -1,52 +1,31 @@
-## Plan: Wire `/episodes` to Supabase + clean up test data
+# Fix: /admin loading + stalled episode save
 
-Safe to proceed — frontend-only code changes plus deleting 3 known test rows. No schema changes, fully reversible.
+## Root cause
 
-### Phase 1a — Delete test rows
-Remove these 3 episodes from the database:
-- `test-3`
-- `thumb-test`
-- `test-ep-2`
+Both symptoms trace back to the same bug in `src/hooks/useAuth.tsx`.
 
-### Phase 1b — Wire `/episodes` page to Supabase
+The `onAuthStateChange` callback `await`s a Supabase `rpc('has_role', …)` call directly inside the handler. Supabase's auth client explicitly warns against this — making Supabase calls inside the auth listener can deadlock the client. The symptoms match exactly:
 
-Replace hard-coded mock data in three components with the existing `useEpisodes` / `useFeaturedEpisode` hooks (already used on the home page).
+- **/admin "loading…" forever** — initial `INITIAL_SESSION` event fires, `checkAdmin` await never resolves, `loading` stays `true`, so `ProtectedRoute` keeps rendering the loading screen.
+- **Edit save stalls** — when the user clicks Save, Supabase may trigger a token refresh → fires `TOKEN_REFRESHED` → the listener `await`s an RPC → the in-flight `UPDATE episodes` request sits behind the deadlocked auth client and never resolves.
 
-**1. `src/components/episodes/EpisodeHero.tsx`**
-- Use `useFeaturedEpisode()` (the row flagged `is_featured = true`).
-- Iframe: `https://www.youtube.com/embed/${episode.youtube_id}?rel=0`.
-- Title, thrift price, summary pull from the row.
-- "Watch on YouTube" button uses `https://www.youtube.com/watch?v=${youtube_id}`.
-- Fallback: if no featured episode or no `youtube_id`, show a "Coming soon" placeholder (keeps page from breaking before you flag one).
+A secondary issue in `AdminDashboard.tsx`: the Art Pieces editor spreads the joined `episodes(...)` relation into the `update()` payload, which Postgres rejects (not the current report, but will bite next).
 
-**2. `src/components/episodes/EpisodeGrid.tsx`**
-- Replace `mockEpisodes` with `useEpisodes(filter)`.
-- Each card links to `/episodes/:slug`.
-- Thumbnail: `episode.thumbnail_url` → fallback `https://img.youtube.com/vi/${youtube_id}/hqdefault.jpg`.
-- Hide the "Available / Sold" badge for now (was tied to mock data; can re-wire to `art_pieces.status` later).
+## Changes
 
-**3. `src/components/episodes/EpisodeBingeReel.tsx`**
-- Replace `bingeItems` with `useEpisodes()` (latest ~8, excluding the featured one to avoid duplication with the hero).
-- Same thumbnail fallback. Each tile links to `/episodes/:slug`.
+### 1. `src/hooks/useAuth.tsx` — defer async work out of the auth callback
+- Inside `onAuthStateChange`, set `session`/`user` synchronously, then schedule `checkAdmin` via `setTimeout(..., 0)` so it runs outside the listener.
+- Wrap `checkAdmin` in try/catch so a transient RPC failure doesn't leave `loading` stuck.
+- Set `loading=false` immediately after the synchronous state update, not after the admin check.
 
-### Phase 2 — You enter the 4 episodes in Admin
+### 2. `src/pages/AdminDashboard.tsx` — strip join field before upserting art pieces
+- In `ArtPiecesTab.save()`, drop the `episodes` key (the joined relation) from the payload before calling `upsert.mutateAsync`. Same hygiene for episodes is not needed but harmless.
 
-Go to `/admin` → Episodes tab → New episode. For each of the 4 videos:
-- **YouTube ID** (the 11-char string after `v=` in the URL)
-- **Title**, **slug** (URL-safe, don't rename after publishing), **description**
-- **Category**: pick one — `studio` is a good fit for the launch/intro video; `transformation` or `thrift-hunt` for the 3 product videos
-- **Episode number**, **published_at**
-- **`is_featured`**: flag exactly ONE as the hero (your call which one)
-- Optional: custom thumbnail, before/after images, thrift store, price, transformation summary
+## Verification
 
-As soon as you save, the hero + grid + binge reel update — no code redeploy needed.
+- Reload `/admin` while signed in — should render the dashboard within a second, not hang on "Loading…".
+- Open an existing episode, change a field, click **Save** — toast "Episode saved!" appears, dialog closes, list refreshes.
+- Repeat for an Art Piece linked to an episode — save succeeds (regression guard).
+- Check browser console for auth errors.
 
-### What stays the same
-- `/episodes/:slug` detail page (already DB-driven)
-- Home page strips (already DB-driven)
-- Admin dashboard CRUD (already works)
-- Category filter (keys already match DB values)
-
-### Questions for the user
-1. The launch/intro video — should I default its category to `studio`, or do you want a different bucket?
-2. After you enter all 4, do you want me to regenerate `public/sitemap.xml` with the real slugs?
+No DB schema or RLS changes. Frontend-only fix.
