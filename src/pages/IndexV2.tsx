@@ -24,6 +24,8 @@ const IndexV2 = () => {
       <BeforeAfterSlider />
       <LatestTransformationBrutalist />
       <AvailableNowGrid />
+      <AvailableNowGrid />
+      <TraciesPicksStrip />
       <EmailCaptureBrutalist />
       <SiteFooter />
       <EmailPopup />
