@@ -65,10 +65,6 @@ export type EmailValidationResult =
   | { valid: true; normalized: string }
   | { valid: false; reason: string; suggestion?: string };
 
-export type EmailValidationResult =
-  | { valid: true; normalized: string }
-  | { valid: false; reason: string; suggestion?: string };
-
 export function validateEmail(raw: string): EmailValidationResult {
   const email = (raw || "").trim().toLowerCase();
 
