@@ -77,6 +77,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </span>
           </div>
         )}
+
+        {/* Tracie Pick badge — subtle, top-left, stacks under primary if present */}
+        {isTraciePick && (
+          <div className={`absolute ${isOneOfOne || isLimited ? "top-10" : "top-2"} left-2 bg-stone-950/85 border border-orange-800/60 px-2 py-1`}>
+            <span className="font-heading text-[10px] uppercase tracking-wider text-orange-200">
+              Tracie Pick
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Info */}
