@@ -138,7 +138,7 @@ Deno.serve(async (req) => {
     if (!orderRes.ok) {
       console.error("Square order error:", orderData);
       return new Response(
-        JSON.stringify({ error: "Failed to create Square order", details: orderData }),
+        JSON.stringify({ error: "Checkout failed. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -167,7 +167,7 @@ Deno.serve(async (req) => {
     if (!paymentRes.ok) {
       console.error("Square payment error:", paymentData);
       return new Response(
-        JSON.stringify({ error: "Payment failed", details: paymentData }),
+        JSON.stringify({ error: "Payment failed. Please try again." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
