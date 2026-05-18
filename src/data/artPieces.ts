@@ -27,6 +27,8 @@ export interface ArtPiece {
   materials?: string[];
   studioPhotos?: string[];
   isFeatured?: boolean;
+  shopifyHandle?: string;
+  shopifySku?: string;
 }
 
 export const statusConfig: Record<ArtStatus, { label: string; cta: string; badgeClass: string }> = {
