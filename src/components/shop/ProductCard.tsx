@@ -19,6 +19,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const isOneOfOne = node.tags?.includes("1-of-1");
   const isFantasyFind = node.tags?.includes("fantasy-find");
   const isLimited = node.productType === "Print";
+  const isTraciePick = node.productType === "Tracie's Pick";
   // Sandbox override: 1-of-1 curated items are purchasable on-site even if Shopify
   // inventory hasn't been set yet (during trial). Once stock is set, this is a no-op.
   const isPurchasable = firstVariant?.availableForSale || isOneOfOne;
@@ -73,6 +74,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="absolute top-2 right-2 bg-stone-950/90 border border-teal-800/70 px-2 py-1">
             <span className="font-heading text-[10px] uppercase tracking-wider text-teal-300">
               Fantasy Find
+            </span>
+          </div>
+        )}
+
+        {/* Tracie Pick badge — subtle, top-left, stacks under primary if present */}
+        {isTraciePick && (
+          <div className={`absolute ${isOneOfOne || isLimited ? "top-10" : "top-2"} left-2 bg-stone-950/85 border border-orange-800/60 px-2 py-1`}>
+            <span className="font-heading text-[10px] uppercase tracking-wider text-orange-200">
+              Tracie Pick
             </span>
           </div>
         )}

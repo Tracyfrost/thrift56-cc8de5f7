@@ -1,73 +1,90 @@
-## Goal
+# Plan: Add "Tracie's Picks" Category
 
-Address the 5 remaining items from the security panel and complete a full repo sweep for leaked credentials.
+A curated lifestyle layer for hand-selected apparel, hats, accessories, and studio objects. Implemented as a new Shopify-backed category that lives alongside Originals / Prints / Curated / Digital — never overpowering the documented-transformation core identity.
 
-## 1. Public bucket listing (`media`, `art-images`, `episode-thumbnails`)
+## Backend / Data Source
 
-These buckets are intentionally public for read, but the current SELECT policy is broad enough that anonymous clients can **list** every object in the bucket (enumeration risk).
+Tracie's Picks is sourced from Shopify (same pipeline as the rest of the shop). No Supabase schema changes needed.
 
-Migration:
-- Drop the existing broad `SELECT` policy on `storage.objects` for these three buckets.
-- Replace with a policy that allows fetching individual objects by exact path but blocks directory listing. Pattern:
-  - Keep public read on `storage.objects` for `bucket_id IN ('media','art-images','episode-thumbnails')` via the object endpoint, but revoke list permission on the bucket by ensuring no policy permits `SELECT` without a `name` predicate / using `auth.role() = 'service_role'` for list operations and limiting anon to `metadata IS NOT NULL` style fetches.
-  - Concretely: keep SELECT policy as-is for object reads, and add an explicit policy on `storage.buckets` that blocks anon listing (Supabase lists via `storage.objects` SELECT — so the practical fix is to keep SELECT but Supabase recommends making the bucket private + signed URLs, OR accepting the listing risk).
-- Recommended path: leave buckets public for direct URL reads but mark this finding as **accepted risk** in security memory (these contain only published marketing media/episode thumbnails/art images, no PII). Update security memory accordingly.
+- **Shopify product_type:** `Tracie's Pick`
+- **Optional Shopify tag:** `tracie-pick` (used for homepage "featured" subset — first 4 wins, sorted by Shopify's default order)
+- Admin uploads new items via Shopify with that product_type, and they automatically appear in the filter, collection page, and homepage strip.
 
-## 2. SECURITY DEFINER functions executable by anon/authenticated
+## 1. Shop page — new filter tab (`src/pages/Shop.tsx`)
 
-Functions flagged: `vote_thrift_find`, `increment_vote`, `has_role`, `delete_email`, `move_to_dlq`, `read_email_batch`, `enqueue_email`, `update_updated_at_column`.
+Add a 5th entry to the `FILTERS` array, placed after Curated to match the requested order:
 
-Migration:
-- `REVOKE EXECUTE ... FROM PUBLIC, anon, authenticated` on the email queue helpers (`delete_email`, `move_to_dlq`, `read_email_batch`, `enqueue_email`) and `GRANT EXECUTE ... TO service_role` only. These are called from edge functions using the service role key — clients should never invoke them.
-- `update_updated_at_column` is a trigger function — revoke EXECUTE from PUBLIC.
-- `has_role` must remain callable by `authenticated` (used inside RLS as `auth.uid()`), so keep it but it's safe because it only reads the caller's own role check.
-- `vote_thrift_find` and `increment_vote` are the "vote helpers" — see hardening below.
+```
+Originals · Prints · Curated · Tracie's Picks · Digital
+```
 
-## 3. Harden role/vote helpers
+Query: `product_type:"Tracie's Pick"`. No other Shop.tsx changes — the existing grid, ProductCard, and loader handle it.
 
-- `vote_thrift_find(find_id, choice)` and `increment_vote(vote_id)` currently let any anon user spam votes unlimited times.
-- Add basic abuse mitigation inside the functions:
-  - Validate `choice` is one of `('transform','leave')` (already done) — keep.
-  - Add a per-IP / per-session rate limit table `vote_rate_limits(fingerprint text, find_id uuid, created_at timestamptz default now())` with a unique constraint `(fingerprint, find_id)` so each fingerprint can only vote once per item. Pass the fingerprint (hashed `auth.uid()::text` for signed-in users, or a client-generated UUID stored in localStorage for anon) as a new parameter.
-  - Wrap inserts in `ON CONFLICT DO NOTHING` and only increment the counter when the insert actually happened.
-- For `has_role`: confirmed `STABLE SECURITY DEFINER` with `search_path = public` — already hardened. No change.
-- Revoke direct EXECUTE on `vote_thrift_find` / `increment_vote` from PUBLIC and re-grant to `anon, authenticated` so the surface is explicit.
+## 2. Product card — optional "TRACIE PICK" badge (`src/components/shop/ProductCard.tsx`)
 
-## 4. Realtime channel auth on `thrift_items`
+Add a subtle badge when `node.productType === "Tracie's Pick"`. Reuses existing badge slot conventions (top-left, sharp corners, rust border, off-white bg, uppercase tracked micro-type) so it sits next to — not on top of — existing "1 of 1" / "Limited" badges. Stacked vertically when both apply. Used sparingly: only renders for Tracie's Picks products, no animation, no color flash.
 
-Currently any signed-in user can subscribe to realtime changes (inventory/pricing).
+## 3. Dedicated collection page (`src/pages/TraciesPicks.tsx` + route)
 
-Migration:
-- Add RLS policies on `realtime.messages`:
-  ```sql
-  ALTER TABLE realtime.messages ENABLE ROW LEVEL SECURITY;
-  CREATE POLICY "Admins only realtime"
-    ON realtime.messages FOR SELECT
-    TO authenticated
-    USING (public.has_role(auth.uid(), 'admin'));
-  ```
-- Alternative: remove `thrift_items` from the realtime publication entirely since the public site doesn't need live inventory pushes — admin dashboard can poll. This is simpler and removes the attack surface.
-- Recommendation: **remove from publication** (`ALTER PUBLICATION supabase_realtime DROP TABLE public.thrift_items;`) and have the admin dashboard refetch on focus.
+New route: `/shop/tracies-picks`
 
-## 5. Full codebase secret scan
+Structure mirrors `Shop.tsx` exactly — same SiteNav, Seo, hero band, grid spacing, SiteFooter — but tuned editorially:
 
-Sweep already run with ripgrep across the repo for: `sk_live`, `sk_test`, service-role JWTs, `Bearer` tokens, Google API keys (`AIza...`), GitHub PATs (`ghp_`), Slack tokens, generic `api_key=`/`secret=` literals, and 3-part JWTs.
+- **Hero eyebrow (serif italic, stone-500):** "Selected by Tracie."
+- **Hero headline (font-heading, uppercase, tight):**
+  `Not thrifted.` / `Still worthy.` — rust accent on the second line
+- **Hero subline:** "Hand-selected apparel, objects, and lifestyle goods chosen for the Thrift 56 world."
+- **Body:** reuses `useShopifyProducts(100, 'product_type:"Tracie\\'s Pick"')` + the same `ProductCard` grid (2 / 3 / 4 cols).
+- Empty state: "Tracie hasn't picked anything new yet. Check back soon."
 
-Result: **no hardcoded secrets found**. The only credential in the repo is `VITE_SUPABASE_PUBLISHABLE_KEY` in `.env`, which is the public anon key and safe to ship. All private keys (`SUPABASE_SERVICE_ROLE_KEY`, `SQUARE_ACCESS_TOKEN`, `LOVABLE_API_KEY`, `SHOPIFY_*`) are read from `Deno.env` inside edge functions only.
+Registered in `src/App.tsx` alongside `/shop`.
 
-Action: document this in the security memory and add a `.gitignore`-style note in security memory listing approved env var names, so future scans can flag anything new.
+## 4. Homepage featured strip (`src/components/TraciesPicksStrip.tsx`)
 
-## 6. Update security memory
+New small section — 4 cards max — added to **both** `src/pages/Index.tsx` and `src/pages/IndexV2.tsx`, placed *after* the existing curated/transformation content so it never competes with Originals or Featured Drop.
 
-Record:
-- Public buckets (`media`, `art-images`, `episode-thumbnails`) — accepted risk, contain only published creative assets.
-- Realtime on `thrift_items` — now removed from publication (or locked to admin), no longer accepted risk.
-- Vote helpers — hardened with rate-limit table.
-- Repo scanned for secrets on 2026-05-18, clean.
+- Eyebrow: serif italic "From the studio shelf"
+- Heading: "Tracie's Picks"
+- Right-aligned link: "See all →" → `/shop/tracies-picks`
+- 4-up grid on desktop, 2-up on mobile, reusing `ProductCard`.
+- Query: `useShopifyProducts(4, 'product_type:"Tracie\\'s Pick"')`. If fewer than 4 exist, render only what's there. If zero, the section renders nothing (silent absence — never a "coming soon" placeholder).
 
-## Deliverables
+Placement in `IndexV2.tsx`: between the existing available-now grid and the email capture, so the page rhythm becomes transformation → curated drops → Tracie's lifestyle layer → CTA.
 
-1. One new migration `*_security_hardening_round3.sql` containing: revokes/grants on definer functions, vote rate-limit table + updated functions, realtime publication change.
-2. Updated security memory via `security--update_memory`.
-3. Mark the 5 findings via `security--manage_security_finding` (fix realtime + definer + vote helpers; ignore the two public-bucket-listing items with rationale).
-4. Short confirmation to user — no UI changes.
+## 5. SEO
+
+- Shop tab change: no SEO change (filter state, same URL).
+- New collection page gets its own `<Seo>` tags:
+  - Title: `Tracie's Picks — Curated Apparel & Studio Goods | Thrift 56` (<60 chars)
+  - Description: "Hand-selected apparel, hats, and lifestyle objects chosen by Tracie for the Thrift 56 world." (<160 chars)
+  - Path: `/shop/tracies-picks`
+
+## 6. Visual language guardrails (enforced in implementation)
+
+- Backgrounds: `bg-[#F9F6F0]` page, `bg-stone-100` image wells — same as Shop.
+- Type: `font-heading uppercase tracking-tighter` for headlines, serif italic stone-500 for eyebrows.
+- Accent: `text-orange-800` / `border-orange-800` for rust details and active tab.
+- Edges: `rounded-none` everywhere. No gradients, no neon, no playful chips.
+- Badge uses the same stone/rust palette already in `ProductCard`.
+
+## Files touched
+
+- `src/pages/Shop.tsx` — add filter entry
+- `src/components/shop/ProductCard.tsx` — add Tracie Pick badge (conditional)
+- `src/pages/TraciesPicks.tsx` — **new** collection page
+- `src/components/TraciesPicksStrip.tsx` — **new** homepage strip
+- `src/App.tsx` — register `/shop/tracies-picks` route
+- `src/pages/Index.tsx` and `src/pages/IndexV2.tsx` — mount the strip
+
+No DB migration, no edge function, no admin dashboard changes (Shopify is the CMS for this category).
+
+## What this plan deliberately does NOT do
+
+- Does not add a Supabase `category` column or admin form — Tracie's Picks lives in Shopify like the rest of `/shop`.
+- Does not add a "TRACIE PICK" badge to non-Tracie's-Picks products.
+- Does not promote Tracie's Picks above Originals or Featured Drop anywhere.
+- Does not introduce new colors, fonts, or component primitives.
+
+## Open question
+
+Do you want the homepage strip on **both** `/` (IndexV2 — current default) and `/v1` (legacy Index), or only the current default homepage? Default plan: both, so the legacy page stays in parity. Say "only current" if you want it scoped to IndexV2.

@@ -11,6 +11,7 @@ const FILTERS = [
   { label: "Originals", query: "product_type:Original" },
   { label: "Prints", query: "product_type:Print" },
   { label: "Curated", query: "product_type:Curated" },
+  { label: "Tracie's Picks", query: 'product_type:"Tracie\'s Pick"' },
   { label: "Digital", query: "product_type:Digital" },
 ];
 
