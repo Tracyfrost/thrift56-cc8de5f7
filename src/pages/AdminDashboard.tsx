@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     { key: "art-pieces", label: "Art Pieces", icon: Palette },
     { key: "votes", label: "Votes", icon: Vote },
     { key: "submissions", label: "Submissions", icon: Send },
-    { key: "subscribers", label: "Subscribers", icon: Users },
+    { key: "subscribers", label: "Email List", icon: Users },
     { key: "calendar", label: "Calendar", icon: Calendar },
     { key: "square-sync", label: "Square", icon: RefreshCw },
   ];
