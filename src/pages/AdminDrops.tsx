@@ -3,10 +3,11 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { artPieces, type ArtPiece, type ArtStatus, statusConfig } from "@/data/artPieces";
-import { Plus, Pencil, X } from "lucide-react";
+import { artPieces, type ArtPiece, type ArtStatus, type ArtCategory, statusConfig } from "@/data/artPieces";
+import { Plus, Pencil, X, ExternalLink } from "lucide-react";
 
 const statusOptions: ArtStatus[] = ["available", "raffle", "giveaway", "auction", "archived"];
+const categoryOptions: ArtCategory[] = ["resurrected", "curated", "vault"];
 
 const emptyPiece: Omit<ArtPiece, "id" | "slug"> = {
   title: "",
@@ -22,6 +23,9 @@ const emptyPiece: Omit<ArtPiece, "id" | "slug"> = {
   auctionEndDate: undefined,
   episodeYoutubeId: undefined,
   materials: [],
+  isFeatured: false,
+  shopifyHandle: undefined,
+  shopifySku: undefined,
 };
 
 const AdminDrops = () => {
@@ -106,6 +110,29 @@ const AdminDrops = () => {
                   ))}
                 </select>
               </div>
+              <div>
+                <label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Category</label>
+                <select
+                  value={editing.category}
+                  onChange={(e) => updateField("category", e.target.value as ArtCategory)}
+                  className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm font-body capitalize"
+                >
+                  {categoryOptions.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2 font-body text-sm cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!editing.isFeatured}
+                    onChange={(e) => updateField("isFeatured", e.target.checked)}
+                    className="h-4 w-4 rounded-sm border-input accent-orange-800"
+                  />
+                  <span className="font-heading text-xs uppercase tracking-widest">Featured on /drops</span>
+                </label>
+              </div>
               <div className="md:col-span-2">
                 <label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Description</label>
                 <textarea
@@ -147,6 +174,37 @@ const AdminDrops = () => {
                   className="font-body"
                 />
               </div>
+
+              {/* Shopify link section */}
+              <div className="md:col-span-2 border-t border-border pt-4 mt-2">
+                <p className="font-heading text-sm uppercase tracking-widest text-rust mb-3">Shopify Link</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Shopify Handle</label>
+                    <Input
+                      value={editing.shopifyHandle || ""}
+                      onChange={(e) => updateField("shopifyHandle", e.target.value || undefined)}
+                      placeholder="drift-shirt"
+                      className="font-body"
+                    />
+                    <p className="font-distressed text-[11px] text-muted-foreground mt-1">
+                      Matches your Shopify product URL: /shop/{editing.shopifyHandle || "{handle}"}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="font-heading text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Shopify SKU (optional)</label>
+                    <Input
+                      value={editing.shopifySku || ""}
+                      onChange={(e) => updateField("shopifySku", e.target.value || undefined)}
+                      placeholder="T56-014"
+                      className="font-body"
+                    />
+                    <p className="font-distressed text-[11px] text-muted-foreground mt-1">
+                      For internal matching with Shopify catalog (e.g. T56-014).
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className="flex gap-3 mt-6">
               <Button variant="rust" onClick={save}>Save Piece</Button>
@@ -162,9 +220,34 @@ const AdminDrops = () => {
               <img src={piece.afterImage} alt={piece.title} className="w-16 h-16 object-cover rounded-sm border border-border flex-shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="font-heading font-bold truncate">{piece.title}</p>
-                <span className={`inline-block px-2 py-0.5 text-[10px] font-heading uppercase tracking-widest rounded-sm mt-1 ${statusConfig[piece.status].badgeClass}`}>
-                  {statusConfig[piece.status].label}
-                </span>
+                {piece.shopifySku && (
+                  <p className="font-distressed text-[11px] text-muted-foreground mt-0.5">{piece.shopifySku}</p>
+                )}
+                <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                  <span className={`inline-block px-2 py-0.5 text-[10px] font-heading uppercase tracking-widest rounded-sm ${statusConfig[piece.status].badgeClass}`}>
+                    {statusConfig[piece.status].label}
+                  </span>
+                  {piece.shopifyHandle ? (
+                    <a
+                      href={`/shop/${piece.shopifyHandle}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-heading uppercase tracking-widest rounded-sm border border-orange-800 text-orange-800 hover:bg-orange-800 hover:text-primary-foreground transition-colors"
+                    >
+                      Shopify: {piece.shopifyHandle}
+                      <ExternalLink size={10} />
+                    </a>
+                  ) : (
+                    <span className="inline-block px-2 py-0.5 text-[10px] font-heading uppercase tracking-widest rounded-sm border border-border text-muted-foreground">
+                      Story Only
+                    </span>
+                  )}
+                  {piece.isFeatured && (
+                    <span className="inline-block px-2 py-0.5 text-[10px] font-heading uppercase tracking-widest rounded-sm bg-rust text-primary-foreground">
+                      Featured
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <button onClick={() => startEdit(piece)} className="p-2 text-muted-foreground hover:text-foreground transition-colors">
