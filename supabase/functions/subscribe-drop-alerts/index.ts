@@ -37,6 +37,13 @@ Deno.serve(async (req) => {
       );
     }
 
+    if (!name || typeof name !== "string" || name.trim().length === 0 || name.trim().length > 100) {
+      return new Response(
+        JSON.stringify({ status: "invalid", message: "Name is required." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -44,7 +51,7 @@ Deno.serve(async (req) => {
 
     const { error } = await supabase
       .from("subscribers")
-      .insert({ name: name.trim(), email: email.trim().toLowerCase() });
+      .insert({ name: name.trim(), email: emailStr });
 
     if (error) {
       if (error.code === "23505") {
