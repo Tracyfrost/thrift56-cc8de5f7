@@ -8,6 +8,7 @@ import LatestTransformationBrutalist from "@/components/v2/LatestTransformationB
 import AvailableNowGrid from "@/components/v2/AvailableNowGrid";
 import EmailCaptureBrutalist from "@/components/v2/EmailCaptureBrutalist";
 import EmailPopup from "@/components/EmailPopup";
+import TraciesPicksStrip from "@/components/TraciesPicksStrip";
 
 const IndexV2 = () => {
   return (
