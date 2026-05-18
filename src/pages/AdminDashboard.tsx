@@ -423,32 +423,317 @@ function SubmissionsTab() {
   );
 }
 
-// ─── SUBSCRIBERS TAB ────────────────────────────────────
+// ─── EMAIL LIST TAB (Site Signups) ──────────────────────
+
+type DateRange = "all" | "7d" | "30d" | "90d" | "year";
+type SortMode = "newest" | "oldest" | "name";
 
 function SubscribersTab() {
   const { data: subs, isLoading } = useSubscribers();
+  const removeSubs = useDeleteSubscribers();
+  const [search, setSearch] = useState("");
+  const [range, setRange] = useState<DateRange>("all");
+  const [sort, setSort] = useState<SortMode>("newest");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const all = subs ?? [];
+
+  // duplicates: emails appearing >1 time. Mark older rows.
+  const emailCounts = new Map<string, number>();
+  const dupOlderIds = new Set<string>();
+  {
+    const sortedByDateAsc = [...all].sort((a, b) => +new Date(a.created_at) - +new Date(b.created_at));
+    const seen = new Set<string>();
+    for (const s of sortedByDateAsc) {
+      const e = s.email.toLowerCase();
+      emailCounts.set(e, (emailCounts.get(e) || 0) + 1);
+    }
+    for (const s of sortedByDateAsc) {
+      const e = s.email.toLowerCase();
+      if ((emailCounts.get(e) || 0) > 1) {
+        if (seen.has(e)) {
+          // already kept the first -> this isn't older. We want OLDER to be dimmed; first occurrence is oldest.
+        } else {
+          dupOlderIds.add(s.id);
+          seen.add(e);
+        }
+      }
+    }
+  }
+
+  // stats
+  const now = Date.now();
+  const day = 86400000;
+  const week = all.filter((s) => now - +new Date(s.created_at) <= 7 * day).length;
+  const month = all.filter((s) => now - +new Date(s.created_at) <= 30 * day).length;
+  const prevMonth = all.filter((s) => {
+    const age = now - +new Date(s.created_at);
+    return age > 30 * day && age <= 60 * day;
+  }).length;
+  const growth = prevMonth === 0 ? (month > 0 ? 100 : 0) : Math.round(((month - prevMonth) / prevMonth) * 100);
+
+  // sparkline: signups per day, last 30 days
+  const buckets = new Array(30).fill(0);
+  for (const s of all) {
+    const age = Math.floor((now - +new Date(s.created_at)) / day);
+    if (age >= 0 && age < 30) buckets[29 - age]++;
+  }
+  const maxBucket = Math.max(1, ...buckets);
+
+  // filter + sort
+  const rangeMs: Record<DateRange, number | null> = { all: null, "7d": 7 * day, "30d": 30 * day, "90d": 90 * day, year: 365 * day };
+  const filtered = all
+    .filter((s) => {
+      const q = search.trim().toLowerCase();
+      if (q && !s.name.toLowerCase().includes(q) && !s.email.toLowerCase().includes(q)) return false;
+      const rms = rangeMs[range];
+      if (rms && now - +new Date(s.created_at) > rms) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sort === "name") return a.name.localeCompare(b.name);
+      if (sort === "oldest") return +new Date(a.created_at) - +new Date(b.created_at);
+      return +new Date(b.created_at) - +new Date(a.created_at);
+    });
+
+  const allSelectedOnPage = filtered.length > 0 && filtered.every((s) => selected.has(s.id));
+  const toggleAll = () => {
+    if (allSelectedOnPage) setSelected(new Set());
+    else setSelected(new Set(filtered.map((s) => s.id)));
+  };
+  const toggleOne = (id: string) => {
+    const next = new Set(selected);
+    next.has(id) ? next.delete(id) : next.add(id);
+    setSelected(next);
+  };
+
+  const downloadCsv = (rows: typeof all, filename: string) => {
+    const header = ["Name", "Email", "Signed Up At"];
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const body = rows.map((r) => [esc(r.name), esc(r.email), esc(new Date(r.created_at).toISOString())].join(","));
+    const csv = [header.join(","), ...body].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const selectedRows = filtered.filter((s) => selected.has(s.id));
+  const today = new Date().toISOString().slice(0, 10);
+
+  const copyEmails = async (rows: typeof all) => {
+    const str = rows.map((r) => r.email).join(", ");
+    await navigator.clipboard.writeText(str);
+    toast.success(`Copied ${rows.length} email${rows.length === 1 ? "" : "s"}`);
+  };
+
+  const deleteSelected = async () => {
+    if (selectedRows.length === 0) return;
+    if (!confirm(`Delete ${selectedRows.length} subscriber${selectedRows.length === 1 ? "" : "s"}? This can't be undone.`)) return;
+    try {
+      await removeSubs.mutateAsync(selectedRows.map((s) => s.id));
+      toast.success("Deleted");
+      setSelected(new Set());
+    } catch (e: any) {
+      toast.error(e?.message || "Delete failed");
+    }
+  };
 
   return (
     <div>
-      <p className="font-heading text-lg font-bold mb-4">{subs?.length || 0} Subscribers</p>
+      <div className="mb-4">
+        <p className="font-distressed text-rust text-xs tracking-widest mb-1">EMAIL LIST · SITE SIGNUPS</p>
+        <p className="text-xs text-muted-foreground font-body italic">
+          Names + emails captured from thrift56.com forms (newsletter, drop entries, footer). Not YouTube subscribers — YouTube doesn't share those.
+        </p>
+      </div>
 
-      {isLoading ? (
-        <p className="text-muted-foreground py-8 text-center font-body">Loading...</p>
-      ) : (
-        <div className="space-y-2">
-          {subs?.map((s) => (
-            <div key={s.id} className="flex items-center gap-4 border border-border rounded-sm bg-card p-3">
-              <div className="flex-1 min-w-0">
-                <p className="font-heading font-bold text-sm">{s.name}</p>
-                <p className="text-[10px] text-muted-foreground font-body">{s.email}</p>
-              </div>
-              <p className="text-[10px] text-muted-foreground font-body flex-shrink-0">
-                {new Date(s.created_at).toLocaleDateString()}
-              </p>
-            </div>
-          ))}
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <StatCard label="Total Signups" value={all.length} />
+        <StatCard label="Last 7 Days" value={week} />
+        <StatCard label="Last 30 Days" value={month} />
+        <StatCard
+          label="30d Growth"
+          value={`${growth >= 0 ? "▲" : "▼"} ${Math.abs(growth)}%`}
+          accent={growth >= 0 ? "rust" : "muted"}
+        />
+      </div>
+
+      {/* Sparkline */}
+      {all.length > 0 && (
+        <div className="mb-6 border border-border rounded-sm bg-card p-3">
+          <p className="font-heading text-xs uppercase tracking-wider text-muted-foreground mb-2">Signups · Last 30 Days</p>
+          <svg viewBox={`0 0 ${30 * 8} 40`} className="w-full h-12" preserveAspectRatio="none">
+            {buckets.map((v, i) => {
+              const h = (v / maxBucket) * 36;
+              return (
+                <rect
+                  key={i}
+                  x={i * 8 + 1}
+                  y={40 - h}
+                  width={6}
+                  height={h || 1}
+                  className="fill-rust"
+                />
+              );
+            })}
+          </svg>
         </div>
       )}
+
+      {/* Search + filters */}
+      <div className="flex flex-col md:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search name or email…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9"
+          />
+        </div>
+        <div className="flex gap-1 flex-wrap">
+          {(["all", "7d", "30d", "90d", "year"] as DateRange[]).map((r) => (
+            <button
+              key={r}
+              onClick={() => setRange(r)}
+              className={`px-3 py-2 text-xs font-heading uppercase tracking-wider rounded-sm border ${
+                range === r ? "bg-rust text-white border-rust" : "border-border text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {r === "all" ? "All" : r === "year" ? "Year" : r}
+            </button>
+          ))}
+        </div>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortMode)}
+          className="border border-border rounded-sm bg-card px-3 py-2 text-xs font-heading uppercase tracking-wider"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+
+      {/* Bulk actions */}
+      <div className="flex flex-wrap items-center gap-2 mb-3">
+        <Button size="sm" variant="outline" onClick={() => downloadCsv(filtered, `thrift56-email-list-${today}.csv`)} className="gap-2">
+          <Download size={14} /> Export All Filtered ({filtered.length})
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => copyEmails(filtered)} className="gap-2">
+          <Copy size={14} /> Copy All Filtered Emails
+        </Button>
+        {selectedRows.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 ml-auto border-l border-border pl-3">
+            <span className="text-xs font-body text-muted-foreground">{selectedRows.length} selected</span>
+            <Button size="sm" variant="outline" onClick={() => copyEmails(selectedRows)} className="gap-2">
+              <Copy size={14} /> Copy
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => downloadCsv(selectedRows, `thrift56-selection-${today}.csv`)} className="gap-2">
+              <Download size={14} /> CSV
+            </Button>
+            <Button size="sm" variant="destructive" onClick={deleteSelected} className="gap-2">
+              <Trash2 size={14} /> Delete
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {isLoading ? (
+        <p className="text-muted-foreground py-8 text-center font-body">Loading…</p>
+      ) : filtered.length === 0 ? (
+        <p className="text-muted-foreground py-8 text-center font-body italic">No signups match these filters.</p>
+      ) : (
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 px-3 py-2 text-[10px] uppercase tracking-wider font-heading text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={allSelectedOnPage}
+              onChange={toggleAll}
+              className="accent-rust"
+            />
+            <span>Select all ({filtered.length})</span>
+          </div>
+          {filtered.map((s) => {
+            const isDup = dupOlderIds.has(s.id);
+            return (
+              <div
+                key={s.id}
+                className={`flex items-center gap-4 border border-border rounded-sm bg-card p-3 ${isDup ? "opacity-60" : ""}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selected.has(s.id)}
+                  onChange={() => toggleOne(s.id)}
+                  className="accent-rust"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-heading font-bold text-sm">{s.name}</p>
+                    {isDup && (
+                      <span className="text-[9px] font-heading uppercase tracking-wider border border-rust text-rust px-1.5 py-0.5 rounded-sm">
+                        Duplicate
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground font-body break-all">{s.email}</p>
+                </div>
+                <p className="text-[10px] text-muted-foreground font-body flex-shrink-0 hidden sm:block">
+                  {new Date(s.created_at).toLocaleDateString()}
+                </p>
+                <div className="flex gap-1 flex-shrink-0">
+                  <button
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(s.email);
+                      toast.success("Email copied");
+                    }}
+                    title="Copy email"
+                    className="p-2 text-muted-foreground hover:text-foreground border border-border rounded-sm"
+                  >
+                    <Copy size={12} />
+                  </button>
+                  <a
+                    href={`mailto:${s.email}`}
+                    title="Email this person"
+                    className="p-2 text-muted-foreground hover:text-foreground border border-border rounded-sm"
+                  >
+                    <Mail size={12} />
+                  </a>
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`Remove ${s.email}?`)) return;
+                      try {
+                        await removeSubs.mutateAsync([s.id]);
+                        toast.success("Removed");
+                      } catch (e: any) {
+                        toast.error(e?.message || "Delete failed");
+                      }
+                    }}
+                    title="Delete"
+                    className="p-2 text-muted-foreground hover:text-destructive border border-border rounded-sm"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StatCard({ label, value, accent }: { label: string; value: number | string; accent?: "rust" | "muted" }) {
+  return (
+    <div className="border border-border rounded-sm bg-card p-3">
+      <p className="font-heading text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{label}</p>
+      <p className={`font-heading text-2xl font-black tracking-tighter ${accent === "rust" ? "text-rust" : ""}`}>{value}</p>
     </div>
   );
 }
