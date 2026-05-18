@@ -1,10 +1,7 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect } from "react";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { useThriftItem, useThriftItems } from "@/hooks/useSupabaseData";
-import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import SquarePaymentForm from "@/components/shop/SquarePaymentForm";
 
@@ -12,24 +9,7 @@ const ShopItemDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: item, isLoading } = useThriftItem(slug || "");
   const { data: allItems } = useThriftItems();
-  const qc = useQueryClient();
-
-  // Realtime subscription for this item's sold status
-  useEffect(() => {
-    if (!item?.id) return;
-    const channel = supabase
-      .channel(`thrift-item-${item.id}`)
-      .on("postgres_changes" as any, {
-        event: "UPDATE",
-        schema: "public",
-        table: "thrift_items",
-        filter: `id=eq.${item.id}`,
-      }, () => {
-        qc.invalidateQueries({ queryKey: ["thrift-item", slug] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [item?.id, slug, qc]);
+  // Sold-status updates come from the 30s poll + window-focus refetch in useThriftItem.
 
   if (isLoading) {
     return (

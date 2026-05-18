@@ -454,6 +454,9 @@ export function useThriftItem(slug: string) {
       return data as any;
     },
     enabled: !!slug,
+    // Realtime removed for security — poll every 30s and on focus instead
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -468,24 +471,11 @@ export function useEpisodeDrops() {
   });
 }
 
+// Realtime removed for security — kept as a no-op so existing callers don't break.
 export function useThriftItemRealtime() {
-  const qc = useQueryClient();
-  useQuery({
-    queryKey: ["thrift-items-realtime-sub"],
-    queryFn: () => {
-      const channel = supabase
-        .channel("thrift-items-changes")
-        .on("postgres_changes" as any, { event: "UPDATE", schema: "public", table: "thrift_items" }, () => {
-          qc.invalidateQueries({ queryKey: ["thrift-items"] });
-          qc.invalidateQueries({ queryKey: ["thrift-item"] });
-        })
-        .subscribe();
-      return channel;
-    },
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-  });
+  // intentionally empty
 }
+
 
 // ─── STORAGE HELPERS ────────────────────────────────────
 
