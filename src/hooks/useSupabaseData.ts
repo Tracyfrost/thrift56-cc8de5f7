@@ -337,6 +337,17 @@ export function useSubscribers() {
   });
 }
 
+export function useDeleteSubscribers() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase.from("subscribers").delete().in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["subscribers"] }),
+  });
+}
+
 // ─── SUBMISSIONS ────────────────────────────────────────
 
 export function useSubmitFind() {
