@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { validateEmail } from "@/lib/validateEmail";
 
 const EmailPopup = () => {
   const [show, setShow] = useState(false);
@@ -33,12 +34,11 @@ const EmailPopup = () => {
     sessionStorage.setItem("email-popup-dismissed", "true");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const sendSubscribe = async (em: string) => {
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("subscribe-drop-alerts", {
-        body: { name, email },
+        body: { name, email: em },
       });
       if (error) throw error;
       if (data?.status === "duplicate") {
@@ -55,6 +55,24 @@ const EmailPopup = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = validateEmail(email);
+    if (result.valid === false) {
+      if (result.suggestion) {
+        const fixed = result.suggestion;
+        toast(result.reason, {
+          description: "Tap to use the corrected email.",
+          action: { label: "Use it", onClick: () => { setEmail(fixed); sendSubscribe(fixed); } },
+        });
+      } else {
+        toast.error("Invalid email", { description: result.reason });
+      }
+      return;
+    }
+    await sendSubscribe(result.normalized);
   };
 
   if (!show || dismissed) return null;

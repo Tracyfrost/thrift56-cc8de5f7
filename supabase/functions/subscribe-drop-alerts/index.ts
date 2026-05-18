@@ -16,9 +16,23 @@ Deno.serve(async (req) => {
   try {
     const { name, email } = await req.json();
 
-    if (!email || typeof email !== "string" || !email.includes("@") || email.length > 254) {
+    const emailStr = typeof email === "string" ? email.trim().toLowerCase() : "";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const COMMON_TLDS = new Set([
+      "com","net","org","io","co","app","dev","me","us","uk","ca","au","de","fr","es","it","nl","se","no","fi","dk","ie","pl","pt","ch","at","be","cz","gr","ru","ua","tr","il","ae","sa","za","jp","kr","cn","hk","tw","sg","in","id","ph","th","vn","my","br","mx","ar","cl","pe","ve","nz","edu","gov","mil","int","info","biz","tv","xyz","online","store","shop","art","studio","email","live","news","media","agency","design","tech","ai","pro","blog","space","site","club","fun","world","today","ly","cc","to","gg","fm","so","is","im","name","mobi","asia","tel",
+    ]);
+
+    if (!emailStr || emailStr.length > 254 || !emailRegex.test(emailStr)) {
       return new Response(
         JSON.stringify({ status: "invalid", message: "A valid email is required." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const tld = emailStr.split("@")[1].split(".").pop()!;
+    if (tld.length >= 4 && !COMMON_TLDS.has(tld)) {
+      return new Response(
+        JSON.stringify({ status: "invalid", message: `".${tld}" doesn't look like a real domain extension.` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -37,7 +51,7 @@ Deno.serve(async (req) => {
 
     const { error } = await supabase
       .from("subscribers")
-      .insert({ name: name.trim(), email: email.trim().toLowerCase() });
+      .insert({ name: name.trim(), email: emailStr });
 
     if (error) {
       if (error.code === "23505") {
