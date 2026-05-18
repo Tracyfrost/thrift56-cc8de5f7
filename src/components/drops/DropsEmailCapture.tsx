@@ -24,7 +24,7 @@ const DropsEmailCapture = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = validateEmail(email);
-    if (!result.valid) {
+    if (result.valid === false) {
       if (result.suggestion) {
         const fixed = result.suggestion;
         toast({
