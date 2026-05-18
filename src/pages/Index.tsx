@@ -16,6 +16,7 @@ import SiteFooter from "@/components/SiteFooter";
 import DiscoverHunt from "@/components/DiscoverHunt";
 import YouDecide from "@/components/YouDecide";
 import ShieldDivider from "@/components/ShieldDivider";
+import TraciesPicksStrip from "@/components/TraciesPicksStrip";
 
 const Index = () => {
   return (
