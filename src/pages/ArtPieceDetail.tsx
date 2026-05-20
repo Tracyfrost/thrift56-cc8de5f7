@@ -1,5 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import EntryForm from "@/components/EntryForm";
@@ -47,6 +48,15 @@ const ArtPieceDetail = () => {
   return (
     <div className="min-h-screen">
       <SiteNav />
+      <Seo
+        title={`${piece.title} — Thrift 56 Drop`}
+        description={(piece.description || `${piece.title} — a one-of-a-kind transformation from the Thrift 56 studio.`).slice(0, 155)}
+        path={`/drops/${piece.slug}`}
+        type="product"
+        image={piece.after_image_url || undefined}
+      />
+
+
 
       <div className="container py-8 md:py-12">
         <Link to="/drops" className="inline-flex items-center gap-2 text-muted-foreground hover:text-rust transition-colors font-heading text-sm uppercase tracking-wider mb-8">

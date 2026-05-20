@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 import FourPillars from "@/components/shop/FourPillars";
 import { useShopifyProduct } from "@/hooks/useShopifyProducts";
@@ -109,6 +110,15 @@ const ShopifyProductDetail = () => {
   return (
     <div className="min-h-screen bg-[#F9F6F0]">
       <SiteNav />
+      <Seo
+        title={`${product.title} — Thrift 56`}
+        description={(product.description || `${product.title} — available at Thrift 56.`).slice(0, 155)}
+        path={`/shop/${product.handle}`}
+        type="product"
+        image={images[0]?.node?.url || undefined}
+      />
+
+
 
       <div className="container py-6">
         <Link

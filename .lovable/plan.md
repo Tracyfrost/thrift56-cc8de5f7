@@ -1,33 +1,31 @@
-## Move two products into "Tracie's Picks" in Shopify
+## Plan: Add GA4, Meta Pixel support, and improve SEO
 
-Both products currently have `product_type: "Curated"`. Update them to `product_type: "Tracie's Pick"` so they flow into the new Tracie's Picks filter, dedicated collection page, homepage strip, and earn the "TRACIE PICK" badge — automatically, with no code or DB changes.
+### 1. Google Analytics 4 (GA4)
+- Add the GA4 gtag snippet (`G-G70LXSJ5M9`) to `index.html` immediately after `<head>` so it loads once site-wide on every route.
 
-### Updates
+### 2. Meta Pixel placeholder
+- Add commented-out Meta Pixel `<script>` block in `index.html` `<head>` and the `<noscript>` fallback `<img>` in `<body>` (HTML5 requires noscript pixel in body, not head), with a clear `PASTE_META_PIXEL_ID_HERE` placeholder so it can be enabled later.
 
-1. **Starbucks Mini Mug Ornament — Curated Find**
-   - Product ID: `7817081454669`
-   - `product_type`: `Curated` → `Tracie's Pick`
-   - Add tag: `tracie-pick` (keeps existing tags: curated, cute, gift-under-25, holiday, mini-mug, ornament, small-things, starbucks)
+### 3. robots.txt
+- `public/robots.txt` already exists and is correct (allows all, disallows `/admin`, points to sitemap). Leave as-is.
 
-2. **Captain Texas Tee — Curated Find**
-   - Product ID: `7817083486285`
-   - `product_type`: `Curated` → `Tracie's Pick`
-   - Add tag: `tracie-pick` (keeps existing tags: brand-new, captain-texas, curated, hand-picked, t-shirt, texas)
+### 4. sitemap.xml
+- `public/sitemap.xml` exists as a static file covering Home, Episodes, Drops, Shop, Community, Livestream, About, Contact, Policies. Confirm completeness — add `/shop/tracies-picks` and `/search` if appropriate. Keep static (no generator migration without asking).
 
-### What this does automatically (no code changes)
+### 5. SEO metadata on major pages
+- `Seo.tsx` component (react-helmet-async) already exists and is used on Home (IndexV2), Shop, TraciesPicks, Policies.
+- Add `<Seo>` to pages currently missing it: **Episodes**, **About**, **ArtDrops (/drops)**, **Community**, **Contact**, **Livestream**, plus detail pages **EpisodeDetail** and **ShopifyProductDetail / ArtPieceDetail** (dynamic title/description from content).
+- Each `<Seo>` already emits Open Graph + Twitter card tags + canonical, so this single addition covers OG/Twitter/dynamic titles in one shot.
 
-- Appears under the **Tracie's Picks** filter on `/shop`
-- Appears on `/shop/tracies-picks` collection page
-- Eligible for the homepage **Tracie's Picks** 4-up strip
-- Renders the subtle **TRACIE PICK** badge on its product card
-- Removed from the **Curated** filter (since type is no longer `Curated`)
+### 6. Cleanup
+- Remove `<link rel="canonical">` from `index.html` to avoid duplicate canonicals when Helmet emits a per-route one (per project SEO guidance).
 
-### Titles
+### Out of scope
+- No visual or layout changes.
+- No sitemap generator migration (static file kept).
+- Meta Pixel is wired as a placeholder only; user adds the ID later.
 
-Both keep "— Curated Find" in the title. Recommend renaming to "— Tracie's Pick" for narrative consistency, but only if you confirm — say the word and I'll include the title rename in the same update.
-
-### Not in scope
-
-- No code edits (the Tracie's Picks frontend already shipped and reads `product_type` live from Shopify)
-- No new Shopify collections or metafields
-- No price, inventory, image, or description changes
+### Files touched
+- `index.html` (GA4 tag, Meta Pixel placeholder, drop static canonical)
+- `public/sitemap.xml` (add 1–2 missing routes)
+- `src/pages/Episodes.tsx`, `About.tsx`, `ArtDrops.tsx`, `Community.tsx`, `Contact.tsx`, `Livestream.tsx`, `EpisodeDetail.tsx`, `ShopifyProductDetail.tsx`, `ArtPieceDetail.tsx` (add `<Seo>` with page-appropriate title/description, dynamic where relevant)

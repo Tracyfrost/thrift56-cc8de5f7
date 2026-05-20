@@ -3,6 +3,7 @@ import { useEpisode, useEpisodes } from "@/hooks/useSupabaseData";
 import EpisodeCard, { categoryLabels, categoryColors, formatViews } from "@/components/EpisodeCard";
 import SubscribePrompt from "@/components/SubscribePrompt";
 import SiteNav from "@/components/SiteNav";
+import Seo from "@/components/Seo";
 import SiteFooter from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Play } from "lucide-react";
@@ -42,6 +43,15 @@ const EpisodeDetailPage = () => {
   return (
     <div className="min-h-screen">
       <SiteNav />
+      <Seo
+        title={`${episode.title} — Thrift 56 Episode`}
+        description={(episode.description || `Watch ${episode.title} — a Thrift 56 transformation episode.`).slice(0, 155)}
+        path={`/episodes/${episode.slug}`}
+        type="article"
+        image={episode.after_image_url || episode.thumbnail_url || undefined}
+      />
+
+
 
       <section className="py-8 md:py-12 texture-paper">
         <div className="container">
