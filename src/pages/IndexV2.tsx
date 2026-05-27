@@ -22,7 +22,7 @@ const IndexV2 = () => {
       <HeroBrutalist />
       <MarqueeBrutalist />
       <BeforeAfterSlider />
-      <LatestTransformationBrutalist />
+      <LatestTransformationBrutalist youtubeId="HO3PITWWsh0" />
       <AvailableNowGrid />
       <AvailableNowGrid />
       <TraciesPicksStrip />
