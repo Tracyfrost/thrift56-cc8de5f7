@@ -48,15 +48,15 @@ const LatestTransformationBrutalist = ({ youtubeId, title, watchHref }: LatestTr
             <ComingSoonMarquee />
           )}
 
-          {latestDrop?.title && embedSrc && (
+          {embedSrc && (title || latestDrop?.title) && (
             <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950 mt-6">
-              {latestDrop.title}
+              {title || latestDrop?.title}
             </p>
           )}
 
           <div className="mt-6">
             <Link
-              to="/episodes"
+              to={watchHref || "/episodes"}
               className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
             >
               Watch Full Episode
