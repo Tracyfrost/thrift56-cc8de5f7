@@ -4,9 +4,11 @@ import ComingSoonMarquee from "./ComingSoonMarquee";
 
 interface LatestTransformationBrutalistProps {
   youtubeId?: string;
+  title?: string;
+  watchHref?: string;
 }
 
-const LatestTransformationBrutalist = ({ youtubeId }: LatestTransformationBrutalistProps) => {
+const LatestTransformationBrutalist = ({ youtubeId, title, watchHref }: LatestTransformationBrutalistProps) => {
   const { data: drops } = useEpisodeDrops();
   const latestDrop = drops?.find((d: any) => d.status === "live") || drops?.[0];
 
@@ -46,19 +48,30 @@ const LatestTransformationBrutalist = ({ youtubeId }: LatestTransformationBrutal
             <ComingSoonMarquee />
           )}
 
-          {latestDrop?.title && embedSrc && (
+          {embedSrc && (title || latestDrop?.title) && (
             <p className="font-sans font-bold text-sm uppercase tracking-wide text-stone-950 mt-6">
-              {latestDrop.title}
+              {title || latestDrop?.title}
             </p>
           )}
 
           <div className="mt-6">
-            <Link
-              to="/episodes"
-              className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
-            >
-              Watch Full Episode
-            </Link>
+            {watchHref && /^https?:\/\//.test(watchHref) ? (
+              <a
+                href={watchHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
+              >
+                Watch Full Episode
+              </a>
+            ) : (
+              <Link
+                to={watchHref || "/episodes"}
+                className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
+              >
+                Watch Full Episode
+              </Link>
+            )}
           </div>
         </div>
       </div>
