@@ -28,7 +28,7 @@ const LatestTransformationBrutalist = ({ youtubeId }: LatestTransformationBrutal
       <div className="container relative z-10">
         <p className="font-serif italic text-stone-500 text-sm mb-2">The latest</p>
         <h2 className="font-sans font-black text-3xl md:text-5xl tracking-tighter text-stone-950 mb-10">
-          LATEST TRANSFORMATION
+          THE LATEST
         </h2>
 
         <div className="max-w-4xl">
