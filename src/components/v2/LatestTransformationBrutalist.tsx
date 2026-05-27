@@ -55,12 +55,23 @@ const LatestTransformationBrutalist = ({ youtubeId, title, watchHref }: LatestTr
           )}
 
           <div className="mt-6">
-            <Link
-              to={watchHref || "/episodes"}
-              className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
-            >
-              Watch Full Episode
-            </Link>
+            {watchHref && /^https?:\/\//.test(watchHref) ? (
+              <a
+                href={watchHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
+              >
+                Watch Full Episode
+              </a>
+            ) : (
+              <Link
+                to={watchHref || "/episodes"}
+                className="inline-flex items-center justify-center bg-stone-950 text-stone-50 font-sans font-bold text-xs uppercase tracking-[0.15em] px-8 py-4 rounded-none hover:bg-orange-800 transition-colors"
+              >
+                Watch Full Episode
+              </Link>
+            )}
           </div>
         </div>
       </div>
