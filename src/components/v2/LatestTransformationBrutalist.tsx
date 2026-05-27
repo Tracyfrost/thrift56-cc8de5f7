@@ -4,9 +4,11 @@ import ComingSoonMarquee from "./ComingSoonMarquee";
 
 interface LatestTransformationBrutalistProps {
   youtubeId?: string;
+  title?: string;
+  watchHref?: string;
 }
 
-const LatestTransformationBrutalist = ({ youtubeId }: LatestTransformationBrutalistProps) => {
+const LatestTransformationBrutalist = ({ youtubeId, title, watchHref }: LatestTransformationBrutalistProps) => {
   const { data: drops } = useEpisodeDrops();
   const latestDrop = drops?.find((d: any) => d.status === "live") || drops?.[0];
 
