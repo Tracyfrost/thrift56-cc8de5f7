@@ -22,7 +22,11 @@ const IndexV2 = () => {
       <HeroBrutalist />
       <MarqueeBrutalist />
       <BeforeAfterSlider />
-      <LatestTransformationBrutalist youtubeId="HO3PITWWsh0" />
+      <LatestTransformationBrutalist
+        youtubeId="HO3PITWWsh0"
+        title="Thrift 56 Launch"
+        watchHref="https://youtu.be/HO3PITWWsh0"
+      />
       <AvailableNowGrid />
       <AvailableNowGrid />
       <TraciesPicksStrip />
