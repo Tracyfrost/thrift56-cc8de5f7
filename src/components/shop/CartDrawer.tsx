@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -10,11 +10,43 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useCartStore } from "@/stores/cartStore";
+import { useShopifyProducts } from "@/hooks/useShopifyProducts";
+import { TENMOKU_SET_TAG, TENMOKU_SET_SIZE, TENMOKU_SET_CODE } from "@/data/tenmokuSet";
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
+  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart, addItem } = useCartStore();
+
+  const hasTenmokuInCart = useMemo(
+    () => items.some(i => i.product.node.tags?.includes(TENMOKU_SET_TAG)),
+    [items]
+  );
+  const { data: tenmokuSet } = useShopifyProducts(10, hasTenmokuInCart ? `tag:${TENMOKU_SET_TAG}` : undefined);
+  const cartVariantIds = useMemo(() => new Set(items.map(i => i.variantId)), [items]);
+  const missingFromSet = useMemo(() => {
+    if (!hasTenmokuInCart || !tenmokuSet) return [];
+    return tenmokuSet.filter(p => {
+      const v = p.node.variants.edges[0]?.node;
+      return v && !cartVariantIds.has(v.id);
+    });
+  }, [hasTenmokuInCart, tenmokuSet, cartVariantIds]);
+  const setComplete = hasTenmokuInCart && tenmokuSet && tenmokuSet.length >= TENMOKU_SET_SIZE && missingFromSet.length === 0;
+
+  const handleAddSuggestion = async (product: typeof tenmokuSet[number]) => {
+    const v = product.node.variants.edges[0]?.node;
+    if (!v) return;
+    await addItem({
+      product,
+      variantId: v.id,
+      variantTitle: v.title,
+      price: v.price,
+      quantity: 1,
+      selectedOptions: v.selectedOptions || [],
+    });
+    toast.success("Added to cart", { description: product.node.title });
+  };
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
 
