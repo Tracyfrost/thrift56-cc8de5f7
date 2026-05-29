@@ -17,7 +17,19 @@ import { TENMOKU_SET_TAG, TENMOKU_SET_SIZE, TENMOKU_SET_CODE } from "@/data/tenm
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart, addItem } = useCartStore();
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(TENMOKU_SET_CODE);
+      setCopied(true);
+      toast.success("Code copied", { description: `Paste ${TENMOKU_SET_CODE} at checkout for 10% off` });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Couldn't copy — code is " + TENMOKU_SET_CODE);
+    }
+  };
 
   const hasTenmokuInCart = useMemo(
     () => items.some(i => i.product.node.tags?.includes(TENMOKU_SET_TAG)),
