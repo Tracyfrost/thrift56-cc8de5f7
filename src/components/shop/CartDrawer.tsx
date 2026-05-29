@@ -161,9 +161,19 @@ export const CartDrawer = () => {
                 ))}
 
                 {setComplete && (
-                  <div className="mt-4 border border-orange-800/60 bg-orange-800/5 p-3 text-center">
-                    <p className="font-heading text-[10px] uppercase tracking-[0.15em] text-orange-800">
-                      Tenmoku 4 Complete · Code {TENMOKU_SET_CODE} = 10% Off
+                  <div className="mt-4 border border-orange-800/60 bg-orange-800/5 p-3 space-y-2">
+                    <p className="font-heading text-[10px] uppercase tracking-[0.15em] text-orange-800 text-center">
+                      Tenmoku 4 Complete · 10% Off
+                    </p>
+                    <button
+                      onClick={handleCopyCode}
+                      className="w-full flex items-center justify-center gap-2 border border-orange-800 bg-white text-orange-800 font-heading text-[11px] uppercase tracking-[0.2em] py-2 hover:bg-orange-800 hover:text-[#F9F6F0] transition-colors"
+                    >
+                      {copied ? <Check size={12} /> : <Copy size={12} />}
+                      {copied ? "Copied" : `Copy Code: ${TENMOKU_SET_CODE}`}
+                    </button>
+                    <p className="font-serif italic text-[10px] text-stone-600 text-center leading-snug">
+                      Paste this code at checkout on the payment screen to apply 10% off.
                     </p>
                   </div>
                 )}
