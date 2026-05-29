@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -10,11 +10,43 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useCartStore } from "@/stores/cartStore";
+import { useShopifyProducts } from "@/hooks/useShopifyProducts";
+import { TENMOKU_SET_TAG, TENMOKU_SET_SIZE, TENMOKU_SET_CODE } from "@/data/tenmokuSet";
 
 export const CartDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
+  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart, addItem } = useCartStore();
+
+  const hasTenmokuInCart = useMemo(
+    () => items.some(i => i.product.node.tags?.includes(TENMOKU_SET_TAG)),
+    [items]
+  );
+  const { data: tenmokuSet } = useShopifyProducts(10, hasTenmokuInCart ? `tag:${TENMOKU_SET_TAG}` : undefined);
+  const cartVariantIds = useMemo(() => new Set(items.map(i => i.variantId)), [items]);
+  const missingFromSet = useMemo(() => {
+    if (!hasTenmokuInCart || !tenmokuSet) return [];
+    return tenmokuSet.filter(p => {
+      const v = p.node.variants.edges[0]?.node;
+      return v && !cartVariantIds.has(v.id);
+    });
+  }, [hasTenmokuInCart, tenmokuSet, cartVariantIds]);
+  const setComplete = hasTenmokuInCart && tenmokuSet && tenmokuSet.length >= TENMOKU_SET_SIZE && missingFromSet.length === 0;
+
+  const handleAddSuggestion = async (product: typeof tenmokuSet[number]) => {
+    const v = product.node.variants.edges[0]?.node;
+    if (!v) return;
+    await addItem({
+      product,
+      variantId: v.id,
+      variantTitle: v.title,
+      price: v.price,
+      quantity: 1,
+      selectedOptions: v.selectedOptions || [],
+    });
+    toast.success("Added to cart", { description: product.node.title });
+  };
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
 
@@ -115,6 +147,54 @@ export const CartDrawer = () => {
                     </div>
                   </div>
                 ))}
+
+                {setComplete && (
+                  <div className="mt-4 border border-orange-800/60 bg-orange-800/5 p-3 text-center">
+                    <p className="font-heading text-[10px] uppercase tracking-[0.15em] text-orange-800">
+                      Tenmoku 4 Complete · Code {TENMOKU_SET_CODE} = 10% Off
+                    </p>
+                  </div>
+                )}
+
+                {!setComplete && missingFromSet.length > 0 && (
+                  <div className="mt-4 border-t border-stone-300 pt-4">
+                    <p className="font-heading text-[10px] uppercase tracking-[0.2em] text-stone-950">
+                      Complete the Set — Tenmoku 4
+                    </p>
+                    <p className="font-serif italic text-[11px] text-stone-600 mt-1 mb-3">
+                      Add the rest, get 10% off at $120+ with code {TENMOKU_SET_CODE}.
+                    </p>
+                    <div className="space-y-2">
+                      {missingFromSet.map(p => {
+                        const node = p.node;
+                        const img = node.images?.edges?.[0]?.node;
+                        const variant = node.variants.edges[0]?.node;
+                        return (
+                          <div key={node.id} className="flex gap-3 p-2 border border-stone-300 bg-white items-center">
+                            <div className="w-10 h-10 bg-stone-100 flex-shrink-0 overflow-hidden">
+                              {img && <img src={img.url} alt={img.altText || node.title} className="w-full h-full object-cover" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h5 className="font-heading text-[10px] uppercase tracking-wider truncate text-stone-950">
+                                {node.title}
+                              </h5>
+                              <p className="text-orange-800 font-heading text-xs">
+                                ${parseFloat(variant?.price.amount || "0").toFixed(0)}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => handleAddSuggestion(p)}
+                              disabled={isLoading || !variant}
+                              className="flex-shrink-0 border border-orange-800 text-orange-800 font-heading text-[10px] uppercase tracking-[0.15em] px-3 py-1.5 hover:bg-orange-800 hover:text-[#F9F6F0] transition-colors disabled:opacity-40 flex items-center gap-1"
+                            >
+                              {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus size={10} /> Add</>}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex-shrink-0 space-y-3 pt-4 border-t border-stone-300">
