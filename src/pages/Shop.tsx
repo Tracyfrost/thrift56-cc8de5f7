@@ -74,9 +74,13 @@ const Shop = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((product) => (
-              <ProductCard key={product.node.id} product={product} />
-            ))}
+            {[...products]
+              .sort((a, b) =>
+                a.node.title.localeCompare(b.node.title, undefined, { sensitivity: "base" })
+              )
+              .map((product) => (
+                <ProductCard key={product.node.id} product={product} />
+              ))}
           </div>
         )}
       </section>
