@@ -1,33 +1,35 @@
-## Complete the Set — In-Cart Suggestions
+## Goal
+Add Tracie's new original artwork **T56-074 BUMBLEDRIP** to the Drops page under **Resurrected** (Original Art / Tracie's transformations) at $75, one-of-one.
 
-When any of the four Tenmoku cups (T56-70, T56-71, T56-72, T56-73) is in the cart, show the remaining cups from the set as suggested items inside the cart drawer with a one-click "Add" button. Once all four are in, the section disappears and a small "TENMOKU4 — 10% off applied at checkout" nudge shows instead.
+## What gets added
 
-### Where it lives
-`src/components/shop/CartDrawer.tsx` — new section between the line items list and the totals/checkout block, only when at least one set member is present and at least one is missing.
+**Database** — new row in `art_pieces`:
+- `slug`: `bumbledrip`
+- `title`: `BUMBLEDRIP`
+- `category`: `resurrected`
+- `status`: `available`
+- `price`: `75`
+- `before_image_url`: bare ornate silver frame (SEL_001)
+- `after_image_url`: finished framed piece (Bubledrip_complete.png)
+- `materials`: `['Vintage ornate frame', 'Hand-cut paper collage', 'Black glitter substrate', 'Honey-drip illustration', 'Sealed under glass']`
+- `description`: groovy neo-retro copy (draft below)
 
-### How it works
-1. **Define the set** in a tiny module `src/data/tenmokuSet.ts`:
-   - Array of SKUs: `["T56-70","T56-71","T56-72","T56-73"]`
-   - Helper `isTenmokuSet(sku)` and label "Tenmoku 4"
-2. **Fetch the set products** via existing `useShopifyProducts` hook (already used elsewhere) filtered with Shopify query `tag:tenmoku-set`. Cache result at the drawer level so it only fires when the drawer opens and at least one set item is in the cart.
-3. **Compute missing cups**: for each fetched product, read `variants.edges[0].node.sku`; show only those whose SKU is in the set list and not already present in `items` (matched by `variantId`).
-4. **Suggestion row UI** (brutalist, matches existing cart card styling):
-   - Section header: small Oswald label `COMPLETE THE SET — TENMOKU 4` with serif italic subline `Add the rest, get 10% off at $120+ with code TENMOKU4.`
-   - Each suggestion: 40px square thumb, truncated title, `$30`, and a sharp-edged `+ ADD` button (rust border, hover fills `bg-orange-800 text-[#F9F6F0]`, `rounded-none`).
-   - Click → calls `addItem` with that product's first variant (same pattern as `ProductCard.handleAddToCart`), shows existing sonner toast.
-5. **All four present** → replace section with one-line rust-bordered notice: `TENMOKU 4 COMPLETE · CODE TENMOKU4 = 10% OFF`.
-6. **Scroll behavior**: suggestions live inside the existing `flex-1 overflow-y-auto` region, below the line items, so the totals/checkout footer stays pinned.
+**Assets** — upload the 2 hero images via `lovable-assets` CLI (CDN, not committed binaries):
+- `user-uploads://T56-074_BUMBLEDRIP_SEL_001.jpg` → before (raw silver frame)
+- `user-uploads://Bubledrip_complete.png` → after (finished framed)
 
-### Edge cases
-- If Shopify query returns nothing or errors, render nothing (no broken UI).
-- Skip suggestions for sold-out variants (`availableForSale === false` and not 1-of-1 override — but these are 1-of-1, so always purchasable per existing `ProductCard` logic).
-- Loading state on the `+ ADD` button mirrors `isLoading` from cart store.
+## Description draft (groovy / neo-retro)
+> Far out, little worker. A regal bumblebee crowned in honeycomb, haloed by molten honey-drops and hand-cut petals — float-stacked over inky black glitter and locked behind a baroque frame Tracie hand-painted bone white. Equal parts 70s record-sleeve and Victorian apothecary print. One bee. One frame. One of one.
 
-### Out of scope
-- No changes to discount logic (TENMOKU4 already configured in Shopify).
-- No changes to ProductCard, PDP, or cart store.
-- Suggestion logic is hard-scoped to the Tenmoku 4 set; a generic "related products" engine is a separate task.
+## Progression shots & video — out of scope for this turn
+The `art_pieces` table has no `studio_photos[]` or `video_url` columns. The 4 progression collage shots (SEL_002–005), the in-progress white-frame shot, and the two MP4s are **not displayed** by this change. If you want them shown on the detail page as a process gallery + reel, that's a follow-up (schema migration + UI section).
 
-### Files touched
-- `src/data/tenmokuSet.ts` (new, ~15 lines)
-- `src/components/shop/CartDrawer.tsx` (add suggestions section + product fetch)
+## Technical notes
+- Insert via `psql` (admin RLS would block from client; direct SQL is fine).
+- Images uploaded with `lovable-assets create --file /mnt/user-uploads/...` → store the resulting CDN `url` directly in the text columns.
+- Will appear automatically in `DropsResurrected` on `/drops` and on `/drops/bumbledrip`.
+- No Shopify product is created (Resurrected pieces are Supabase-driven, unlike Curated/Tracie's Picks which live in Shopify).
+
+## Confirm before I build
+1. OK to skip progression shots + videos for now? (Or want me to add a schema + gallery UI in the same turn?)
+2. Description tone — keep as drafted, or push more 60s psychedelic vs. 70s funk?
