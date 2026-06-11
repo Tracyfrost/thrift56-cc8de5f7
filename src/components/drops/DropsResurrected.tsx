@@ -28,7 +28,7 @@ const DropsResurrected = ({ statusFilter = "all" }: { statusFilter?: string }) =
       <div className="container max-w-5xl">
         <div className="mb-12">
           <h2 className="font-sans font-black text-4xl md:text-6xl tracking-tighter text-stone-950 leading-[0.85] mb-2">
-            RESURRECTED
+            TRANSFORMED CREATION
           </h2>
           <p className="font-serif italic text-stone-500 text-sm">
             Transformed. Documented. One of one.
